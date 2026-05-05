@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User, Pet } from "../types";
-import { IStorage } from "../../../interfaces/IStorage";
+import { IStorage } from "../interfaces/IStorage";
 
 const KEYS = {
   USER: "@clyvo:user",
@@ -37,7 +37,9 @@ class StorageService implements IStorage {
   }
 
   async clearAll(): Promise<void> {
-    await AsyncStorage.multiRemove([KEYS.USER, KEYS.PETS, KEYS.LOGGED_IN]);
+    await AsyncStorage.removeItem(KEYS.USER);
+    await AsyncStorage.removeItem(KEYS.PETS);
+    await AsyncStorage.removeItem(KEYS.LOGGED_IN);
   }
 }
 

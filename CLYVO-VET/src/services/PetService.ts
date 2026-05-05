@@ -1,5 +1,5 @@
 import { Pet } from "../types";
-import { IPetService } from "../../../interfaces/IPetService";
+import { IPetService } from "../interfaces/IPetService";
 import { storageService } from "./StorageService";
 
 class PetService implements IPetService {
