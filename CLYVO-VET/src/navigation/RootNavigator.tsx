@@ -7,7 +7,7 @@ import { Colors } from "../styles/colors";
 
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
-import RegisterScreen from "../screens/auth/RegisterScreen";
+import RegisterScreen from "../screens/auth/Registerscreen";
 import AddPetScreen from "../screens/pet/AddPetScreen";
 import PetDetailScreen from "../screens/pet/PetDetailScreen";
 import MainTabs from "./MainTabs";
