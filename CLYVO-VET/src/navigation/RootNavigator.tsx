@@ -10,14 +10,15 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/Registerscreen";
 import AddPetScreen from "../screens/pet/AddPetScreen";
 import PetDetailScreen from "../screens/pet/PetDetailScreen";
+import HealthCalendarScreen from "../screens/main/HealthScreen";
+import PetChatScreen from "../screens/main/PetChatScreen";
 import MainTabs from "./MainTabs";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
   const [loading, setLoading] = useState(true);
-  const [initialRoute, setInitialRoute] =
-    useState<keyof RootStackParamList>("Welcome");
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>("Welcome");
 
   useEffect(() => {
     storageService.getLoggedIn().then((loggedIn) => {
@@ -45,6 +46,8 @@ export default function RootNavigator() {
       <Stack.Screen name="Main" component={MainTabs} />
       <Stack.Screen name="AddPet" component={AddPetScreen} />
       <Stack.Screen name="PetDetail" component={PetDetailScreen} />
+      <Stack.Screen name="HealthCalendar" component={HealthCalendarScreen} />
+      <Stack.Screen name="PetChat" component={PetChatScreen} />
     </Stack.Navigator>
   );
 }

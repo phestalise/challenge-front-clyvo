@@ -1,34 +1,21 @@
 import React, { useCallback, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
+  View, Text, ScrollView, TouchableOpacity, RefreshControl,
 } from "react-native";
-
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import { Ionicons } from "@expo/vector-icons";
-
 import { RootStackParamList } from "../../types";
 import { Colors } from "../../styles/colors";
 import { storageService } from "../../services/StorageService";
 import StatCard from "../../components/StatCard";
 import { primeiroNome } from "../../utils/formatters";
-
 import { styles } from "../../styles/DashboardScreenStyles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export default function DashboardScreen() {
   const navigation = useNavigation<Nav>();
-
   const [user, setUser] = useState<any>(null);
   const [pets, setPets] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,11 +29,7 @@ export default function DashboardScreen() {
     setPets(p);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
+  useFocusEffect(useCallback(() => { load(); }, []));
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -70,64 +53,27 @@ export default function DashboardScreen() {
     .slice(0, 3);
 
   const quickActions = [
-    {
-      icon: "add-circle",
-      label: "Novo Pet",
-      color: Colors.accentLight,
-      onPress: () => navigation.navigate("AddPet"),
-    },
-    {
-      icon: "calendar",
-      label: "Saúde",
-      color: Colors.accentGreen,
-      onPress: () => (navigation as any).navigate("HealthCalendar"),
-    },
-    {
-      icon: "clipboard",
-      label: "Histórico",
-      color: Colors.accentOrange,
-      onPress: () => {},
-    },
-    {
-      icon: "chatbubble-ellipses",
-      label: "Chat IA",
-      color: "#9B59B6",
-      onPress: () => (navigation as any).navigate("PetChat"),
-    },
+    { icon: "add-circle", label: "Novo Pet", color: Colors.accentLight, onPress: () => navigation.navigate("AddPet") },
+    { icon: "calendar", label: "Saúde", color: Colors.accentGreen, onPress: () => navigation.navigate("HealthCalendar") },
+    { icon: "clipboard", label: "Histórico", color: Colors.accentOrange, onPress: () => {} },
+    { icon: "chatbubble-ellipses", label: "Chat IA", color: "#9B59B6", onPress: () => navigation.navigate("PetChat") },
   ];
 
   return (
     <View style={styles.container}>
       <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={Colors.accentLight}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.accentLight} />}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>
-              Olá, {primeiroNome(user?.name ?? "")} 👋
-            </Text>
+            <Text style={styles.greeting}>Olá, {primeiroNome(user?.name ?? "")} 👋</Text>
             <Text style={styles.date}>
-              {new Date().toLocaleDateString("pt-BR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
+              {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
             </Text>
           </View>
-
           <TouchableOpacity style={styles.notif}>
-            <Ionicons
-              name="notifications-outline"
-              size={22}
-              color={Colors.white}
-            />
+            <Ionicons name="notifications-outline" size={22} color={Colors.white} />
             {upcoming.length > 0 && <View style={styles.badge} />}
           </TouchableOpacity>
         </View>
@@ -145,24 +91,9 @@ export default function DashboardScreen() {
 
         <View style={styles.statsGrid}>
           <StatCard label="Pets" value={pets.length} icon="paw" color={Colors.accentLight} />
-          <StatCard
-            label="Vacinas OK"
-            value={pets.flatMap((p) => p.vaccines ?? []).filter((v: any) => v.done).length}
-            icon="shield-checkmark"
-            color={Colors.accentGreen}
-          />
-          <StatCard
-            label="Medicamentos"
-            value={pets.flatMap((p) => p.medications ?? []).filter((m: any) => m.active).length}
-            icon="medical"
-            color={Colors.accentOrange}
-          />
-          <StatCard
-            label="Pendências"
-            value={pets.flatMap((p) => p.vaccines ?? []).filter((v: any) => !v.done).length}
-            icon="alert-circle"
-            color={Colors.accentRed}
-          />
+          <StatCard label="Vacinas OK" value={pets.flatMap((p) => p.vaccines ?? []).filter((v: any) => v.done).length} icon="shield-checkmark" color={Colors.accentGreen} />
+          <StatCard label="Medicamentos" value={pets.flatMap((p) => p.medications ?? []).filter((m: any) => m.active).length} icon="medical" color={Colors.accentOrange} />
+          <StatCard label="Pendências" value={pets.flatMap((p) => p.vaccines ?? []).filter((v: any) => !v.done).length} icon="alert-circle" color={Colors.accentRed} />
         </View>
 
         <View style={styles.section}>
@@ -184,11 +115,7 @@ export default function DashboardScreen() {
             <Text style={styles.sectionTitle}>Meus pets</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {pets.map((pet) => (
-                <TouchableOpacity
-                  key={pet.id}
-                  style={styles.petChip}
-                  onPress={() => navigation.navigate("PetDetail", { petId: pet.id })}
-                >
+                <TouchableOpacity key={pet.id} style={styles.petChip} onPress={() => navigation.navigate("PetDetail", { petId: pet.id })}>
                   <View style={styles.petChipAvatar}>
                     <Ionicons name="paw" size={22} color={Colors.accentLight} />
                   </View>
@@ -196,10 +123,7 @@ export default function DashboardScreen() {
                   <Text style={styles.petChipMeta}>{pet.species}</Text>
                 </TouchableOpacity>
               ))}
-              <TouchableOpacity
-                style={styles.petChipAdd}
-                onPress={() => navigation.navigate("AddPet")}
-              >
+              <TouchableOpacity style={styles.petChipAdd} onPress={() => navigation.navigate("AddPet")}>
                 <Ionicons name="add" size={28} color={Colors.accentLight} />
               </TouchableOpacity>
             </ScrollView>
