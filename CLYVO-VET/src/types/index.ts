@@ -46,6 +46,8 @@ export type RootStackParamList = {
   Main: undefined;
   AddPet: undefined;
   PetDetail: { petId: string };
+  HealthCalendar: undefined;
+  PetChat: undefined;
 };
 
 export type MainTabParamList = {
