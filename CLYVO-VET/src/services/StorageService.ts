@@ -1,45 +1,39 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { User, Pet } from "../types";
-import { IStorage } from "../interfaces/IStorage";
 
-const KEYS = {
-  USER: "@clyvo:user",
-  PETS: "@clyvo:pets",
-  LOGGED_IN: "@clyvo:loggedIn",
-};
-
-class StorageService implements IStorage {
-  async saveUser(user: User): Promise<void> {
-    await AsyncStorage.setItem(KEYS.USER, JSON.stringify(user));
+class StorageService {
+  async getUser(): Promise<any | null> {
+    const raw = await AsyncStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
   }
 
-  async getUser(): Promise<User | null> {
-    const data = await AsyncStorage.getItem(KEYS.USER);
-    return data ? JSON.parse(data) : null;
+  async saveUser(user: any): Promise<void> {
+    await AsyncStorage.setItem("user", JSON.stringify(user));
   }
 
-  async savePets(pets: Pet[]): Promise<void> {
-    await AsyncStorage.setItem(KEYS.PETS, JSON.stringify(pets));
+  async getPets(): Promise<any[]> {
+    const raw = await AsyncStorage.getItem("pets");
+    return raw ? JSON.parse(raw) : [];
   }
 
-  async getPets(): Promise<Pet[]> {
-    const data = await AsyncStorage.getItem(KEYS.PETS);
-    return data ? JSON.parse(data) : [];
-  }
-
-  async setLoggedIn(value: boolean): Promise<void> {
-    await AsyncStorage.setItem(KEYS.LOGGED_IN, JSON.stringify(value));
+  async savePets(pets: any[]): Promise<void> {
+    await AsyncStorage.setItem("pets", JSON.stringify(pets));
   }
 
   async getLoggedIn(): Promise<boolean> {
-    const data = await AsyncStorage.getItem(KEYS.LOGGED_IN);
-    return data ? JSON.parse(data) : false;
+    const raw = await AsyncStorage.getItem("loggedIn");
+    return raw ? JSON.parse(raw) : false;
   }
 
-  async clearAll(): Promise<void> {
-    await AsyncStorage.removeItem(KEYS.USER);
-    await AsyncStorage.removeItem(KEYS.PETS);
-    await AsyncStorage.removeItem(KEYS.LOGGED_IN);
+  async setLoggedIn(value: boolean): Promise<void> {
+    await AsyncStorage.setItem("loggedIn", JSON.stringify(value));
+  }
+
+  async getData(key: string): Promise<string | null> {
+    return AsyncStorage.getItem(key);
+  }
+
+  async saveData(key: string, value: string): Promise<void> {
+    await AsyncStorage.setItem(key, value);
   }
 }
 

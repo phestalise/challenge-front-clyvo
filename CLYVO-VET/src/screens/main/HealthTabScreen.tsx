@@ -10,32 +10,20 @@ import { storageService } from "../../services/StorageService";
 import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
 
-export default function PetsScreen() {
+export default function HealthTabScreen() {
   const navigation = useNavigation<any>();
   const [pets, setPets] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const load = async () => {
-    const p = await storageService.getPets();
-    setPets(p);
-  };
-
+  const load = async () => setPets(await storageService.getPets());
   useFocusEffect(useCallback(() => { load(); }, []));
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  };
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Meus Pets</Text>
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => navigation.navigate("AddPet")}
-        >
+        <Text style={styles.title}>Saúde</Text>
+        <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate("AddHealthRecord")}>
           <Ionicons name="add" size={22} color={Colors.white} />
         </TouchableOpacity>
       </View>
@@ -47,9 +35,9 @@ export default function PetsScreen() {
       >
         {pets.length === 0 ? (
           <View style={styles.empty}>
-            <Ionicons name="paw" size={56} color={Colors.accentLight + "40"} />
-            <Text style={styles.emptyTitle}>Nenhum pet ainda</Text>
-            <Text style={styles.emptyText}>Adicione seu primeiro pet para começar</Text>
+            <Ionicons name="heart" size={56} color={Colors.accentRed + "40"} />
+            <Text style={styles.emptyTitle}>Nenhum pet cadastrado</Text>
+            <Text style={styles.emptyText}>Adicione um pet para acompanhar a saúde</Text>
             <TouchableOpacity style={styles.emptyBtn} onPress={() => navigation.navigate("AddPet")}>
               <Text style={styles.emptyBtnText}>+ Adicionar pet</Text>
             </TouchableOpacity>
@@ -61,6 +49,7 @@ export default function PetsScreen() {
             const vaccinesDone = (pet.vaccines ?? []).filter((v: any) => v.done).length;
             const vaccinesTotal = (pet.vaccines ?? []).length;
             const medActive = (pet.medications ?? []).filter((m: any) => m.active).length;
+            const pending = (pet.vaccines ?? []).filter((v: any) => !v.done).length;
 
             return (
               <TouchableOpacity
@@ -73,18 +62,18 @@ export default function PetsScreen() {
                   <View style={styles.avatar}>
                     <Ionicons
                       name={pet.species === "Gato" ? "happy" : pet.species === "Pássaro" ? "sunny" : "paw"}
-                      size={28}
-                      color={Colors.accentLight}
+                      size={28} color={Colors.accentLight}
                     />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.petName}>{pet.name}</Text>
-                    <Text style={styles.petMeta}>{pet.species} · {pet.breed}</Text>
-                    <View style={styles.tags}>
-                      <View style={styles.tag}><Text style={styles.tagText}>{calcularIdadeTexto(pet.age)}</Text></View>
-                      <View style={styles.tag}><Text style={styles.tagText}>{pet.weight} kg</Text></View>
-                    </View>
+                    <Text style={styles.petMeta}>{pet.species} · {pet.breed} · {calcularIdadeTexto(pet.age)}</Text>
                   </View>
+                  {pending > 0 && (
+                    <View style={styles.pendingBadge}>
+                      <Text style={styles.pendingText}>{pending} pendente{pending > 1 ? "s" : ""}</Text>
+                    </View>
+                  )}
                   <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
                 </View>
 
@@ -129,17 +118,14 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, fontWeight: "700", color: Colors.white },
   addBtn: {
     width: 36, height: 36, borderRadius: 18,
-    backgroundColor: Colors.accentLight + "25",
+    backgroundColor: Colors.accentGreen + "25",
     alignItems: "center", justifyContent: "center",
   },
   list: { padding: 16, gap: 12, paddingBottom: 40 },
   empty: { alignItems: "center", paddingTop: 100, gap: 12 },
   emptyTitle: { fontSize: 18, fontWeight: "700", color: Colors.white },
   emptyText: { fontSize: 14, color: Colors.textLight, textAlign: "center" },
-  emptyBtn: {
-    marginTop: 8, paddingHorizontal: 28, paddingVertical: 13,
-    backgroundColor: Colors.accentLight, borderRadius: 14,
-  },
+  emptyBtn: { marginTop: 8, paddingHorizontal: 28, paddingVertical: 13, backgroundColor: Colors.accentLight, borderRadius: 14 },
   emptyBtnText: { color: Colors.white, fontWeight: "700", fontSize: 15 },
   card: {
     backgroundColor: Colors.secondary, borderRadius: 16, padding: 16, gap: 12,
@@ -147,18 +133,17 @@ const styles = StyleSheet.create({
   },
   cardTop: { flexDirection: "row", alignItems: "center", gap: 12 },
   avatar: {
-    width: 52, height: 52, borderRadius: 16,
+    width: 48, height: 48, borderRadius: 14,
     backgroundColor: Colors.accentLight + "20",
     alignItems: "center", justifyContent: "center",
   },
   petName: { fontSize: 16, fontWeight: "700", color: Colors.white },
-  petMeta: { fontSize: 13, color: Colors.textLight, marginTop: 2 },
-  tags: { flexDirection: "row", gap: 6, marginTop: 6 },
-  tag: {
-    paddingHorizontal: 10, paddingVertical: 3,
-    backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 20,
+  petMeta: { fontSize: 12, color: Colors.textLight, marginTop: 2 },
+  pendingBadge: {
+    paddingHorizontal: 10, paddingVertical: 4,
+    backgroundColor: Colors.accentRed + "20", borderRadius: 20,
   },
-  tagText: { fontSize: 11, color: Colors.textLight },
+  pendingText: { fontSize: 11, color: Colors.accentRed, fontWeight: "700" },
   healthRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   healthLabel: { fontSize: 12, color: Colors.textLight, width: 36 },
   barBg: { flex: 1, height: 6, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 3 },
