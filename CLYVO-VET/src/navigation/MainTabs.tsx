@@ -2,13 +2,19 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import { MainTabParamList } from "../types";
-import { Colors } from "../styles/colors";
-
 import DashboardScreen from "../screens/main/DashboardScreen";
 import PetsScreen from "../screens/pet/PetsScreen";
 import HealthTabScreen from "../screens/main/HealthTabScreen";
 import ProfileScreen from "../screens/main/ProfileScreen";
+
+import { Colors } from "../styles/colors";
+
+export type MainTabParamList = {
+  Dashboard: undefined;
+  Pets: undefined;
+  Health: undefined;
+  Profile: undefined;
+};
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -22,14 +28,12 @@ export default function MainTabs() {
           backgroundColor: Colors.primary,
           borderTopColor: "rgba(255,255,255,0.08)",
           height: 70,
-          paddingBottom: 12,
+          paddingBottom: 10,
           paddingTop: 8,
         },
 
         tabBarActiveTintColor: Colors.accentLight,
-
-        tabBarInactiveTintColor:
-          "rgba(255,255,255,0.35)",
+        tabBarInactiveTintColor: "rgba(255,255,255,0.35)",
 
         tabBarLabelStyle: {
           fontSize: 11,
@@ -37,16 +41,27 @@ export default function MainTabs() {
         },
 
         tabBarIcon: ({ color, size }) => {
-          const icons: Record<string, any> = {
-            Dashboard: "home",
-            Pets: "paw",
-            Health: "heart",
-            Profile: "person",
-          };
+          let iconName: any = "home";
+
+          if (route.name === "Dashboard") {
+            iconName = "home";
+          }
+
+          if (route.name === "Pets") {
+            iconName = "paw";
+          }
+
+          if (route.name === "Health") {
+            iconName = "heart";
+          }
+
+          if (route.name === "Profile") {
+            iconName = "person";
+          }
 
           return (
             <Ionicons
-              name={icons[route.name]}
+              name={iconName}
               size={size}
               color={color}
             />
@@ -57,33 +72,25 @@ export default function MainTabs() {
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
-        options={{
-          title: "Início",
-        }}
+        options={{ title: "Início" }}
       />
 
       <Tab.Screen
         name="Pets"
         component={PetsScreen}
-        options={{
-          title: "Meus Pets",
-        }}
+        options={{ title: "Pets" }}
       />
 
       <Tab.Screen
         name="Health"
         component={HealthTabScreen}
-        options={{
-          title: "Saúde",
-        }}
+        options={{ title: "Saúde" }}
       />
 
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{
-          title: "Perfil",
-        }}
+        options={{ title: "Perfil" }}
       />
     </Tab.Navigator>
   );

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  TextInput, StyleSheet, Alert,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,8 +26,14 @@ export default function AddPetScreen() {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!name.trim()) { Alert.alert("Informe o nome do pet."); return; }
-    if (!species) { Alert.alert("Selecione a espécie."); return; }
+    if (!name.trim()) {
+      Alert.alert("Atenção", "Informe o nome do pet.");
+      return;
+    }
+    if (!species) {
+      Alert.alert("Atenção", "Selecione a espécie.");
+      return;
+    }
 
     setSaving(true);
     try {
@@ -37,15 +48,15 @@ export default function AddPetScreen() {
         vaccines: [],
         medications: [],
         nextCheckup: "",
+        createdAt: new Date().toISOString(),
       };
       await storageService.savePets([...existing, newPet]);
 
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Main" }],
-      });
+      // ✅ FIX 2: Usa goBack() em vez de navigation.reset()
+      // O reset causava a tela de Pets não recarregar os dados
+      navigation.goBack();
     } catch {
-      Alert.alert("Erro ao salvar pet. Tente novamente.");
+      Alert.alert("Erro", "Erro ao salvar pet. Tente novamente.");
     } finally {
       setSaving(false);
     }
@@ -54,7 +65,10 @@ export default function AddPetScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.back}
+        >
           <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.title}>Novo Pet</Text>
@@ -69,7 +83,13 @@ export default function AddPetScreen() {
         <View style={styles.avatarArea}>
           <View style={styles.avatar}>
             <Ionicons
-              name={species === "Gato" ? "happy" : species === "Pássaro" ? "sunny" : "paw"}
+              name={
+                species === "Gato"
+                  ? "happy"
+                  : species === "Pássaro"
+                  ? "sunny"
+                  : "paw"
+              }
               size={40}
               color={Colors.accentLight}
             />
@@ -96,7 +116,14 @@ export default function AddPetScreen() {
               style={[styles.chip, species === s && styles.chipSelected]}
               onPress={() => setSpecies(s)}
             >
-              <Text style={[styles.chipText, species === s && styles.chipTextSelected]}>{s}</Text>
+              <Text
+                style={[
+                  styles.chipText,
+                  species === s && styles.chipTextSelected,
+                ]}
+              >
+                {s}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -144,7 +171,7 @@ export default function AddPetScreen() {
         >
           <Ionicons name="checkmark-circle" size={22} color={Colors.white} />
           <Text style={styles.saveBtnText}>
-            {saving ? "Salvando..." : "Finalizar e ir para Início"}
+            {saving ? "Salvando..." : "Salvar Pet"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -155,44 +182,74 @@ export default function AddPetScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.primary },
   header: {
-    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-    paddingHorizontal: 20, paddingTop: 60, paddingBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 16,
     backgroundColor: Colors.secondary,
   },
   back: {
-    width: 36, height: 36, borderRadius: 18,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.08)",
-    alignItems: "center", justifyContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: { fontSize: 18, fontWeight: "700", color: Colors.white },
   content: { padding: 20, paddingBottom: 60 },
   avatarArea: { alignItems: "center", marginBottom: 28, gap: 10 },
   avatar: {
-    width: 80, height: 80, borderRadius: 24,
+    width: 80,
+    height: 80,
+    borderRadius: 24,
     backgroundColor: Colors.accentLight + "20",
-    alignItems: "center", justifyContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarHint: { fontSize: 18, fontWeight: "700", color: Colors.white },
-  label: { fontSize: 13, color: Colors.textLight, marginBottom: 8, marginTop: 16 },
+  label: {
+    fontSize: 13,
+    color: Colors.textLight,
+    marginBottom: 8,
+    marginTop: 16,
+  },
   input: {
-    backgroundColor: Colors.secondary, borderRadius: 12, padding: 14,
-    color: Colors.white, fontSize: 15,
-    borderWidth: 1, borderColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.secondary,
+    borderRadius: 12,
+    padding: 14,
+    color: Colors.white,
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
   },
   row: { flexDirection: "row" },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
-    paddingHorizontal: 16, paddingVertical: 9, borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 20,
     backgroundColor: Colors.secondary,
-    borderWidth: 1, borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
-  chipSelected: { backgroundColor: Colors.accentLight, borderColor: Colors.accentLight },
+  chipSelected: {
+    backgroundColor: Colors.accentLight,
+    borderColor: Colors.accentLight,
+  },
   chipText: { color: Colors.textLight, fontSize: 14, fontWeight: "600" },
   chipTextSelected: { color: Colors.white },
   saveBtn: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 10, backgroundColor: Colors.accentLight,
-    borderRadius: 14, paddingVertical: 16, marginTop: 32,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: Colors.accentLight,
+    borderRadius: 14,
+    paddingVertical: 16,
+    marginTop: 32,
   },
   saveBtnDisabled: { opacity: 0.5 },
   saveBtnText: { color: Colors.white, fontSize: 16, fontWeight: "700" },
