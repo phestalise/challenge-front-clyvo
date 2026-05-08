@@ -29,22 +29,11 @@ export default function DashboardScreen() {
   const navigation = useNavigation<any>();
 
   const [user, setUser] = useState<any>(null);
+  const [pets, setPets] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const [pets, setPets] = useState<any[]>(
-    []
-  );
-
-  const [refreshing, setRefreshing] =
-    useState(false);
-
-  const bounceAnim = useRef(
-    new Animated.Value(1)
-  ).current;
-
-  const bounceLoop =
-    useRef<Animated.CompositeAnimation | null>(
-      null
-    );
+  const bounceAnim = useRef(new Animated.Value(1)).current;
+  const bounceLoop = useRef<Animated.CompositeAnimation | null>(null);
 
   const startBounce = () => {
     bounceLoop.current?.stop();
@@ -56,7 +45,6 @@ export default function DashboardScreen() {
           duration: 700,
           useNativeDriver: false,
         }),
-
         Animated.timing(bounceAnim, {
           toValue: 1,
           duration: 700,
@@ -86,7 +74,6 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-
       startBounce();
 
       return () => {
@@ -97,70 +84,50 @@ export default function DashboardScreen() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-
     await load();
-
     setRefreshing(false);
   };
 
-  const allVaccines = pets.flatMap(
-    (p) => p.vaccines ?? []
-  );
+  // ✅ NAVEGAÇÃO CORRIGIDA
+  const goToStack = (name: string, params?: object) => {
+    navigation.navigate(name, params);
+  };
 
-  const allMeds = pets.flatMap(
-    (p) => p.medications ?? []
-  );
+  const goToTab = (name: string) => {
+    navigation.navigate(name);
+  };
 
-  const vaccinesDone =
-    allVaccines.filter((v) => v.done)
-      .length;
+  const allVaccines = pets.flatMap((p) => p.vaccines ?? []);
+  const allMeds = pets.flatMap((p) => p.medications ?? []);
 
-  const medActive =
-    allMeds.filter((m) => m.active).length;
-
-  const pending =
-    allVaccines.filter((v) => !v.done)
-      .length;
+  const vaccinesDone = allVaccines.filter((v) => v.done).length;
+  const medActive = allMeds.filter((m) => m.active).length;
+  const pending = allVaccines.filter((v) => !v.done).length;
 
   const quickActions = [
     {
       icon: "add-circle",
       label: "Novo Pet",
       color: Colors.accentLight,
-      onPress: () =>
-        navigation
-          .getParent()
-          ?.navigate("AddPet"),
+      onPress: () => goToStack("AddPet"),
     },
-
     {
       icon: "medkit",
       label: "Saúde",
       color: Colors.accentGreen,
-      onPress: () =>
-        navigation.navigate("Health"),
+      onPress: () => goToTab("Health"),
     },
-
     {
       icon: "calendar",
       label: "Calendário",
       color: Colors.accentOrange,
-      onPress: () =>
-        navigation
-          .getParent()
-          ?.navigate(
-            "HealthCalendar"
-          ),
+      onPress: () => goToStack("HealthCalendar"),
     },
-
     {
       icon: "chatbubble-ellipses",
       label: "Chat IA",
       color: "#9B59B6",
-      onPress: () =>
-        navigation
-          .getParent()
-          ?.navigate("PetChat"),
+      onPress: () => goToStack("PetChat"),
     },
   ];
 
@@ -172,46 +139,33 @@ export default function DashboardScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={
-              Colors.accentLight
-            }
+            tintColor={Colors.accentLight}
           />
         }
       >
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>
-              Olá,{" "}
-              {primeiroNome(
-                user?.name ?? ""
-              )}{" "}
-              👋
+              Olá, {primeiroNome(user?.name ?? "")} 👋
             </Text>
 
             <Text style={styles.date}>
-              {new Date().toLocaleDateString(
-                "pt-BR",
-                {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                }
-              )}
+              {new Date().toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
             </Text>
           </View>
 
-          <TouchableOpacity
-            style={styles.notif}
-          >
+          <TouchableOpacity style={styles.notif}>
             <Ionicons
               name="notifications-outline"
               size={22}
               color={Colors.white}
             />
 
-            {pending > 0 && (
-              <View style={styles.badge} />
-            )}
+            {pending > 0 && <View style={styles.badge} />}
           </TouchableOpacity>
         </View>
 
@@ -220,9 +174,7 @@ export default function DashboardScreen() {
             <Ionicons
               name="sparkles"
               size={20}
-              color={
-                Colors.accentLight
-              }
+              color={Colors.accentLight}
             />
           </View>
 
@@ -230,82 +182,55 @@ export default function DashboardScreen() {
             {pets.length === 0
               ? "Cadastre seu primeiro pet"
               : `${pets.length} pet${
-                  pets.length > 1
-                    ? "s"
-                    : ""
+                  pets.length > 1 ? "s" : ""
                 } cadastrado${
-                  pets.length > 1
-                    ? "s"
-                    : ""
+                  pets.length > 1 ? "s" : ""
                 }`}
           </Text>
         </View>
 
         <View style={styles.statsGrid}>
+          {/* PETS */}
           <TouchableOpacity
             style={styles.statCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate(
-                "Pets"
-              )
-            }
+            onPress={() => goToTab("Pets")}
           >
             <View style={styles.statTop}>
               <Animated.View
                 style={[
                   styles.statIconBox,
                   {
-                    backgroundColor:
-                      Colors.accentLight +
-                      "20",
-
-                    transform: [
-                      {
-                        scale:
-                          bounceAnim,
-                      },
-                    ],
+                    backgroundColor: Colors.accentLight + "20",
+                    transform: [{ scale: bounceAnim }],
                   },
                 ]}
               >
                 <Ionicons
                   name="paw"
                   size={20}
-                  color={
-                    Colors.accentLight
-                  }
+                  color={Colors.accentLight}
                 />
               </Animated.View>
 
               <Text
                 style={[
                   styles.statValue,
-                  {
-                    color:
-                      Colors.accentLight,
-                  },
+                  { color: Colors.accentLight },
                 ]}
               >
                 {pets.length}
               </Text>
             </View>
 
-            <Text style={styles.statLabel}>
-              Pets
-            </Text>
+            <Text style={styles.statLabel}>Pets</Text>
           </TouchableOpacity>
 
+          {/* VACINAS */}
           <TouchableOpacity
             style={styles.statCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation
-                .getParent()
-                ?.navigate(
-                  "Vaccines"
-                )
-            }
+            onPress={() => goToStack("HealthCalendar")}
           >
             <View style={styles.statTop}>
               <View
@@ -313,27 +238,21 @@ export default function DashboardScreen() {
                   styles.statIconBox,
                   {
                     backgroundColor:
-                      Colors.accentGreen +
-                      "20",
+                      Colors.accentGreen + "20",
                   },
                 ]}
               >
                 <Ionicons
                   name="shield-checkmark"
                   size={20}
-                  color={
-                    Colors.accentGreen
-                  }
+                  color={Colors.accentGreen}
                 />
               </View>
 
               <Text
                 style={[
                   styles.statValue,
-                  {
-                    color:
-                      Colors.accentGreen,
-                  },
+                  { color: Colors.accentGreen },
                 ]}
               >
                 {vaccinesDone}
@@ -345,16 +264,11 @@ export default function DashboardScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* MEDICAMENTOS */}
           <TouchableOpacity
             style={styles.statCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation
-                .getParent()
-                ?.navigate(
-                  "Medications"
-                )
-            }
+            onPress={() => goToStack("HealthCalendar")}
           >
             <View style={styles.statTop}>
               <View
@@ -362,27 +276,21 @@ export default function DashboardScreen() {
                   styles.statIconBox,
                   {
                     backgroundColor:
-                      Colors.accentOrange +
-                      "20",
+                      Colors.accentOrange + "20",
                   },
                 ]}
               >
                 <Ionicons
                   name="medical"
                   size={20}
-                  color={
-                    Colors.accentOrange
-                  }
+                  color={Colors.accentOrange}
                 />
               </View>
 
               <Text
                 style={[
                   styles.statValue,
-                  {
-                    color:
-                      Colors.accentOrange,
-                  },
+                  { color: Colors.accentOrange },
                 ]}
               >
                 {medActive}
@@ -394,16 +302,11 @@ export default function DashboardScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* PENDÊNCIAS */}
           <TouchableOpacity
             style={styles.statCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation
-                .getParent()
-                ?.navigate(
-                  "Pending"
-                )
-            }
+            onPress={() => goToStack("HealthCalendar")}
           >
             <View style={styles.statTop}>
               <View
@@ -411,27 +314,21 @@ export default function DashboardScreen() {
                   styles.statIconBox,
                   {
                     backgroundColor:
-                      Colors.accentRed +
-                      "20",
+                      Colors.accentRed + "20",
                   },
                 ]}
               >
                 <Ionicons
                   name="alert-circle"
                   size={20}
-                  color={
-                    Colors.accentRed
-                  }
+                  color={Colors.accentRed}
                 />
               </View>
 
               <Text
                 style={[
                   styles.statValue,
-                  {
-                    color:
-                      Colors.accentRed,
-                  },
+                  { color: Colors.accentRed },
                 ]}
               >
                 {pending}
@@ -450,45 +347,33 @@ export default function DashboardScreen() {
           </Text>
 
           <View style={styles.actionsRow}>
-            {quickActions.map(
-              (a, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={
-                    styles.quickBtn
-                  }
-                  activeOpacity={0.8}
-                  onPress={a.onPress}
+            {quickActions.map((a, i) => (
+              <TouchableOpacity
+                key={i}
+                style={styles.quickBtn}
+                activeOpacity={0.8}
+                onPress={a.onPress}
+              >
+                <View
+                  style={[
+                    styles.quickIcon,
+                    {
+                      backgroundColor: a.color + "20",
+                    },
+                  ]}
                 >
-                  <View
-                    style={[
-                      styles.quickIcon,
-                      {
-                        backgroundColor:
-                          a.color +
-                          "20",
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name={
-                        a.icon as any
-                      }
-                      size={26}
-                      color={a.color}
-                    />
-                  </View>
+                  <Ionicons
+                    name={a.icon as any}
+                    size={26}
+                    color={a.color}
+                  />
+                </View>
 
-                  <Text
-                    style={
-                      styles.quickLabel
-                    }
-                  >
-                    {a.label}
-                  </Text>
-                </TouchableOpacity>
-              )
-            )}
+                <Text style={styles.quickLabel}>
+                  {a.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -505,15 +390,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
-
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
   },
 
   greeting: {
@@ -524,8 +405,7 @@ const styles = StyleSheet.create({
 
   date: {
     fontSize: 13,
-    color:
-      "rgba(255,255,255,0.5)",
+    color: "rgba(255,255,255,0.5)",
     marginTop: 2,
   },
 
@@ -533,10 +413,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -545,10 +422,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-
-    backgroundColor:
-      Colors.accentRed,
-
+    backgroundColor: Colors.accentRed,
     position: "absolute",
     top: 6,
     right: 6,
@@ -556,34 +430,21 @@ const styles = StyleSheet.create({
 
   aiBanner: {
     margin: 16,
-
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-
-    backgroundColor:
-      Colors.accentLight +
-      "15",
-
+    backgroundColor: Colors.accentLight + "15",
     borderRadius: 14,
     padding: 14,
-
     borderWidth: 1,
-
-    borderColor:
-      Colors.accentLight +
-      "30",
+    borderColor: Colors.accentLight + "30",
   },
 
   aiIcon: {
     width: 36,
     height: 36,
     borderRadius: 10,
-
-    backgroundColor:
-      Colors.accentLight +
-      "20",
-
+    backgroundColor: Colors.accentLight + "20",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -591,8 +452,7 @@ const styles = StyleSheet.create({
   aiText: {
     flex: 1,
     fontSize: 13,
-    color:
-      "rgba(255,255,255,0.75)",
+    color: "rgba(255,255,255,0.75)",
     lineHeight: 18,
   },
 
@@ -600,32 +460,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
-
     paddingHorizontal: 16,
     marginBottom: 8,
   },
 
   statCard: {
     width: "47%",
-
-    backgroundColor:
-      Colors.secondary,
-
+    backgroundColor: Colors.secondary,
     borderRadius: 14,
     padding: 14,
-
     borderWidth: 1,
-
-    borderColor:
-      "rgba(255,255,255,0.06)",
+    borderColor: "rgba(255,255,255,0.06)",
   },
 
   statTop: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
-
+    justifyContent: "space-between",
     marginBottom: 8,
   },
 
@@ -633,7 +484,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-
     alignItems: "center",
     justifyContent: "center",
   },
@@ -645,8 +495,7 @@ const styles = StyleSheet.create({
 
   statLabel: {
     fontSize: 12,
-    color:
-      "rgba(255,255,255,0.45)",
+    color: "rgba(255,255,255,0.45)",
   },
 
   section: {
@@ -657,9 +506,7 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: 11,
-    color:
-      "rgba(255,255,255,0.4)",
-
+    color: "rgba(255,255,255,0.4)",
     letterSpacing: 0.5,
     marginBottom: 12,
     textTransform: "uppercase",
@@ -667,8 +514,7 @@ const styles = StyleSheet.create({
 
   actionsRow: {
     flexDirection: "row",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
   },
 
   quickBtn: {
@@ -681,16 +527,13 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 16,
-
     alignItems: "center",
     justifyContent: "center",
   },
 
   quickLabel: {
     fontSize: 11,
-    color:
-      "rgba(255,255,255,0.6)",
-
+    color: "rgba(255,255,255,0.6)",
     textAlign: "center",
   },
 });

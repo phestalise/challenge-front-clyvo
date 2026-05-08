@@ -1,81 +1,107 @@
-
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { MainTabParamList } from "../types";
-import { Colors } from "../styles/colors";
+import MainTabs from "./MainTabs";
 
-import DashboardScreen from "../screens/main/DashboardScreen";
-import PetsScreen from "../screens/pet/PetDetailScreen";
-import HealthTabScreen from "../screens/main/HealthTabScreen";
-import ProfileScreen from "../screens/main/ProfileScreen";
+import WelcomeScreen from "../screens/auth/WelcomeScreen";
+import LoginScreen from "../screens/auth/LoginScreen";
+import RegisterScreen from "../screens/auth/Registerscreen";
 
-const Tab = createBottomTabNavigator<MainTabParamList>();
+import AddPetScreen from "../screens/pet/AddPetScreen";
+import PetDetailScreen from "../screens/pet/PetDetailScreen";
 
-export default function MainTabs() {
+import PetChatScreen from "../screens/main/PetChatScreen";
+import HealthCalendarScreen from "../screens/main/HealthCalendarScreen";
+import VaccinesScreen from "../screens/main/VaccinesScreen";
+import MedicationsScreen from "../screens/main/MedicationsScreen";
+import PendingScreen from "../screens/main/PendingScreen";
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  Login: undefined;
+  Register: undefined;
+
+  Main: undefined;
+
+  AddPet: undefined;
+
+  PetDetail: {
+    petId: string;
+  };
+
+  PetChat: undefined;
+  HealthCalendar: undefined;
+
+  Vaccines: undefined;
+  Medications: undefined;
+  Pending: undefined;
+};
+
+const Stack =
+  createNativeStackNavigator<RootStackParamList>();
+
+export default function RootNavigator() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
+    <Stack.Navigator
+      initialRouteName="Welcome"
+      screenOptions={{
         headerShown: false,
-
-        tabBarStyle: {
-          backgroundColor: Colors.primary,
-          borderTopColor: "rgba(255,255,255,0.08)",
-          height: 70,
-          paddingBottom: 12,
-          paddingTop: 8,
-        },
-
-        tabBarActiveTintColor: Colors.accentLight,
-        tabBarInactiveTintColor: "rgba(255,255,255,0.35)",
-
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
-        },
-
-        tabBarIcon: ({ color, size }) => {
-          const icons: Record<string, any> = {
-            Dashboard: "home",
-            Pets: "paw",
-            Health: "heart",
-            Profile: "person",
-          };
-
-          return (
-            <Ionicons
-              name={icons[route.name]}
-              size={size}
-              color={color}
-            />
-          );
-        },
-      })}
+      }}
     >
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{ title: "Início" }}
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
       />
 
-      <Tab.Screen
-        name="Pets"
-        component={PetsScreen}
-        options={{ title: "Meus Pets" }}
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
       />
 
-      <Tab.Screen
-        name="Health"
-        component={HealthTabScreen}
-        options={{ title: "Saúde" }}
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
       />
 
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ title: "Perfil" }}
+      <Stack.Screen
+        name="Main"
+        component={MainTabs}
       />
-    </Tab.Navigator>
+
+      <Stack.Screen
+        name="AddPet"
+        component={AddPetScreen}
+      />
+
+      <Stack.Screen
+        name="PetDetail"
+        component={PetDetailScreen}
+      />
+
+      <Stack.Screen
+        name="PetChat"
+        component={PetChatScreen}
+      />
+
+      <Stack.Screen
+        name="HealthCalendar"
+        component={HealthCalendarScreen}
+      />
+
+      <Stack.Screen
+        name="Vaccines"
+        component={VaccinesScreen}
+      />
+
+      <Stack.Screen
+        name="Medications"
+        component={MedicationsScreen}
+      />
+
+      <Stack.Screen
+        name="Pending"
+        component={PendingScreen}
+      />
+    </Stack.Navigator>
   );
 }
