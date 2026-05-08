@@ -1,433 +1,204 @@
 import React, { useCallback, useState } from "react";
 import {
-  View,
-  Text,
- StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet,
+  TextInput, Alert, Modal,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
-import { RootStackParamList, User } from "../../types";
 import { Colors } from "../../styles/colors";
 import { storageService } from "../../services/StorageService";
 
-type Nav = NativeStackNavigationProp<RootStackParamList>;
+const FAQ_DATA = [
+  { q: "Como adicionar um pet?", a: 'Vá em "Meus Pets" e toque no botão + no canto superior direito.' },
+  { q: "Como registrar uma vacina?", a: 'Acesse "Vacinas" no dashboard ou no menu Saúde e toque em +.' },
+  { q: "O Chat IA salva o histórico?", a: "Sim! O histórico é salvo automaticamente no seu dispositivo." },
+  { q: "Como agendar uma consulta?", a: 'Use o "Calendário" nas ações rápidas ou peça ao Chat IA para agendar.' },
+  { q: "Como editar meu perfil?", a: 'Nesta tela, toque em "Editar perfil" para alterar seus dados.' },
+];
 
 export default function ProfileScreen() {
-  const navigation = useNavigation<Nav>();
-  const [user, setUser] = useState<User | null>(null);
-  const [petsCount, setPetsCount] = useState(0);
+  const navigation = useNavigation<any>();
+  const [user, setUser] = useState<any>(null);
+  const [pets, setPets] = useState<any[]>([]);
+  const [editModal, setEditModal] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadData();
-    }, [])
-  );
+  const load = async () => {
+    const [u, p] = await Promise.all([storageService.getUser(), storageService.getPets()]);
+    setUser(u);
+    setPets(p);
+  };
 
-  const loadData = async () => {
-    try {
-      const [u, p] = await Promise.all([
-        storageService.getUser(),
-        storageService.getPets(),
-      ]);
+  useFocusEffect(useCallback(() => { load(); }, []));
 
-      setUser(u);
-      setPetsCount(p.length);
-    } catch (error) {
-      console.log(error);
-    }
+  const openEdit = () => {
+    setEditName(user?.name ?? "");
+    setEditEmail(user?.email ?? "");
+    setEditModal(true);
+  };
+
+  const saveEdit = async () => {
+    if (!editName.trim()) { Alert.alert("Informe seu nome."); return; }
+    const updated = { ...user, name: editName.trim(), email: editEmail.trim() };
+    await storageService.saveUser(updated);
+    setUser(updated);
+    setEditModal(false);
   };
 
   const handleLogout = async () => {
-    try {
-      await storageService.clearAll();
-
-      navigation.navigate("Welcome" as never);
-    } catch (error) {
-      console.log("ERRO:", error);
-      Alert.alert("Erro", "Não foi possível sair");
-    }
+    Alert.alert("Sair", "Deseja fazer logout?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Sair", style: "destructive", onPress: async () => {
+          await storageService.setLoggedIn(false);
+          navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
+        },
+      },
+    ]);
   };
 
-  const menu = [
-    {
-      icon: "person-outline",
-      label: "Dados pessoais",
-      sub: "Nome, e-mail e telefone",
-      color: Colors.accent,
-    },
-    {
-      icon: "notifications-outline",
-      label: "Notificações",
-      sub: "Lembretes e alertas",
-      color: Colors.accentOrange,
-    },
-    {
-      icon: "shield-outline",
-      label: "Privacidade",
-      sub: "Dados e segurança",
-      color: Colors.accentGreen,
-    },
-    {
-      icon: "help-circle-outline",
-      label: "Ajuda & Suporte",
-      sub: "FAQ e contato",
-      color: "#9B59B6",
-    },
-    {
-      icon: "information-circle-outline",
-      label: "Sobre o CLYVO VET",
-      sub: "Versão 1.0.0 — FIAP 2026",
-      color: Colors.textSecondary,
-    },
-  ];
+  const initials = (name: string) =>
+    name ? name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase() : "?";
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Perfil</Text>
+        <TouchableOpacity onPress={openEdit} style={styles.editBtn}>
+          <Ionicons name="pencil" size={18} color={Colors.accentLight} />
+        </TouchableOpacity>
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {user?.name?.charAt(0).toUpperCase() ?? "U"}
-            </Text>
+            <Text style={styles.avatarText}>{initials(user?.name ?? "")}</Text>
           </View>
-
-          <View style={{ flex: 1, gap: 3 }}>
-            <Text style={styles.profileName}>
-              {user?.name ?? "Usuário"}
-            </Text>
-
-            <Text style={styles.profileMeta}>
-              {user?.email ?? ""}
-            </Text>
-
-            <Text style={styles.profileMeta}>
-              {user?.phone ?? ""}
-            </Text>
-          </View>
+          <Text style={styles.name}>{user?.name ?? "Usuário"}</Text>
+          <Text style={styles.email}>{user?.email ?? ""}</Text>
+          <TouchableOpacity style={styles.editProfileBtn} onPress={openEdit}>
+            <Text style={styles.editProfileText}>Editar perfil</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.statsRow}>
-          <View style={styles.stat}>
-            <Text style={styles.statVal}>{petsCount}</Text>
-            <Text style={styles.statLabel}>Pets</Text>
+          <View style={styles.statBox}>
+            <Text style={styles.statVal}>{pets.length}</Text>
+            <Text style={styles.statLbl}>Pets</Text>
           </View>
-
-          <View style={styles.statDiv} />
-
-          <View style={styles.stat}>
-            <Text style={styles.statVal}>
-              {user?.createdAt
-                ? new Date(user.createdAt).toLocaleDateString("pt-BR", {
-                    month: "short",
-                    year: "numeric",
-                  })
-                : "—"}
-            </Text>
-
-            <Text style={styles.statLabel}>Membro desde</Text>
+          <View style={styles.statBox}>
+            <Text style={styles.statVal}>{pets.flatMap((p) => p.vaccines ?? []).filter((v: any) => v.done).length}</Text>
+            <Text style={styles.statLbl}>Vacinas</Text>
           </View>
-
-          <View style={styles.statDiv} />
-
-          <View style={styles.stat}>
-            <Ionicons
-              name="sparkles"
-              size={18}
-              color={Colors.accentLight}
-            />
-
-            <Text style={styles.statLabel}>IA Ativa</Text>
+          <View style={styles.statBox}>
+            <Text style={styles.statVal}>{pets.flatMap((p) => p.medications ?? []).filter((m: any) => m.active).length}</Text>
+            <Text style={styles.statLbl}>Medicamentos</Text>
           </View>
         </View>
 
-        {user?.address && (
-          <View style={styles.addressCard}>
-            <Ionicons
-              name="location"
-              size={16}
-              color={Colors.accent}
-            />
-
-            <Text style={styles.addressText}>
-              {user.address}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.menu}>
-          {menu.map((item, i) => (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>FAQ</Text>
+          {FAQ_DATA.map((item, i) => (
             <TouchableOpacity
               key={i}
-              style={[
-                styles.menuItem,
-                i === menu.length - 1 && {
-                  borderBottomWidth: 0,
-                },
-              ]}
-              activeOpacity={0.7}
+              style={styles.faqItem}
+              onPress={() => setOpenFaq(openFaq === i ? null : i)}
+              activeOpacity={0.8}
             >
-              <View
-                style={[
-                  styles.menuIcon,
-                  {
-                    backgroundColor: item.color + "18",
-                  },
-                ]}
-              >
+              <View style={styles.faqRow}>
+                <Text style={styles.faqQ}>{item.q}</Text>
                 <Ionicons
-                  name={item.icon as any}
-                  size={20}
-                  color={item.color}
+                  name={openFaq === i ? "chevron-up" : "chevron-down"}
+                  size={18}
+                  color={Colors.textLight}
                 />
               </View>
-
-              <View style={{ flex: 1 }}>
-                <Text style={styles.menuLabel}>
-                  {item.label}
-                </Text>
-
-                <Text style={styles.menuSub}>
-                  {item.sub}
-                </Text>
-              </View>
-
-              <Ionicons
-                name="chevron-forward"
-                size={15}
-                color={Colors.textLight}
-              />
+              {openFaq === i && <Text style={styles.faqA}>{item.a}</Text>}
             </TouchableOpacity>
           ))}
         </View>
 
-        <View style={styles.banner}>
-          <Ionicons
-            name="paw"
-            size={22}
-            color={Colors.accentLight}
-          />
+        <View style={styles.section}>
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={20} color={Colors.accentRed} />
+            <Text style={styles.logoutText}>Sair da conta</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
-          <View>
-            <Text style={styles.bannerTitle}>
-              CLYVO VET · Challenge FIAP 2026
-            </Text>
-
-            <Text style={styles.bannerSub}>
-              Jornada Contínua do Responsável pelo Pet
-            </Text>
+      <Modal visible={editModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Editar perfil</Text>
+            <Text style={styles.inputLabel}>Nome</Text>
+            <TextInput
+              style={styles.input}
+              value={editName}
+              onChangeText={setEditName}
+              placeholder="Seu nome"
+              placeholderTextColor={Colors.textLight}
+            />
+            <Text style={styles.inputLabel}>E-mail</Text>
+            <TextInput
+              style={styles.input}
+              value={editEmail}
+              onChangeText={setEditEmail}
+              placeholder="seu@email.com"
+              placeholderTextColor={Colors.textLight}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <View style={styles.modalBtns}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setEditModal(false)}>
+                <Text style={{ color: Colors.textLight, fontWeight: "600" }}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.saveBtn} onPress={saveEdit}>
+                <Text style={{ color: Colors.white, fontWeight: "700" }}>Salvar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-
-        <TouchableOpacity
-          style={styles.logout}
-          activeOpacity={0.8}
-          onPress={handleLogout}
-        >
-          <Ionicons
-            name="log-out-outline"
-            size={19}
-            color={Colors.accentRed}
-          />
-
-          <Text style={styles.logoutText}>
-            Sair da conta
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.primary },
   header: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 24,
-    paddingTop: 56,
-    paddingBottom: 24,
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+    paddingHorizontal: 20, paddingTop: 60, paddingBottom: 16,
+    backgroundColor: Colors.secondary,
   },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: Colors.white,
-  },
-
-  scroll: {
-    padding: 20,
-    gap: 14,
-    paddingBottom: 40,
-  },
-
-  profileCard: {
-    backgroundColor: Colors.card,
-    borderRadius: 18,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-
-  avatar: {
-    width: 66,
-    height: 66,
-    borderRadius: 20,
-    backgroundColor: Colors.accent,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  avatarText: {
-    fontSize: 28,
-    fontWeight: "900",
-    color: Colors.white,
-  },
-
-  profileName: {
-    fontSize: 17,
-    fontWeight: "800",
-    color: Colors.text,
-  },
-
-  profileMeta: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-  },
-
-  statsRow: {
-    backgroundColor: Colors.card,
-    borderRadius: 14,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-
-  stat: {
-    alignItems: "center",
-    gap: 4,
-  },
-
-  statVal: {
-    fontSize: 16,
-    fontWeight: "900",
-    color: Colors.text,
-  },
-
-  statLabel: {
-    fontSize: 10,
-    color: Colors.textSecondary,
-    fontWeight: "600",
-    textTransform: "uppercase",
-  },
-
-  statDiv: {
-    width: 1,
-    height: 32,
-    backgroundColor: Colors.border,
-  },
-
-  addressCard: {
-    backgroundColor: Colors.card,
-    borderRadius: 12,
-    padding: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-
-  addressText: {
-    flex: 1,
-    color: Colors.textSecondary,
-    fontSize: 13,
-  },
-
-  menu: {
-    backgroundColor: Colors.card,
-    borderRadius: 18,
-    overflow: "hidden",
-  },
-
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-
-  menuIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 11,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  menuLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: Colors.text,
-  },
-
-  menuSub: {
-    fontSize: 11,
-    color: Colors.textSecondary,
-    marginTop: 1,
-  },
-
-  banner: {
-    backgroundColor: Colors.primary,
-    borderRadius: 14,
-    padding: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-
-  bannerTitle: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  bannerSub: {
-    fontSize: 11,
-    color: "rgba(255,255,255,0.45)",
-    marginTop: 2,
-  },
-
-  logout: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    backgroundColor: Colors.accentRed + "15",
-    borderRadius: 14,
-    paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: Colors.accentRed + "30",
-  },
-
-  logoutText: {
-    color: Colors.accentRed,
-    fontSize: 15,
-    fontWeight: "700",
-  },
+  title: { fontSize: 22, fontWeight: "700", color: Colors.white },
+  editBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.accentLight + "20", alignItems: "center", justifyContent: "center" },
+  profileCard: { alignItems: "center", paddingVertical: 28, backgroundColor: Colors.secondary, marginBottom: 16 },
+  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: Colors.accentLight + "30", alignItems: "center", justifyContent: "center", marginBottom: 12 },
+  avatarText: { fontSize: 28, fontWeight: "700", color: Colors.accentLight },
+  name: { fontSize: 20, fontWeight: "700", color: Colors.white },
+  email: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
+  editProfileBtn: { marginTop: 14, paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: Colors.accentLight + "50" },
+  editProfileText: { color: Colors.accentLight, fontSize: 13, fontWeight: "600" },
+  statsRow: { flexDirection: "row", marginHorizontal: 16, marginBottom: 16, backgroundColor: Colors.secondary, borderRadius: 16, overflow: "hidden" },
+  statBox: { flex: 1, alignItems: "center", paddingVertical: 16 },
+  statVal: { fontSize: 22, fontWeight: "700", color: Colors.white },
+  statLbl: { fontSize: 11, color: Colors.textLight, marginTop: 2 },
+  section: { paddingHorizontal: 16, marginBottom: 16 },
+  sectionTitle: { fontSize: 11, color: "rgba(255,255,255,0.4)", letterSpacing: 0.5, marginBottom: 10, textTransform: "uppercase" },
+  faqItem: { backgroundColor: Colors.secondary, borderRadius: 12, padding: 14, marginBottom: 8 },
+  faqRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  faqQ: { fontSize: 14, fontWeight: "600", color: Colors.white, flex: 1, marginRight: 8 },
+  faqA: { fontSize: 13, color: Colors.textLight, marginTop: 10, lineHeight: 20 },
+  logoutBtn: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: Colors.accentRed + "15", borderRadius: 14, padding: 16 },
+  logoutText: { color: Colors.accentRed, fontSize: 15, fontWeight: "700" },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "flex-end" },
+  modalBox: { backgroundColor: Colors.secondary, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
+  modalTitle: { fontSize: 18, fontWeight: "700", color: Colors.white, marginBottom: 16 },
+  inputLabel: { fontSize: 12, color: Colors.textLight, marginBottom: 6, marginTop: 8 },
+  input: { backgroundColor: Colors.primary, borderRadius: 12, padding: 14, color: Colors.white, fontSize: 15, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
+  modalBtns: { flexDirection: "row", gap: 12, marginTop: 20 },
+  cancelBtn: { flex: 1, padding: 14, borderRadius: 12, backgroundColor: Colors.primary, alignItems: "center" },
+  saveBtn: { flex: 1, padding: 14, borderRadius: 12, backgroundColor: Colors.accentLight, alignItems: "center" },
 });

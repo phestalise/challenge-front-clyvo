@@ -39,6 +39,7 @@ export interface Pet {
   createdAt: string;
 }
 
+
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
@@ -48,6 +49,10 @@ export type RootStackParamList = {
   PetDetail: { petId: string };
   HealthCalendar: undefined;
   PetChat: undefined;
+  Vaccines: undefined;
+  Medications: undefined;
+  Pending: undefined;
+  PetsList: undefined;
 };
 
 export type MainTabParamList = {

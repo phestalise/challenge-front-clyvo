@@ -1,53 +1,81 @@
-import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
-import { storageService } from "../services/StorageService";
+
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+
+import { MainTabParamList } from "../types";
 import { Colors } from "../styles/colors";
 
-import WelcomeScreen from "../screens/auth/WelcomeScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import RegisterScreen from "../screens/auth/Registerscreen";
-import AddPetScreen from "../screens/pet/AddPetScreen";
-import PetDetailScreen from "../screens/pet/PetDetailScreen";
-import HealthCalendarScreen from "../screens/main/HealthScreen";
-import PetChatScreen from "../screens/main/PetChatScreen";
-import MainTabs from "./MainTabs";
+import DashboardScreen from "../screens/main/DashboardScreen";
+import PetsScreen from "../screens/pet/PetDetailScreen";
+import HealthTabScreen from "../screens/main/HealthTabScreen";
+import ProfileScreen from "../screens/main/ProfileScreen";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
-export default function RootNavigator() {
-  const [loading, setLoading] = useState(true);
-  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>("Welcome");
-
-  useEffect(() => {
-    storageService.getLoggedIn().then((loggedIn) => {
-      setInitialRoute(loggedIn ? "Main" : "Welcome");
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: Colors.primary }}>
-        <ActivityIndicator color={Colors.accentLight} size="large" />
-      </View>
-    );
-  }
-
+export default function MainTabs() {
   return (
-    <Stack.Navigator
-      initialRouteName={initialRoute}
-      screenOptions={{ headerShown: false }}
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+
+        tabBarStyle: {
+          backgroundColor: Colors.primary,
+          borderTopColor: "rgba(255,255,255,0.08)",
+          height: 70,
+          paddingBottom: 12,
+          paddingTop: 8,
+        },
+
+        tabBarActiveTintColor: Colors.accentLight,
+        tabBarInactiveTintColor: "rgba(255,255,255,0.35)",
+
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
+        },
+
+        tabBarIcon: ({ color, size }) => {
+          const icons: Record<string, any> = {
+            Dashboard: "home",
+            Pets: "paw",
+            Health: "heart",
+            Profile: "person",
+          };
+
+          return (
+            <Ionicons
+              name={icons[route.name]}
+              size={size}
+              color={color}
+            />
+          );
+        },
+      })}
     >
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="Main" component={MainTabs} />
-      <Stack.Screen name="AddPet" component={AddPetScreen} />
-      <Stack.Screen name="PetDetail" component={PetDetailScreen} />
-      <Stack.Screen name="HealthCalendar" component={HealthCalendarScreen} />
-      <Stack.Screen name="PetChat" component={PetChatScreen} />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ title: "Início" }}
+      />
+
+      <Tab.Screen
+        name="Pets"
+        component={PetsScreen}
+        options={{ title: "Meus Pets" }}
+      />
+
+      <Tab.Screen
+        name="Health"
+        component={HealthTabScreen}
+        options={{ title: "Saúde" }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ title: "Perfil" }}
+      />
+    </Tab.Navigator>
   );
 }
