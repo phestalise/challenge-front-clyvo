@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
+
 import {
   useFocusEffect,
   useNavigation,
 } from "@react-navigation/native";
+
 import { Ionicons } from "@expo/vector-icons";
+
 import { Colors } from "../../styles/colors";
 import { storageService } from "../../services/StorageService";
-
-// ✅ FIX 4: HealthCalendarScreen completo e funcional
-// Exibe todos os eventos (vacinas e medicamentos) em ordem cronológica
 
 type CalendarEvent = {
   id: string;
@@ -29,34 +29,32 @@ type CalendarEvent = {
   color: string;
 };
 
-const MONTHS = [
-  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
-];
-
-const MONTH_NAMES = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-];
+const DAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
 export default function HealthCalendarScreen() {
   const navigation = useNavigation<any>();
-  const [pets, setPets] = useState<any[]>([]);
+
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear] = useState(new Date().getFullYear());
+
+  const currentDate = new Date();
+
+  const [selectedMonth, setSelectedMonth] = useState(
+    currentDate.getMonth()
+  );
+
+  const [selectedYear, setSelectedYear] = useState(
+    currentDate.getFullYear()
+  );
 
   const load = async () => {
     const data = await storageService.getPets();
-    const allPets = Array.isArray(data) ? data : [];
-    setPets(allPets);
 
-    // Monta lista de eventos de todos os pets
+    const pets = Array.isArray(data) ? data : [];
+
     const allEvents: CalendarEvent[] = [];
 
-    allPets.forEach((pet: any) => {
-      // Vacinas
+    pets.forEach((pet: any) => {
       (pet.vaccines ?? []).forEach((v: any) => {
         if (v.date) {
           allEvents.push({
@@ -70,13 +68,14 @@ export default function HealthCalendarScreen() {
             color: Colors.accentGreen,
           });
         }
+
         if (v.nextDue) {
           allEvents.push({
             id: `vac-next-${v.id}`,
             petName: pet.name,
             petId: pet.id,
             type: "vaccine",
-            name: `${v.name} (próxima dose)`,
+            name: `${v.name} - Próxima dose`,
             date: v.nextDue,
             done: false,
             color: Colors.accentOrange,
@@ -84,7 +83,6 @@ export default function HealthCalendarScreen() {
         }
       });
 
-      // Medicamentos
       (pet.medications ?? []).forEach((m: any) => {
         if (m.startDate) {
           allEvents.push({
@@ -99,27 +97,6 @@ export default function HealthCalendarScreen() {
           });
         }
       });
-
-      // Próxima consulta
-      if (pet.nextCheckup) {
-        allEvents.push({
-          id: `checkup-${pet.id}`,
-          petName: pet.name,
-          petId: pet.id,
-          type: "vaccine",
-          name: "Consulta de retorno",
-          date: pet.nextCheckup,
-          done: false,
-          color: "#9B59B6",
-        });
-      }
-    });
-
-    // Ordena por data
-    allEvents.sort((a, b) => {
-      const da = parseDate(a.date);
-      const db = parseDate(b.date);
-      return da - db;
     });
 
     setEvents(allEvents);
@@ -133,96 +110,163 @@ export default function HealthCalendarScreen() {
 
   const onRefresh = async () => {
     setRefreshing(true);
+
     await load();
+
     setRefreshing(false);
   };
 
-  // Converte DD/MM/AAAA para timestamp
-  const parseDate = (dateStr: string): number => {
-    if (!dateStr) return 0;
-    const parts = dateStr.split("/");
-    if (parts.length !== 3) return 0;
-    return new Date(
-      parseInt(parts[2]),
-      parseInt(parts[1]) - 1,
-      parseInt(parts[0])
-    ).getTime();
+  const getDaysInMonth = (
+    month: number,
+    year: number
+  ) => {
+    return new Date(year, month + 1, 0).getDate();
   };
 
-  // Filtra eventos do mês selecionado
-  const filteredEvents = events.filter((e) => {
-    const parts = e.date.split("/");
-    if (parts.length !== 3) return false;
-    const month = parseInt(parts[1]) - 1;
-    const year = parseInt(parts[2]);
-    return month === selectedMonth && year === selectedYear;
+  const getFirstDayOfMonth = (
+    month: number,
+    year: number
+  ) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const hasEvent = (day: number) => {
+    return events.some((event) => {
+      const parts = event.date.split("/");
+
+      if (parts.length !== 3) return false;
+
+      const eventDay = parseInt(parts[0]);
+      const eventMonth = parseInt(parts[1]) - 1;
+      const eventYear = parseInt(parts[2]);
+
+      return (
+        eventDay === day &&
+        eventMonth === selectedMonth &&
+        eventYear === selectedYear
+      );
+    });
+  };
+
+  const getEventsByDay = (day: number) => {
+    return events.filter((event) => {
+      const parts = event.date.split("/");
+
+      if (parts.length !== 3) return false;
+
+      const eventDay = parseInt(parts[0]);
+      const eventMonth = parseInt(parts[1]) - 1;
+      const eventYear = parseInt(parts[2]);
+
+      return (
+        eventDay === day &&
+        eventMonth === selectedMonth &&
+        eventYear === selectedYear
+      );
+    });
+  };
+
+  const monthName = new Date(
+    selectedYear,
+    selectedMonth
+  ).toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric",
   });
 
-  // Conta eventos por mês para mostrar badges
-  const eventsPerMonth = MONTHS.map((_, idx) =>
-    events.filter((e) => {
-      const parts = e.date.split("/");
-      if (parts.length !== 3) return false;
-      return parseInt(parts[1]) - 1 === idx && parseInt(parts[2]) === selectedYear;
-    }).length
+  const daysInMonth = getDaysInMonth(
+    selectedMonth,
+    selectedYear
   );
+
+  const firstDay = getFirstDayOfMonth(
+    selectedMonth,
+    selectedYear
+  );
+
+  const calendarDays = [];
+
+  for (let i = 0; i < firstDay; i++) {
+    calendarDays.push(null);
+  }
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    calendarDays.push(i);
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
+          style={styles.backBtn}
           onPress={() => navigation.goBack()}
-          style={styles.back}
         >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
+          <Ionicons
+            name="arrow-back"
+            size={22}
+            color={Colors.white}
+          />
         </TouchableOpacity>
-        <Text style={styles.title}>Calendário de Saúde</Text>
-        <View style={{ width: 36 }} />
+
+        <Text style={styles.title}>
+          Calendário
+        </Text>
+
+        <View style={{ width: 40 }} />
       </View>
 
-      {/* Seletor de meses */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.monthsScroll}
-        contentContainerStyle={styles.monthsContent}
-      >
-        {MONTHS.map((m, idx) => (
-          <TouchableOpacity
-            key={idx}
-            style={[
-              styles.monthBtn,
-              selectedMonth === idx && styles.monthBtnActive,
-            ]}
-            onPress={() => setSelectedMonth(idx)}
+      <View style={styles.monthRow}>
+        <TouchableOpacity
+          onPress={() => {
+            if (selectedMonth === 0) {
+              setSelectedMonth(11);
+              setSelectedYear(selectedYear - 1);
+            } else {
+              setSelectedMonth(selectedMonth - 1);
+            }
+          }}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={Colors.white}
+          />
+        </TouchableOpacity>
+
+        <Text style={styles.monthText}>
+          {monthName}
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            if (selectedMonth === 11) {
+              setSelectedMonth(0);
+              setSelectedYear(selectedYear + 1);
+            } else {
+              setSelectedMonth(selectedMonth + 1);
+            }
+          }}
+        >
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={Colors.white}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.weekRow}>
+        {DAYS.map((day) => (
+          <Text
+            key={day}
+            style={styles.weekText}
           >
-            <Text
-              style={[
-                styles.monthText,
-                selectedMonth === idx && styles.monthTextActive,
-              ]}
-            >
-              {m}
-            </Text>
-            {eventsPerMonth[idx] > 0 && (
-              <View
-                style={[
-                  styles.monthBadge,
-                  selectedMonth === idx && styles.monthBadgeActive,
-                ]}
-              >
-                <Text style={styles.monthBadgeText}>
-                  {eventsPerMonth[idx]}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
+            {day}
+          </Text>
         ))}
-      </ScrollView>
+      </View>
 
       <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -230,216 +274,381 @@ export default function HealthCalendarScreen() {
             tintColor={Colors.accentLight}
           />
         }
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.monthTitle}>
-          {MONTH_NAMES[selectedMonth]} {selectedYear}
-        </Text>
+        <View style={styles.calendarGrid}>
+          {calendarDays.map((day, index) => {
+            const dayEvents = day
+              ? getEventsByDay(day)
+              : [];
 
-        {filteredEvents.length === 0 ? (
-          <View style={styles.empty}>
-            <Ionicons
-              name="calendar-outline"
-              size={56}
-              color={Colors.accentOrange + "40"}
-            />
-            <Text style={styles.emptyText}>
-              Nenhum evento neste mês
-            </Text>
-            <Text style={styles.emptySubText}>
-              Adicione vacinas e medicamentos para ver aqui
-            </Text>
-          </View>
-        ) : (
-          filteredEvents.map((event) => (
-            <TouchableOpacity
-              key={event.id}
-              style={styles.eventCard}
-              activeOpacity={0.85}
-              onPress={() =>
-                navigation.navigate("PetDetail", { petId: event.petId })
-              }
-            >
+            return (
               <View
+                key={index}
                 style={[
-                  styles.eventIcon,
-                  { backgroundColor: event.color + "20" },
-                ]}
-              >
-                <Ionicons
-                  name={
-                    event.type === "vaccine"
-                      ? "shield-checkmark"
-                      : "medical"
-                  }
-                  size={20}
-                  color={event.color}
-                />
-              </View>
-
-              <View style={{ flex: 1 }}>
-                <Text style={styles.eventName}>{event.name}</Text>
-                <Text style={styles.eventPet}>🐾 {event.petName}</Text>
-                <Text style={styles.eventDate}>{event.date}</Text>
-              </View>
-
-              <View
-                style={[
-                  styles.statusDot,
-                  {
-                    backgroundColor: event.done
-                      ? Colors.accentGreen
-                      : Colors.accentOrange,
+                  styles.dayCard,
+                  !day && {
+                    backgroundColor: "transparent",
                   },
                 ]}
-              />
-            </TouchableOpacity>
-          ))
-        )}
+              >
+                {day && (
+                  <>
+                    <Text style={styles.dayNumber}>
+                      {day}
+                    </Text>
 
-        {/* Resumo total */}
-        {events.length > 0 && (
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryTitle}>Resumo geral</Text>
-            <View style={styles.summaryRow}>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryValue, { color: Colors.accentGreen }]}>
-                  {events.filter((e) => e.done).length}
-                </Text>
-                <Text style={styles.summaryLabel}>Concluídos</Text>
+                    {hasEvent(day) && (
+                      <View style={styles.eventList}>
+                        {dayEvents
+                          .slice(0, 2)
+                          .map((event) => (
+                            <TouchableOpacity
+                              key={event.id}
+                              style={[
+                                styles.eventBadge,
+                                {
+                                  backgroundColor:
+                                    event.done
+                                      ? Colors.accentGreen
+                                      : Colors.accentOrange,
+                                },
+                              ]}
+                              onPress={() =>
+                                navigation.navigate(
+                                  "PetDetail",
+                                  {
+                                    petId:
+                                      event.petId,
+                                  }
+                                )
+                              }
+                            >
+                              <Text
+                                numberOfLines={1}
+                                style={
+                                  styles.eventBadgeText
+                                }
+                              >
+                                {event.petName}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+
+                        {dayEvents.length >
+                          2 && (
+                          <Text
+                            style={
+                              styles.moreText
+                            }
+                          >
+                            +
+                            {dayEvents.length -
+                              2}
+                          </Text>
+                        )}
+                      </View>
+                    )}
+                  </>
+                )}
               </View>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryValue, { color: Colors.accentOrange }]}>
-                  {events.filter((e) => !e.done).length}
-                </Text>
-                <Text style={styles.summaryLabel}>Pendentes</Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryValue, { color: Colors.white }]}>
-                  {events.length}
-                </Text>
-                <Text style={styles.summaryLabel}>Total</Text>
-              </View>
-            </View>
+            );
+          })}
+        </View>
+
+        <View style={styles.legend}>
+          <View style={styles.legendRow}>
+            <View
+              style={[
+                styles.legendDot,
+                {
+                  backgroundColor:
+                    Colors.accentGreen,
+                },
+              ]}
+            />
+
+            <Text style={styles.legendText}>
+              Concluído
+            </Text>
           </View>
-        )}
+
+          <View style={styles.legendRow}>
+            <View
+              style={[
+                styles.legendDot,
+                {
+                  backgroundColor:
+                    Colors.accentOrange,
+                },
+              ]}
+            />
+
+            <Text style={styles.legendText}>
+              Pendente
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.pendingContainer}>
+          <Text style={styles.pendingTitle}>
+            Pendências cadastradas
+          </Text>
+
+          {events.filter((e) => !e.done)
+            .length === 0 ? (
+            <Text style={styles.emptyText}>
+              Nenhuma pendência encontrada
+            </Text>
+          ) : (
+            events
+              .filter((e) => !e.done)
+              .map((event) => (
+                <TouchableOpacity
+                  key={event.id}
+                  style={styles.pendingCard}
+                  onPress={() =>
+                    navigation.navigate(
+                      "PetDetail",
+                      {
+                        petId: event.petId,
+                      }
+                    )
+                  }
+                >
+                  <View
+                    style={[
+                      styles.pendingIcon,
+                      {
+                        backgroundColor:
+                          event.color + "20",
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name={
+                        event.type ===
+                        "vaccine"
+                          ? "shield-checkmark"
+                          : "medical"
+                      }
+                      size={18}
+                      color={event.color}
+                    />
+                  </View>
+
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={
+                        styles.pendingName
+                      }
+                    >
+                      {event.name}
+                    </Text>
+
+                    <Text
+                      style={
+                        styles.pendingPet
+                      }
+                    >
+                      🐾 {event.petName}
+                    </Text>
+
+                    <Text
+                      style={
+                        styles.pendingDate
+                      }
+                    >
+                      {event.date}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+          )}
+        </View>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.primary },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
+
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 16,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     backgroundColor: Colors.secondary,
   },
-  back: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: { fontSize: 18, fontWeight: "700", color: Colors.white },
-  monthsScroll: {
-    backgroundColor: Colors.secondary,
-    maxHeight: 64,
-  },
-  monthsContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    gap: 8,
-  },
-  monthBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+
+  backBtn: {
+    width: 40,
+    height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    alignItems: "center",
-    minWidth: 52,
-  },
-  monthBtnActive: {
-    backgroundColor: Colors.accentOrange,
-  },
-  monthText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: Colors.textLight,
-  },
-  monthTextActive: { color: Colors.white },
-  monthBadge: {
-    position: "absolute",
-    top: -4,
-    right: -4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: Colors.accentRed,
+    backgroundColor:
+      "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
-  monthBadgeActive: { backgroundColor: Colors.white },
-  monthBadgeText: { fontSize: 9, fontWeight: "700", color: Colors.white },
-  content: { padding: 16, paddingBottom: 40, gap: 10 },
-  monthTitle: {
-    fontSize: 20,
-    fontWeight: "800",
+
+  title: {
     color: Colors.white,
-    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: "700",
   },
-  eventCard: {
+
+  monthRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+
+  monthText: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "700",
+    textTransform: "capitalize",
+  },
+
+  weekRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+
+  weekText: {
+    width: "14.2%",
+    textAlign: "center",
+    color: Colors.textLight,
+    fontWeight: "600",
+  },
+
+  calendarGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: 10,
+  },
+
+  dayCard: {
+    width: "14.2%",
+    minHeight: 90,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    padding: 4,
+  },
+
+  dayNumber: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+
+  eventList: {
+    gap: 4,
+  },
+
+  eventBadge: {
+    borderRadius: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+  },
+
+  eventBadgeText: {
+    color: Colors.white,
+    fontSize: 9,
+    fontWeight: "600",
+  },
+
+  moreText: {
+    color: Colors.textLight,
+    fontSize: 10,
+    marginTop: 2,
+  },
+
+  legend: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginTop: 24,
+  },
+
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+
+  legendText: {
+    color: Colors.textLight,
+    fontSize: 12,
+  },
+
+  pendingContainer: {
+    padding: 16,
     gap: 12,
+    marginTop: 20,
+  },
+
+  pendingTitle: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  pendingCard: {
     backgroundColor: Colors.secondary,
     borderRadius: 14,
     padding: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
-  eventIcon: {
-    width: 44,
-    height: 44,
+
+  pendingIcon: {
+    width: 42,
+    height: 42,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
-  eventName: { fontSize: 14, fontWeight: "600", color: Colors.white },
-  eventPet: { fontSize: 12, color: Colors.textLight, marginTop: 2 },
-  eventDate: { fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2 },
-  statusDot: { width: 10, height: 10, borderRadius: 5 },
-  empty: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 60,
-    gap: 12,
+
+  pendingName: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: "600",
   },
-  emptyText: { fontSize: 16, color: Colors.textSecondary, fontWeight: "600" },
-  emptySubText: { fontSize: 13, color: "rgba(255,255,255,0.3)", textAlign: "center" },
-  summaryCard: {
-    backgroundColor: Colors.secondary,
-    borderRadius: 14,
-    padding: 16,
-    marginTop: 8,
-  },
-  summaryTitle: {
+
+  pendingPet: {
+    color: Colors.textLight,
     fontSize: 12,
-    color: "rgba(255,255,255,0.4)",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 12,
+    marginTop: 2,
   },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+
+  pendingDate: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 11,
+    marginTop: 2,
   },
-  summaryItem: { alignItems: "center", gap: 4 },
-  summaryValue: { fontSize: 22, fontWeight: "800" },
-  summaryLabel: { fontSize: 11, color: Colors.textLight },
+
+  emptyText: {
+    color: Colors.textLight,
+    textAlign: "center",
+    marginTop: 20,
+  },
 });

@@ -1,4 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, {
+  useCallback,
+  useState,
+} from "react";
+
 import {
   View,
   Text,
@@ -23,23 +27,15 @@ import { storageService } from "../../services/StorageService";
 const FAQ_DATA = [
   {
     q: "Como adicionar um pet?",
-    a: 'Vá em "Meus Pets" e toque no botão +.',
+    a: 'Vá em "Pets" e toque no botão +.',
   },
   {
-    q: "Como registrar uma vacina?",
-    a: 'Acesse "Vacinas" no dashboard.',
+    q: "Como registrar vacina?",
+    a: 'Acesse a área de "Saúde".',
   },
   {
-    q: "O Chat IA salva o histórico?",
-    a: "Sim! O histórico é salvo automaticamente.",
-  },
-  {
-    q: "Como agendar consulta?",
-    a: 'Use o "Calendário" ou peça ao Chat IA.',
-  },
-  {
-    q: "Como editar perfil?",
-    a: 'Toque em "Editar perfil".',
+    q: "O histórico do chat salva?",
+    a: "Sim, automaticamente.",
   },
 ];
 
@@ -47,24 +43,25 @@ export default function ProfileScreen() {
   const navigation = useNavigation<any>();
 
   const [user, setUser] = useState<any>(null);
-  const [pets, setPets] = useState<any[]>([]);
 
-  const [editModal, setEditModal] = useState(false);
+  const [editModal, setEditModal] =
+    useState(false);
 
-  const [editName, setEditName] = useState("");
-  const [editEmail, setEditEmail] = useState("");
+  const [editName, setEditName] =
+    useState("");
 
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [editEmail, setEditEmail] =
+    useState("");
+
+  const [openFaq, setOpenFaq] =
+    useState<number | null>(null);
 
   const load = async () => {
     try {
-      const [u, p] = await Promise.all([
-        storageService.getUser(),
-        storageService.getPets(),
-      ]);
+      const u =
+        await storageService.getUser();
 
       setUser(u);
-      setPets(Array.isArray(p) ? p : []);
     } catch (error) {
       console.log(error);
     }
@@ -78,62 +75,50 @@ export default function ProfileScreen() {
 
   const openEdit = () => {
     setEditName(user?.name ?? "");
+
     setEditEmail(user?.email ?? "");
+
     setEditModal(true);
   };
 
   const saveEdit = async () => {
-    if (!editName.trim()) {
-      Alert.alert("Atenção", "Informe seu nome.");
-      return;
-    }
-
     try {
       const updated = {
         ...user,
-        name: editName.trim(),
-        email: editEmail.trim(),
+        name: editName,
+        email: editEmail,
       };
 
-      await storageService.saveUser(updated);
+      await storageService.saveUser(
+        updated
+      );
 
       setUser(updated);
 
       setEditModal(false);
 
-      Alert.alert("Sucesso", "Perfil atualizado.");
+      Alert.alert(
+        "Sucesso",
+        "Perfil atualizado."
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      "Sair",
-      "Deseja sair da conta?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Sair",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await storageService.setLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      await storageService.setLoggedIn(
+        false
+      );
 
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Welcome" }],
-              });
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ]
-    );
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Welcome" }],
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const initials = (name: string) => {
@@ -149,31 +134,20 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Perfil</Text>
-
-        <TouchableOpacity
-          onPress={openEdit}
-          style={styles.editBtn}
-        >
-          <Ionicons
-            name="pencil"
-            size={18}
-            color={Colors.accentLight}
-          />
-        </TouchableOpacity>
-      </View>
-
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 40,
-        }}
+        showsVerticalScrollIndicator={
+          false
+        }
+        contentContainerStyle={
+          styles.content
+        }
       >
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
-              {initials(user?.name ?? "")}
+              {initials(
+                user?.name ?? ""
+              )}
             </Text>
           </View>
 
@@ -186,58 +160,27 @@ export default function ProfileScreen() {
           </Text>
 
           <TouchableOpacity
-            style={styles.editProfileBtn}
+            style={styles.editBtn}
             onPress={openEdit}
+            activeOpacity={0.8}
           >
-            <Text style={styles.editProfileText}>
+            <Ionicons
+              name="create-outline"
+              size={18}
+              color={Colors.white}
+            />
+
+            <Text
+              style={styles.editBtnText}
+            >
               Editar perfil
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statVal}>
-              {pets.length}
-            </Text>
-
-            <Text style={styles.statLbl}>
-              Pets
-            </Text>
-          </View>
-
-          <View style={styles.statBox}>
-            <Text style={styles.statVal}>
-              {
-                pets
-                  .flatMap((p) => p.vaccines ?? [])
-                  .filter((v: any) => v.done).length
-              }
-            </Text>
-
-            <Text style={styles.statLbl}>
-              Vacinas
-            </Text>
-          </View>
-
-          <View style={styles.statBox}>
-            <Text style={styles.statVal}>
-              {
-                pets
-                  .flatMap((p) => p.medications ?? [])
-                  .filter((m: any) => m.active).length
-              }
-            </Text>
-
-            <Text style={styles.statLbl}>
-              Medicamentos
-            </Text>
-          </View>
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            FAQ
+            Perguntas rápidas
           </Text>
 
           {FAQ_DATA.map((item, i) => (
@@ -246,7 +189,11 @@ export default function ProfileScreen() {
               style={styles.faqItem}
               activeOpacity={0.8}
               onPress={() =>
-                setOpenFaq(openFaq === i ? null : i)
+                setOpenFaq(
+                  openFaq === i
+                    ? null
+                    : i
+                )
               }
             >
               <View style={styles.faqRow}>
@@ -255,12 +202,14 @@ export default function ProfileScreen() {
                 </Text>
 
                 <Ionicons
-                  size={18}
-                  color={Colors.textLight}
                   name={
                     openFaq === i
                       ? "chevron-up"
                       : "chevron-down"
+                  }
+                  size={18}
+                  color={
+                    Colors.textLight
                   }
                 />
               </View>
@@ -274,22 +223,21 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <View style={styles.section}>
-          <TouchableOpacity
-            style={styles.logoutBtn}
-            onPress={handleLogout}
-          >
-            <Ionicons
-              name="log-out-outline"
-              size={20}
-              color={Colors.accentRed}
-            />
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          activeOpacity={0.8}
+          onPress={handleLogout}
+        >
+          <Ionicons
+            name="log-out-outline"
+            size={20}
+            color="#FF6B6B"
+          />
 
-            <Text style={styles.logoutText}>
-              Sair da conta
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={styles.logoutText}>
+            Sair da conta
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <Modal
@@ -303,38 +251,39 @@ export default function ProfileScreen() {
               Editar perfil
             </Text>
 
-            <Text style={styles.inputLabel}>
-              Nome
-            </Text>
-
             <TextInput
               style={styles.input}
               value={editName}
               onChangeText={setEditName}
-              placeholder="Seu nome"
-              placeholderTextColor={Colors.textLight}
+              placeholder="Nome"
+              placeholderTextColor={
+                Colors.textLight
+              }
             />
-
-            <Text style={styles.inputLabel}>
-              E-mail
-            </Text>
 
             <TextInput
               style={styles.input}
               value={editEmail}
               onChangeText={setEditEmail}
-              placeholder="email@email.com"
-              placeholderTextColor={Colors.textLight}
-              keyboardType="email-address"
+              placeholder="E-mail"
+              placeholderTextColor={
+                Colors.textLight
+              }
               autoCapitalize="none"
             />
 
             <View style={styles.modalBtns}>
               <TouchableOpacity
                 style={styles.cancelBtn}
-                onPress={() => setEditModal(false)}
+                onPress={() =>
+                  setEditModal(false)
+                }
               >
-                <Text style={{ color: Colors.textLight }}>
+                <Text
+                  style={
+                    styles.cancelText
+                  }
+                >
                   Cancelar
                 </Text>
               </TouchableOpacity>
@@ -343,7 +292,9 @@ export default function ProfileScreen() {
                 style={styles.saveBtn}
                 onPress={saveEdit}
               >
-                <Text style={{ color: Colors.white }}>
+                <Text
+                  style={styles.saveText}
+                >
                   Salvar
                 </Text>
               </TouchableOpacity>
@@ -361,57 +312,48 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
 
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 60,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    backgroundColor: Colors.secondary,
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  editBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.accentLight + "20",
+  content: {
+    padding: 16,
+    paddingBottom: 140,
   },
 
   profileCard: {
+    backgroundColor:
+      Colors.secondary,
+
+    borderRadius: 22,
+
+    padding: 24,
+
     alignItems: "center",
-    backgroundColor: Colors.secondary,
-    paddingVertical: 28,
-    marginBottom: 16,
+
+    marginBottom: 20,
   },
 
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+
+    borderRadius: 45,
+
+    backgroundColor:
+      Colors.accentLight + "25",
+
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.accentLight + "30",
-    marginBottom: 12,
+
+    marginBottom: 14,
   },
 
   avatarText: {
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: 30,
+    fontWeight: "800",
     color: Colors.accentLight,
   },
 
   name: {
-    fontSize: 20,
-    fontWeight: "700",
+    fontSize: 22,
+    fontWeight: "800",
     color: Colors.white,
   },
 
@@ -421,160 +363,191 @@ const styles = StyleSheet.create({
     color: Colors.textLight,
   },
 
-  editProfileBtn: {
-    marginTop: 14,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.accentLight + "50",
-  },
-
-  editProfileText: {
-    color: Colors.accentLight,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-
-  statsRow: {
+  editBtn: {
     flexDirection: "row",
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: Colors.secondary,
-  },
-
-  statBox: {
-    flex: 1,
     alignItems: "center",
-    paddingVertical: 16,
+    gap: 8,
+
+    marginTop: 18,
+
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+
+    borderRadius: 14,
+
+    backgroundColor:
+      Colors.accentLight,
   },
 
-  statVal: {
-    fontSize: 22,
-    fontWeight: "700",
+  editBtnText: {
     color: Colors.white,
-  },
-
-  statLbl: {
-    fontSize: 11,
-    marginTop: 2,
-    color: Colors.textLight,
+    fontWeight: "700",
   },
 
   section: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 20,
   },
 
   sectionTitle: {
-    fontSize: 11,
-    marginBottom: 10,
+    fontSize: 13,
+    fontWeight: "700",
+
+    color:
+      "rgba(255,255,255,0.45)",
+
+    marginBottom: 12,
+
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.4)",
   },
 
   faqItem: {
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 8,
-    backgroundColor: Colors.secondary,
+    backgroundColor:
+      Colors.secondary,
+
+    borderRadius: 16,
+
+    padding: 16,
+
+    marginBottom: 10,
   },
 
   faqRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent:
+      "space-between",
   },
 
   faqQ: {
     flex: 1,
-    marginRight: 8,
+
     fontSize: 14,
     fontWeight: "600",
+
     color: Colors.white,
+
+    marginRight: 10,
   },
 
   faqA: {
+    marginTop: 12,
+
     fontSize: 13,
-    marginTop: 10,
+
     lineHeight: 20,
+
     color: Colors.textLight,
   },
 
   logoutBtn: {
+    height: 58,
+
+    borderRadius: 16,
+
+    backgroundColor:
+      "rgba(255,107,107,0.12)",
+
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+
     gap: 10,
-    padding: 16,
-    borderRadius: 14,
-    backgroundColor: Colors.accentRed + "15",
+
+    marginBottom: 40,
   },
 
   logoutText: {
     fontSize: 15,
     fontWeight: "700",
-    color: Colors.accentRed,
+    color: "#FF6B6B",
   },
 
   modalOverlay: {
     flex: 1,
+
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.6)",
+
+    backgroundColor:
+      "rgba(0,0,0,0.5)",
   },
 
   modalBox: {
-    padding: 24,
-    paddingBottom: 40,
+    backgroundColor:
+      Colors.secondary,
+
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: Colors.secondary,
+
+    padding: 24,
+    paddingBottom: 40,
   },
 
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "700",
-    marginBottom: 16,
-    color: Colors.white,
-  },
 
-  inputLabel: {
-    fontSize: 12,
-    marginTop: 8,
-    marginBottom: 6,
-    color: Colors.textLight,
+    color: Colors.white,
+
+    marginBottom: 18,
   },
 
   input: {
-    padding: 14,
-    borderRadius: 12,
-    fontSize: 15,
+    height: 54,
+
+    borderRadius: 14,
+
+    paddingHorizontal: 16,
+
+    marginBottom: 14,
+
     color: Colors.white,
-    backgroundColor: Colors.primary,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+
+    backgroundColor:
+      Colors.primary,
   },
 
   modalBtns: {
     flexDirection: "row",
     gap: 12,
-    marginTop: 20,
+
+    marginTop: 8,
   },
 
   cancelBtn: {
     flex: 1,
-    padding: 14,
-    borderRadius: 12,
+
+    height: 52,
+
+    borderRadius: 14,
+
     alignItems: "center",
-    backgroundColor: Colors.primary,
+    justifyContent: "center",
+
+    backgroundColor:
+      Colors.primary,
   },
 
   saveBtn: {
     flex: 1,
-    padding: 14,
-    borderRadius: 12,
+
+    height: 52,
+
+    borderRadius: 14,
+
     alignItems: "center",
-    backgroundColor: Colors.accentLight,
+    justifyContent: "center",
+
+    backgroundColor:
+      Colors.accentLight,
+  },
+
+  cancelText: {
+    color: Colors.textLight,
+    fontWeight: "600",
+  },
+
+  saveText: {
+    color: Colors.white,
+    fontWeight: "700",
   },
 });

@@ -9,8 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Modal,
-  Alert,
 } from "react-native";
 
 import {
@@ -49,13 +47,6 @@ export default function PetChatScreen() {
 
   const [pets, setPets] = useState<Pet[]>([]);
 
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [petName, setPetName] = useState("");
-  const [petSpecies, setPetSpecies] = useState("");
-  const [petBreed, setPetBreed] = useState("");
-  const [petAge, setPetAge] = useState("");
-
   const scrollRef = useRef<ScrollView>(null);
 
   useFocusEffect(
@@ -69,7 +60,8 @@ export default function PetChatScreen() {
       const savedPets = await storageService.getPets();
       setPets(savedPets || []);
 
-      const savedMessages = await storageService.getData(CHAT_KEY);
+      const savedMessages =
+        await storageService.getData(CHAT_KEY);
 
       if (savedMessages) {
         setMessages(JSON.parse(savedMessages));
@@ -90,76 +82,11 @@ export default function PetChatScreen() {
 
   const clearHistory = async () => {
     setMessages([]);
+
     await storageService.saveData(
       CHAT_KEY,
       JSON.stringify([])
     );
-  };
-
-  const addPet = async () => {
-    if (
-      !petName.trim() ||
-      !petSpecies.trim() ||
-      !petBreed.trim() ||
-      !petAge.trim()
-    ) {
-      Alert.alert(
-        "Campos obrigatórios",
-        "Preencha todos os campos."
-      );
-      return;
-    }
-
-    const newPet: Pet = {
-      id: Date.now().toString(),
-      name: petName.trim(),
-      species: petSpecies.trim(),
-      breed: petBreed.trim(),
-      age: Number(petAge),
-      vaccines: [],
-      medications: [],
-    };
-
-    try {
-      const updatedPets = [...pets, newPet];
-
-      await storageService.savePets(updatedPets);
-
-      setPets(updatedPets);
-
-      setModalVisible(false);
-
-      setPetName("");
-      setPetSpecies("");
-      setPetBreed("");
-      setPetAge("");
-
-      Alert.alert(
-        "Sucesso",
-        "Pet cadastrado com sucesso!"
-      );
-
-      const systemMessage: Message = {
-        role: "assistant",
-        content: `🐾 ${newPet.name} foi cadastrado com sucesso!`,
-      };
-
-      const updatedMessages = [
-        ...messages,
-        systemMessage,
-      ];
-
-      setMessages(updatedMessages);
-
-      await saveHistory(updatedMessages);
-    } catch (error) {
-      console.log(error);
-
-      Alert.alert(
-        "Erro",
-        "Não foi possível cadastrar o pet."
-      );
-    }
   };
 
   const sendMessage = async () => {
@@ -188,14 +115,14 @@ export default function PetChatScreen() {
           ? pets
               .map(
                 (p) =>
-                  `${p.name} (${p.species}, ${p.breed}, ${p.age} anos)`
+                  `${p.name} (${p.species})`
               )
               .join(", ")
           : "Nenhum pet cadastrado";
 
       const fakeAIResponse: Message = {
         role: "assistant",
-        content: `🐶 Pets cadastrados: ${petsInfo}\n\nComo posso ajudar você hoje?`,
+        content: `🐾 Pets: ${petsInfo}`,
       };
 
       const finalMessages = [
@@ -254,12 +181,20 @@ export default function PetChatScreen() {
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
-          <Text style={styles.title}>
-            Chat IA
-          </Text>
+          <View style={styles.logoRow}>
+            <Ionicons
+              name="paw"
+              size={15}
+              color={Colors.accentLight}
+            />
 
-          <Text style={styles.subtitle}>
-            Assistente Pet
+            <Text style={styles.logoText}>
+              Clyvo
+            </Text>
+          </View>
+
+          <Text style={styles.title}>
+            Chat 
           </Text>
         </View>
 
@@ -275,23 +210,6 @@ export default function PetChatScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.topActions}>
-        <TouchableOpacity
-          style={styles.addPetBtn}
-          onPress={() => setModalVisible(true)}
-        >
-          <Ionicons
-            name="paw"
-            size={18}
-            color={Colors.white}
-          />
-
-          <Text style={styles.addPetText}>
-            Cadastrar Pet
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={styles.messages}
@@ -301,16 +219,16 @@ export default function PetChatScreen() {
           <View style={styles.welcome}>
             <Ionicons
               name="sparkles"
-              size={40}
+              size={42}
               color={Colors.accentLight}
             />
 
             <Text style={styles.welcomeTitle}>
-              Olá 👋
+              Assistente Clyvo
             </Text>
 
             <Text style={styles.welcomeText}>
-              Cadastre pets e converse com a IA.
+              Converse com a IA do app.
             </Text>
           </View>
         )}
@@ -377,81 +295,6 @@ export default function PetChatScreen() {
           />
         </TouchableOpacity>
       </View>
-
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              Novo Pet
-            </Text>
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Nome"
-              placeholderTextColor={
-                Colors.textLight
-              }
-              value={petName}
-              onChangeText={setPetName}
-            />
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Espécie"
-              placeholderTextColor={
-                Colors.textLight
-              }
-              value={petSpecies}
-              onChangeText={setPetSpecies}
-            />
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Raça"
-              placeholderTextColor={
-                Colors.textLight
-              }
-              value={petBreed}
-              onChangeText={setPetBreed}
-            />
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Idade"
-              placeholderTextColor={
-                Colors.textLight
-              }
-              keyboardType="numeric"
-              value={petAge}
-              onChangeText={setPetAge}
-            />
-
-            <TouchableOpacity
-              style={styles.saveBtn}
-              onPress={addPet}
-            >
-              <Text style={styles.saveBtnText}>
-                Salvar Pet
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.cancelBtn}
-              onPress={() =>
-                setModalVisible(false)
-              }
-            >
-              <Text style={styles.cancelBtnText}>
-                Cancelar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -486,34 +329,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  title: {
-    color: Colors.white,
-    fontSize: 18,
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 2,
+  },
+
+  logoText: {
+    color: Colors.accentLight,
+    fontSize: 11,
     fontWeight: "700",
   },
 
-  subtitle: {
-    color: Colors.textLight,
-    fontSize: 12,
-    marginTop: 2,
-  },
-
-  topActions: {
-    padding: 16,
-  },
-
-  addPetBtn: {
-    backgroundColor: Colors.accentLight,
-    borderRadius: 14,
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    gap: 8,
-  },
-
-  addPetText: {
+  title: {
     color: Colors.white,
+    fontSize: 18,
     fontWeight: "700",
   },
 
@@ -525,7 +356,7 @@ const styles = StyleSheet.create({
 
   welcome: {
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 80,
     gap: 12,
   },
 
@@ -603,56 +434,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accentLight,
     alignItems: "center",
     justifyContent: "center",
-  },
-
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "center",
-    padding: 20,
-  },
-
-  modalContent: {
-    backgroundColor: Colors.secondary,
-    borderRadius: 20,
-    padding: 20,
-  },
-
-  modalTitle: {
-    color: Colors.white,
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 20,
-  },
-
-  modalInput: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: Colors.white,
-    marginBottom: 12,
-  },
-
-  saveBtn: {
-    backgroundColor: Colors.accentLight,
-    borderRadius: 14,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginTop: 10,
-  },
-
-  saveBtnText: {
-    color: Colors.white,
-    fontWeight: "700",
-  },
-
-  cancelBtn: {
-    marginTop: 12,
-    alignItems: "center",
-  },
-
-  cancelBtnText: {
-    color: Colors.textLight,
   },
 });
