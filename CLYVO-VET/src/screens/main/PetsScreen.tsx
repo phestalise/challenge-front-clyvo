@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  StyleSheet,
   Modal,
   Pressable,
 } from "react-native";
@@ -19,8 +18,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { styles } from "../../styles/PetsScreenStyles";
+
 import { storageService } from "../../services/StorageService";
 import { petService } from "../../services/PetService";
+
 import { calcularIdadeTexto } from "../../utils/formatters";
 
 export default function PetsScreen() {
@@ -34,9 +36,14 @@ export default function PetsScreen() {
     useState(false);
 
   const load = async () => {
-    const p = await storageService.getPets();
+    try {
+      const p =
+        await storageService.getPets();
 
-    setPets(Array.isArray(p) ? p : []);
+      setPets(Array.isArray(p) ? p : []);
+    } catch {
+      setPets([]);
+    }
   };
 
   useFocusEffect(
@@ -323,10 +330,10 @@ export default function PetsScreen() {
                       name={
                         pet.species ===
                         "Gato"
-                          ? "happy"
+                          ? "logo-octocat"
                           : pet.species ===
                               "Pássaro"
-                            ? "sunny"
+                            ? "leaf"
                             : "paw"
                       }
                       size={24}
@@ -424,7 +431,7 @@ export default function PetsScreen() {
                       style={[
                         styles.barFill,
                         {
-                          width: `${score}%` as any,
+                          width: `${score}%`,
                           backgroundColor:
                             scoreColor,
                         },
@@ -505,308 +512,3 @@ export default function PetsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:
-      Colors.primary,
-  },
-
-  header: {
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 18,
-
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent:
-      "space-between",
-  },
-
-  centerHeader: {
-    flex: 1,
-    alignItems: "center",
-  },
-
-  logoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginBottom: 4,
-  },
-
-  logoIcon: {
-    width: 18,
-    height: 18,
-    borderRadius: 6,
-
-    backgroundColor:
-      Colors.accentLight + "20",
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  logo: {
-    fontSize: 12,
-    fontWeight: "800",
-    color: Colors.white,
-    letterSpacing: 1,
-  },
-
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: Colors.white,
-    letterSpacing: 1,
-  },
-
-  menuButton: {
-    width: 46,
-    height: 46,
-
-    borderRadius: 16,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  addBtn: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
-
-    backgroundColor:
-      Colors.accentLight + "20",
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  overlay: {
-    flex: 1,
-    backgroundColor:
-      "rgba(0,0,0,0.45)",
-
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-
-    paddingTop: 90,
-    paddingLeft: 20,
-  },
-
-  menuContainer: {
-    width: 220,
-
-    borderRadius: 22,
-
-    backgroundColor:
-      "#17315B",
-
-    paddingVertical: 10,
-  },
-
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-
-    gap: 12,
-
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-  },
-
-  menuText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  list: {
-    paddingHorizontal: 18,
-    paddingBottom: 120,
-    gap: 12,
-  },
-
-  empty: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 90,
-  },
-
-  emptyIcon: {
-    width: 110,
-    height: 110,
-    borderRadius: 32,
-
-    backgroundColor:
-      Colors.secondary,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginBottom: 22,
-  },
-
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  emptyText: {
-    fontSize: 14,
-    textAlign: "center",
-    marginTop: 8,
-    lineHeight: 22,
-
-    color: Colors.textLight,
-  },
-
-  emptyBtn: {
-    marginTop: 24,
-
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-
-    borderRadius: 18,
-
-    backgroundColor:
-      Colors.accentLight,
-  },
-
-  emptyBtnText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  card: {
-    backgroundColor:
-      Colors.secondary,
-
-    borderRadius: 22,
-
-    padding: 16,
-
-    borderWidth: 1,
-
-    borderColor:
-      "rgba(255,255,255,0.05)",
-  },
-
-  cardTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-
-  avatar: {
-    width: 58,
-    height: 58,
-    borderRadius: 18,
-
-    backgroundColor:
-      Colors.accentLight + "18",
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  petName: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  petMeta: {
-    fontSize: 13,
-    marginTop: 2,
-    color: Colors.textLight,
-  },
-
-  tags: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 8,
-  },
-
-  tag: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-
-    borderRadius: 20,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-  },
-
-  tagText: {
-    fontSize: 11,
-    color: Colors.textLight,
-  },
-
-  healthRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 16,
-  },
-
-  healthLabel: {
-    width: 44,
-    fontSize: 12,
-    color: Colors.textLight,
-  },
-
-  barBg: {
-    flex: 1,
-    height: 6,
-    borderRadius: 999,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-  },
-
-  barFill: {
-    height: 6,
-    borderRadius: 999,
-  },
-
-  healthPct: {
-    width: 40,
-    textAlign: "right",
-
-    fontSize: 12,
-    fontWeight: "700",
-  },
-
-  statsRow: {
-    flexDirection: "row",
-    justifyContent:
-      "space-between",
-
-    marginTop: 16,
-  },
-
-  stat: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-
-  statText: {
-    fontSize: 11,
-    color: Colors.textLight,
-  },
-});

@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+} from "react";
+
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   Alert,
-  KeyboardAvoidingView,
+ KeyboardAvoidingView,
   Platform,
   Animated,
   StatusBar,
@@ -13,18 +18,26 @@ import {
 } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
+
 import { Colors } from "../../styles/colors";
+
 import { storageService } from "../../services/StorageService";
+
 import { validarFormularioUsuario } from "../../utils/validators";
+
 import InputField from "../../components/InputField";
 
 import { styles } from "../../styles/Registerscreen.styles";
 
 type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "Register">;
+  navigation: NativeStackNavigationProp<
+    RootStackParamList,
+    "Register"
+  >;
 };
 
 const STEPS = [
@@ -33,46 +46,70 @@ const STEPS = [
     label: "Seus dados",
     icon: "person-outline" as const,
   },
+
   {
     key: "security",
     label: "Segurança",
-    icon: "lock-closed-outline" as const,
+    icon:
+      "lock-closed-outline" as const,
   },
 ];
 
-export default function RegisterScreen({ navigation }: Props) {
-  const [step, setStep] = useState(0);
+export default function RegisterScreen({
+  navigation,
+}: Props) {
+  const [step, setStep] =
+    useState(0);
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [form, setForm] =
+    useState({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      password: "",
+      confirmPassword: "",
+    });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] =
+    useState<
+      Record<string, string>
+    >({});
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-  const stepAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(
+    new Animated.Value(0)
+  ).current;
+
+  const slideAnim = useRef(
+    new Animated.Value(30)
+  ).current;
+
+  const stepAnim = useRef(
+    new Animated.Value(0)
+  ).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
+      Animated.timing(
+        fadeAnim,
+        {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }
+      ),
 
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
+      Animated.timing(
+        slideAnim,
+        {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }
+      ),
     ]).start();
   }, [fadeAnim, slideAnim]);
 
@@ -86,7 +123,10 @@ export default function RegisterScreen({ navigation }: Props) {
     }).start();
   };
 
-  const handleChange = (key: string, value: string) => {
+  const handleChange = (
+    key: string,
+    value: string
+  ) => {
     setForm((prev) => ({
       ...prev,
       [key]: value,
@@ -99,86 +139,144 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   const handleNext = () => {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<
+      string,
+      string
+    > = {};
 
     if (!form.name.trim()) {
-      newErrors.name = "Nome obrigatório";
+      newErrors.name =
+        "Nome obrigatório";
     }
 
     if (!form.email.trim()) {
-      newErrors.email = "E-mail obrigatório";
+      newErrors.email =
+        "E-mail obrigatório";
     }
 
     if (!form.phone.trim()) {
-      newErrors.phone = "Telefone obrigatório";
+      newErrors.phone =
+        "Telefone obrigatório";
     }
 
-    if (Object.keys(newErrors).length > 0) {
+    if (
+      Object.keys(newErrors)
+        .length > 0
+    ) {
       setErrors(newErrors);
       return;
     }
 
     animateStep();
+
     setStep(1);
   };
 
-  const handleRegister = async () => {
-    const validationErrors = validarFormularioUsuario(form);
+  const handleRegister =
+    async () => {
+      const validationErrors =
+        validarFormularioUsuario(
+          form
+        );
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+      if (
+        Object.keys(
+          validationErrors
+        ).length > 0
+      ) {
+        setErrors(
+          validationErrors
+        );
 
-    setLoading(true);
+        return;
+      }
 
-    try {
-      await storageService.saveUser({
-        name: form.name.trim(),
-        email: form.email.toLowerCase().trim(),
-        phone: form.phone.trim(),
-        address: form.address.trim(),
-        password: form.password,
-        createdAt: new Date().toISOString(),
-      });
+      setLoading(true);
 
-      await storageService.setLoggedIn(true);
+      try {
+        await storageService.saveUser(
+          {
+            name: form.name.trim(),
 
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Main" as never }],
-      });
-    } catch (error) {
-      console.log(error);
+            email:
+              form.email
+                .toLowerCase()
+                .trim(),
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível criar a conta."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+            phone:
+              form.phone.trim(),
+
+            address:
+              form.address.trim(),
+
+            password:
+              form.password,
+
+            createdAt:
+              new Date().toISOString(),
+          }
+        );
+
+        await storageService.setLoggedIn(
+          true
+        );
+
+        navigation.reset({
+          index: 0,
+
+          routes: [
+            {
+              name:
+                "Main" as never,
+            },
+          ],
+        });
+      } catch (error) {
+        console.log(error);
+
+        Alert.alert(
+          "Erro",
+          "Não foi possível criar a conta."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView
+      style={styles.safe}
+    >
       <StatusBar
         barStyle="light-content"
-        backgroundColor={Colors.primary}
+        backgroundColor={
+          Colors.primary
+        }
       />
 
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={
+          Platform.OS === "ios"
+            ? "padding"
+            : undefined
+        }
       >
         <ScrollView
           style={styles.container}
-          contentContainerStyle={styles.content}
+          contentContainerStyle={
+            styles.content
+          }
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={
+            false
+          }
         >
           <View style={styles.orb} />
-          <View style={styles.orbBottom} />
+
+          <View
+            style={styles.orbBottom}
+          />
 
           <View style={styles.header}>
             <TouchableOpacity
@@ -187,6 +285,7 @@ export default function RegisterScreen({ navigation }: Props) {
               onPress={() => {
                 if (step === 1) {
                   animateStep();
+
                   setStep(0);
                 } else {
                   navigation.goBack();
@@ -200,100 +299,157 @@ export default function RegisterScreen({ navigation }: Props) {
               />
             </TouchableOpacity>
 
-            <View style={styles.logoRow}>
+            <View
+              style={styles.logoRow}
+            >
               <Ionicons
                 name="paw"
                 size={14}
-                color={Colors.accentLight}
+                color={
+                  Colors.accentLight
+                }
               />
 
-              <Text style={styles.logo}>
+              <Text
+                style={styles.logo}
+              >
                 CLYVO VET
               </Text>
             </View>
 
-            <View style={{ width: 44 }} />
+            <View
+              style={
+                styles.headerSpacer
+              }
+            />
           </View>
 
           <Animated.View
             style={{
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
+
+              transform: [
+                {
+                  translateY:
+                    slideAnim,
+                },
+              ],
             }}
           >
-            <View style={styles.badgeRow}>
-              <View style={styles.badge}>
-                <View style={styles.badgeDot} />
+            <View
+              style={styles.badgeRow}
+            >
+              <View
+                style={styles.badge}
+              >
+                <View
+                  style={
+                    styles.badgeDot
+                  }
+                />
 
-                <Text style={styles.badgeText}>
+                <Text
+                  style={
+                    styles.badgeText
+                  }
+                >
                   CADASTRO
                 </Text>
               </View>
             </View>
 
-            <Text style={styles.title}>
-              Crie sua{"\n"}conta 🐾
+            <Text
+              style={styles.title}
+            >
+              Crie sua{"\n"}
+              conta 🐾
             </Text>
 
-            <Text style={styles.sub}>
-              Comece a cuidar do seu pet{"\n"}
-              com inteligência hoje
+            <Text
+              style={styles.sub}
+            >
+              Comece a cuidar do
+              seu pet{"\n"}
+              com inteligência
+              hoje
             </Text>
           </Animated.View>
 
-          <View style={styles.stepIndicator}>
-            {STEPS.map((item, index) => (
-              <View
-                key={item.key}
-                style={styles.stepItem}
-              >
+          <View
+            style={
+              styles.stepIndicator
+            }
+          >
+            {STEPS.map(
+              (item, index) => (
                 <View
-                  style={[
-                    styles.stepDot,
-                    index <= step && styles.stepDotActive,
-                    index < step && styles.stepDotDone,
-                  ]}
+                  key={item.key}
+                  style={
+                    styles.stepItem
+                  }
                 >
-                  {index < step ? (
-                    <Ionicons
-                      name="checkmark"
-                      size={14}
-                      color={Colors.primary}
-                    />
-                  ) : (
-                    <Ionicons
-                      name={item.icon}
-                      size={14}
-                      color={
-                        index <= step
-                          ? Colors.primary
-                          : "rgba(255,255,255,0.35)"
-                      }
+                  <View
+                    style={[
+                      styles.stepDot,
+
+                      index <= step &&
+                        styles.stepDotActive,
+
+                      index < step &&
+                        styles.stepDotDone,
+                    ]}
+                  >
+                    {index < step ? (
+                      <Ionicons
+                        name="checkmark"
+                        size={14}
+                        color={
+                          Colors.primary
+                        }
+                      />
+                    ) : (
+                      <Ionicons
+                        name={
+                          item.icon
+                        }
+                        size={14}
+                        color={
+                          index <=
+                          step
+                            ? Colors.primary
+                            : "rgba(255,255,255,0.35)"
+                        }
+                      />
+                    )}
+                  </View>
+
+                  <Text
+                    style={[
+                      styles.stepLabel,
+
+                      index <= step &&
+                        styles.stepLabelActive,
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+
+                  {index <
+                    STEPS.length -
+                      1 && (
+                    <View
+                      style={[
+                        styles.stepLine,
+
+                        index <
+                          step &&
+                          styles.stepLineDone,
+                      ]}
                     />
                   )}
                 </View>
-
-                <Text
-                  style={[
-                    styles.stepLabel,
-                    index <= step &&
-                      styles.stepLabelActive,
-                  ]}
-                >
-                  {item.label}
-                </Text>
-
-                {index < STEPS.length - 1 && (
-                  <View
-                    style={[
-                      styles.stepLine,
-                      index < step &&
-                        styles.stepLineDone,
-                    ]}
-                  />
-                )}
-              </View>
-            ))}
+              )
+            )}
           </View>
 
           <Animated.View
@@ -301,42 +457,73 @@ export default function RegisterScreen({ navigation }: Props) {
               styles.formCard,
               {
                 opacity: fadeAnim,
-                transform: [{ translateY: stepAnim }],
+
+                transform: [
+                  {
+                    translateY:
+                      stepAnim,
+                  },
+                ],
               },
             ]}
           >
             {step === 0 ? (
               <>
-                <Text style={styles.sectionTitle}>
-                  Informações pessoais
+                <Text
+                  style={
+                    styles.sectionTitle
+                  }
+                >
+                  Informações
+                  pessoais
                 </Text>
 
                 <InputField
                   label="Nome completo"
                   value={form.name}
-                  onChangeText={(v) =>
-                    handleChange("name", v)
+                  onChangeText={(
+                    v
+                  ) =>
+                    handleChange(
+                      "name",
+                      v
+                    )
                   }
-                  error={errors.name}
+                  error={
+                    errors.name
+                  }
                   placeholder="Maria Silva"
                   icon={
                     <Ionicons
                       name="person-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
 
-                <View style={styles.dividerField} />
+                <View
+                  style={
+                    styles.dividerField
+                  }
+                />
 
                 <InputField
                   label="E-mail"
                   value={form.email}
-                  onChangeText={(v) =>
-                    handleChange("email", v)
+                  onChangeText={(
+                    v
+                  ) =>
+                    handleChange(
+                      "email",
+                      v
+                    )
                   }
-                  error={errors.email}
+                  error={
+                    errors.email
+                  }
                   placeholder="maria@email.com"
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -344,129 +531,207 @@ export default function RegisterScreen({ navigation }: Props) {
                     <Ionicons
                       name="mail-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
 
-                <View style={styles.dividerField} />
+                <View
+                  style={
+                    styles.dividerField
+                  }
+                />
 
                 <InputField
                   label="Telefone / WhatsApp"
                   value={form.phone}
-                  onChangeText={(v) =>
-                    handleChange("phone", v)
+                  onChangeText={(
+                    v
+                  ) =>
+                    handleChange(
+                      "phone",
+                      v
+                    )
                   }
-                  error={errors.phone}
+                  error={
+                    errors.phone
+                  }
                   placeholder="(11) 99999-0000"
                   keyboardType="phone-pad"
                   icon={
                     <Ionicons
                       name="call-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
 
-                <View style={styles.dividerField} />
+                <View
+                  style={
+                    styles.dividerField
+                  }
+                />
 
                 <InputField
                   label="Endereço"
                   value={form.address}
-                  onChangeText={(v) =>
-                    handleChange("address", v)
+                  onChangeText={(
+                    v
+                  ) =>
+                    handleChange(
+                      "address",
+                      v
+                    )
                   }
-                  error={errors.address}
+                  error={
+                    errors.address
+                  }
                   placeholder="Rua das Flores, 123 — SP"
                   icon={
                     <Ionicons
                       name="location-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
               </>
             ) : (
               <>
-                <Text style={styles.sectionTitle}>
+                <Text
+                  style={
+                    styles.sectionTitle
+                  }
+                >
                   Crie sua senha
                 </Text>
 
                 <InputField
                   label="Senha"
                   value={form.password}
-                  onChangeText={(v) =>
-                    handleChange("password", v)
+                  onChangeText={(
+                    v
+                  ) =>
+                    handleChange(
+                      "password",
+                      v
+                    )
                   }
-                  error={errors.password}
+                  error={
+                    errors.password
+                  }
                   placeholder="••••••••"
                   secureTextEntry
                   icon={
                     <Ionicons
                       name="lock-closed-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
 
-                <View style={styles.dividerField} />
+                <View
+                  style={
+                    styles.dividerField
+                  }
+                />
 
                 <InputField
                   label="Confirmar senha"
-                  value={form.confirmPassword}
-                  onChangeText={(v) =>
+                  value={
+                    form.confirmPassword
+                  }
+                  onChangeText={(
+                    v
+                  ) =>
                     handleChange(
                       "confirmPassword",
                       v
                     )
                   }
-                  error={errors.confirmPassword}
+                  error={
+                    errors.confirmPassword
+                  }
                   placeholder="••••••••"
                   secureTextEntry
                   icon={
                     <Ionicons
                       name="lock-closed-outline"
                       size={18}
-                      color={Colors.textSecondary}
+                      color={
+                        Colors.textSecondary
+                      }
                     />
                   }
                 />
 
-                <View style={styles.passwordHint}>
+                <View
+                  style={
+                    styles.passwordHint
+                  }
+                >
                   <Ionicons
                     name="shield-checkmark-outline"
                     size={14}
                     color="rgba(255,255,255,0.35)"
                   />
 
-                  <Text style={styles.passwordHintText}>
-                    Use pelo menos 6 caracteres
-                    com letras e números
+                  <Text
+                    style={
+                      styles.passwordHintText
+                    }
+                  >
+                    Use pelo menos
+                    6 caracteres com
+                    letras e números
                   </Text>
                 </View>
               </>
             )}
           </Animated.View>
 
-          <View style={styles.actions}>
+          <View
+            style={styles.actions}
+          >
             {step === 0 ? (
               <TouchableOpacity
-                style={styles.btnPrimary}
+                style={
+                  styles.btnPrimary
+                }
                 activeOpacity={0.85}
-                onPress={handleNext}
+                onPress={
+                  handleNext
+                }
               >
-                <Text style={styles.btnPrimaryText}>
+                <Text
+                  style={
+                    styles.btnPrimaryText
+                  }
+                >
                   Continuar
                 </Text>
 
-                <View style={styles.btnArrow}>
+                <View
+                  style={
+                    styles.btnArrow
+                  }
+                >
                   <Ionicons
                     name="arrow-forward"
                     size={15}
-                    color={Colors.accentLight}
+                    color={
+                      Colors.accentLight
+                    }
                   />
                 </View>
               </TouchableOpacity>
@@ -474,61 +739,110 @@ export default function RegisterScreen({ navigation }: Props) {
               <TouchableOpacity
                 style={[
                   styles.btnPrimary,
-                  loading && { opacity: 0.6 },
+
+                  loading && {
+                    opacity: 0.6,
+                  },
                 ]}
                 activeOpacity={0.85}
-                onPress={handleRegister}
+                onPress={
+                  handleRegister
+                }
                 disabled={loading}
               >
-                <Text style={styles.btnPrimaryText}>
+                <Text
+                  style={
+                    styles.btnPrimaryText
+                  }
+                >
                   {loading
                     ? "Criando conta..."
                     : "Criar conta"}
                 </Text>
 
                 {!loading && (
-                  <View style={styles.btnArrow}>
+                  <View
+                    style={
+                      styles.btnArrow
+                    }
+                  >
                     <Ionicons
                       name="checkmark"
                       size={15}
-                      color={Colors.accentLight}
+                      color={
+                        Colors.accentLight
+                      }
                     />
                   </View>
                 )}
               </TouchableOpacity>
             )}
 
-            <View style={styles.dividerRow}>
-              <View style={styles.divider} />
+            <View
+              style={
+                styles.dividerRow
+              }
+            >
+              <View
+                style={
+                  styles.divider
+                }
+              />
 
-              <Text style={styles.dividerText}>
+              <Text
+                style={
+                  styles.dividerText
+                }
+              >
                 ou
               </Text>
 
-              <View style={styles.divider} />
+              <View
+                style={
+                  styles.divider
+                }
+              />
             </View>
 
             <TouchableOpacity
-              style={styles.btnSecondary}
+              style={
+                styles.btnSecondary
+              }
               activeOpacity={0.7}
               onPress={() =>
-                navigation.navigate("Login")
+                navigation.navigate(
+                  "Login"
+                )
               }
             >
-              <Text style={styles.btnSecondaryText}>
-                Já tenho conta — Entrar
+              <Text
+                style={
+                  styles.btnSecondaryText
+                }
+              >
+                Já tenho conta —
+                Entrar
               </Text>
             </TouchableOpacity>
 
-            <View style={styles.legalRow}>
+            <View
+              style={
+                styles.legalRow
+              }
+            >
               <Ionicons
                 name="shield-outline"
                 size={11}
                 color="rgba(255,255,255,0.25)"
               />
 
-              <Text style={styles.legalText}>
-                Ao criar conta, você aceita os
+              <Text
+                style={
+                  styles.legalText
+                }
+              >
+                Ao criar conta,
+                você aceita os
                 Termos de Uso
               </Text>
             </View>

@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  StyleSheet,
 } from "react-native";
 
 import {
@@ -20,6 +19,8 @@ import { Colors } from "../../styles/colors";
 import { storageService } from "../../services/StorageService";
 import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
+
+import { styles } from "../../styles/PetsScreenStyles";
 
 export default function PetsScreen() {
   const navigation = useNavigation<any>();
@@ -73,10 +74,10 @@ export default function PetsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.actionsContainer}>
+      <View style={styles.header}>
         <TouchableOpacity
           activeOpacity={0.8}
-          style={styles.addButton}
+          style={styles.addBtn}
           onPress={() =>
             navigation.navigate("AddPet")
           }
@@ -94,7 +95,7 @@ export default function PetsScreen() {
           false
         }
         contentContainerStyle={
-          styles.scrollContent
+          styles.list
         }
         refreshControl={
           <RefreshControl
@@ -107,7 +108,7 @@ export default function PetsScreen() {
         }
       >
         {pets.length === 0 ? (
-          <View style={styles.emptyContainer}>
+          <View style={styles.empty}>
             <View style={styles.emptyIcon}>
               <Ionicons
                 name="paw"
@@ -130,7 +131,7 @@ export default function PetsScreen() {
 
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.emptyButton}
+              style={styles.emptyBtn}
               onPress={() =>
                 navigation.navigate(
                   "AddPet"
@@ -139,7 +140,7 @@ export default function PetsScreen() {
             >
               <Text
                 style={
-                  styles.emptyButtonText
+                  styles.emptyBtnText
                 }
               >
                 Cadastrar Pet
@@ -193,7 +194,7 @@ export default function PetsScreen() {
                 }
               >
                 <View
-                  style={styles.cardHeader}
+                  style={styles.cardTop}
                 >
                   <View
                     style={styles.avatar}
@@ -210,9 +211,9 @@ export default function PetsScreen() {
                   </View>
 
                   <View
-                    style={
-                      styles.cardInfo
-                    }
+                    style={{
+                      flex: 1,
+                    }}
                   >
                     <Text
                       style={
@@ -233,7 +234,7 @@ export default function PetsScreen() {
 
                     <View
                       style={
-                        styles.tagsRow
+                        styles.tags
                       }
                     >
                       <View
@@ -279,7 +280,7 @@ export default function PetsScreen() {
 
                 <View
                   style={
-                    styles.healthContainer
+                    styles.healthRow
                   }
                 >
                   <Text
@@ -291,13 +292,11 @@ export default function PetsScreen() {
                   </Text>
 
                   <View
-                    style={
-                      styles.progressBackground
-                    }
+                    style={styles.barBg}
                   >
                     <View
                       style={[
-                        styles.progressFill,
+                        styles.barFill,
                         {
                           width: `${score}%`,
                           backgroundColor:
@@ -309,7 +308,7 @@ export default function PetsScreen() {
 
                   <Text
                     style={[
-                      styles.healthValue,
+                      styles.healthPct,
                       {
                         color:
                           scoreColor,
@@ -322,7 +321,7 @@ export default function PetsScreen() {
 
                 <View
                   style={
-                    styles.statsContainer
+                    styles.statsRow
                   }
                 >
                   <View
@@ -383,232 +382,3 @@ export default function PetsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:
-      Colors.primary,
-  },
-
-  actionsContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 14,
-    alignItems: "flex-end",
-  },
-
-  addButton: {
-    width: 52,
-    height: 52,
-
-    borderRadius: 18,
-
-    backgroundColor:
-      Colors.accentLight,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-
-    elevation: 5,
-  },
-
-  scrollContent: {
-    paddingHorizontal: 18,
-    paddingBottom: 120,
-    gap: 14,
-  },
-
-  emptyContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 90,
-  },
-
-  emptyIcon: {
-    width: 110,
-    height: 110,
-
-    borderRadius: 30,
-
-    backgroundColor:
-      Colors.secondary,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginBottom: 24,
-  },
-
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: Colors.white,
-  },
-
-  emptyText: {
-    marginTop: 10,
-
-    fontSize: 14,
-    lineHeight: 22,
-
-    textAlign: "center",
-
-    color: Colors.textLight,
-  },
-
-  emptyButton: {
-    marginTop: 26,
-
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-
-    borderRadius: 18,
-
-    backgroundColor:
-      Colors.accentLight,
-  },
-
-  emptyButtonText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  card: {
-    padding: 16,
-
-    borderRadius: 24,
-
-    backgroundColor:
-      Colors.secondary,
-
-    borderWidth: 1,
-
-    borderColor:
-      "rgba(255,255,255,0.05)",
-  },
-
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  avatar: {
-    width: 60,
-    height: 60,
-
-    borderRadius: 18,
-
-    backgroundColor:
-      Colors.accentLight + "18",
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginRight: 14,
-  },
-
-  cardInfo: {
-    flex: 1,
-  },
-
-  petName: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  petMeta: {
-    marginTop: 2,
-
-    fontSize: 13,
-    color: Colors.textLight,
-  },
-
-  tagsRow: {
-    flexDirection: "row",
-    marginTop: 10,
-    gap: 8,
-  },
-
-  tag: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-
-    borderRadius: 999,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-  },
-
-  tagText: {
-    fontSize: 11,
-    color: Colors.textLight,
-  },
-
-  healthContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-
-    marginTop: 18,
-  },
-
-  healthLabel: {
-    width: 50,
-    fontSize: 12,
-    color: Colors.textLight,
-  },
-
-  progressBackground: {
-    flex: 1,
-    height: 7,
-
-    borderRadius: 999,
-
-    overflow: "hidden",
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-  },
-
-  progressFill: {
-    height: "100%",
-    borderRadius: 999,
-  },
-
-  healthValue: {
-    width: 45,
-
-    fontSize: 12,
-    fontWeight: "700",
-
-    textAlign: "right",
-  },
-
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent:
-      "space-between",
-
-    marginTop: 18,
-  },
-
-  stat: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-
-  statText: {
-    fontSize: 11,
-    color: Colors.textLight,
-  },
-});

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Modal,
   Pressable,
@@ -15,14 +14,16 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-
 import DashboardScreen from "../screens/main/DashboardScreen";
 import PetsScreen from "../screens/pet/PetsScreen";
 import HealthTabScreen from "../screens/main/HealthTabScreen";
 import ProfileScreen from "../screens/main/ProfileScreen";
+import CalendarScreen from "../screens/main/HealthCalendarScreen";
 
 import { Colors } from "../styles/colors";
 import { storageService } from "../services/StorageService";
+
+import { styles } from "../styles/MainTabsStyles";
 
 const Tab = createBottomTabNavigator();
 
@@ -106,13 +107,17 @@ function CustomHeader({ route }: any) {
           <Text style={styles.screenTitle}>
             {route.name === "Pets"
               ? "Pets"
-              : route.name === "Health"
+              : route.name ===
+                  "Health"
                 ? "Saúde"
-                : "Perfil"}
+                : route.name ===
+                    "Calendar"
+                  ? "Calendário"
+                  : "Perfil"}
           </Text>
         )}
 
-        <View style={{ width: 52 }} />
+        <View style={styles.rightSpacer} />
       </View>
 
       <Modal
@@ -196,6 +201,27 @@ function CustomHeader({ route }: any) {
                 setMenuVisible(false);
 
                 navigation.navigate(
+                  "Calendar"
+                );
+              }}
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color={Colors.white}
+              />
+
+              <Text style={styles.menuText}>
+                Calendário
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                setMenuVisible(false);
+
+                navigation.navigate(
                   "Profile"
                 );
               }}
@@ -232,27 +258,8 @@ export default function MainTabs() {
             Colors.primary,
         },
 
-        tabBarStyle: {
-          position: "absolute",
-
-          left: 18,
-          right: 18,
-          bottom: 18,
-
-          height: 82,
-
-          borderRadius: 28,
-
-          backgroundColor:
-            "#17315B",
-
-          borderTopWidth: 0,
-
-          paddingTop: 10,
-          paddingBottom: 10,
-
-          elevation: 0,
-        },
+        tabBarStyle:
+          styles.tabBarStyle,
 
         tabBarActiveTintColor:
           Colors.white,
@@ -260,11 +267,8 @@ export default function MainTabs() {
         tabBarInactiveTintColor:
           "rgba(255,255,255,0.65)",
 
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "700",
-          marginBottom: 4,
-        },
+        tabBarLabelStyle:
+          styles.tabBarLabelStyle,
 
         tabBarIcon: ({
           focused,
@@ -294,6 +298,15 @@ export default function MainTabs() {
             iconName = focused
               ? "heart"
               : "heart-outline";
+          }
+
+          if (
+            route.name ===
+            "Calendar"
+          ) {
+            iconName = focused
+              ? "calendar"
+              : "calendar-outline";
           }
 
           if (
@@ -347,6 +360,14 @@ export default function MainTabs() {
       />
 
       <Tab.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{
+          title: "Calendário",
+        }}
+      />
+
+      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -356,130 +377,3 @@ export default function MainTabs() {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    paddingTop: 60,
-    paddingBottom: 22,
-    paddingHorizontal: 20,
-
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent:
-      "space-between",
-
-    backgroundColor:
-      Colors.primary,
-  },
-
-  centerArea: {
-    flex: 1,
-    alignItems: "center",
-  },
-
-  logoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 6,
-  },
-
-  logo: {
-    fontSize: 34,
-    fontWeight: "900",
-    color: Colors.white,
-    letterSpacing: 1,
-  },
-
-  greeting: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: Colors.white,
-    marginTop: 4,
-  },
-
-  date: {
-    marginTop: 6,
-    fontSize: 13,
-    color:
-      "rgba(255,255,255,0.55)",
-    textTransform: "capitalize",
-  },
-
-  screenTitle: {
-    flex: 1,
-    textAlign: "center",
-
-    fontSize: 24,
-    fontWeight: "800",
-
-    color: Colors.white,
-  },
-
-  menuButton: {
-    width: 52,
-    height: 52,
-
-    borderRadius: 18,
-
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  overlay: {
-    flex: 1,
-    backgroundColor:
-      "rgba(0,0,0,0.45)",
-
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-
-    paddingTop: 110,
-    paddingLeft: 20,
-  },
-
-  menuContainer: {
-    width: 220,
-
-    borderRadius: 22,
-
-    backgroundColor:
-      "#17315B",
-
-    paddingVertical: 10,
-  },
-
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-
-    gap: 12,
-
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-  },
-
-  menuText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-
-  tabIcon: {
-    width: 46,
-    height: 46,
-
-    borderRadius: 16,
-
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  activeTabIcon: {
-    backgroundColor:
-      "rgba(255,255,255,0.12)",
-  },
-});

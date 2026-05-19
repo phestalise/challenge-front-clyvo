@@ -1,83 +1,201 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "../styles/colors";
 
-const { width } = Dimensions.get("window");
-export const DAY_SIZE = Math.floor((width - 48 - 36) / 7);
+
+import {
+  StyleSheet,
+} from "react-native";
+
+import { Colors } from "./colors";
 
 export const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  header: {
+  container: {
+    flex: 1,
     backgroundColor: Colors.primary,
-    paddingHorizontal: 24,
-    paddingTop: 56,
-    paddingBottom: 20,
+  },
+
+  header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingTop: 60,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.secondary,
   },
-  headerLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
+
   backBtn: {
-    width: 40, height: 40, borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    justifyContent: "center", alignItems: "center",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor:
+      "rgba(255,255,255,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  headerTitle: { fontSize: 18, fontWeight: "800", color: Colors.white },
-  headerSub: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 1 },
-  calendarCard: {
-    backgroundColor: Colors.card,
-    marginHorizontal: 20, marginTop: 20,
-    borderRadius: 20, padding: 18,
-    shadowColor: "#000", shadowOpacity: 0.07, shadowRadius: 12, elevation: 3,
+
+  title: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "700",
   },
-  calNavRow: {
-    flexDirection: "row", alignItems: "center",
-    justifyContent: "space-between", marginBottom: 18,
+
+  headerSpace: {
+    width: 40,
   },
-  calNavBtn: {
-    width: 36, height: 36, borderRadius: 10,
-    backgroundColor: Colors.background,
-    justifyContent: "center", alignItems: "center",
+
+  monthRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
-  calMonthLabel: { fontSize: 16, fontWeight: "800", color: Colors.text, textTransform: "capitalize" },
-  weekRow: { flexDirection: "row", marginBottom: 8 },
-  weekLabel: {
-    width: DAY_SIZE, textAlign: "center",
-    fontSize: 11, fontWeight: "700",
-    color: Colors.textSecondary, textTransform: "uppercase",
+
+  monthText: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "700",
+    textTransform: "capitalize",
   },
-  daysGrid: { flexDirection: "row", flexWrap: "wrap" },
-  dayCell: {
-    width: DAY_SIZE, height: DAY_SIZE,
-    justifyContent: "center", alignItems: "center",
-    borderRadius: DAY_SIZE / 2.5, marginBottom: 4,
+
+  weekRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
-  dayCellToday: { backgroundColor: Colors.primary + "18" },
-  dayCellSelected: { backgroundColor: Colors.primary },
-  dayNum: { fontSize: 13, fontWeight: "500", color: Colors.text },
-  dayNumToday: { fontWeight: "800", color: Colors.primary },
-  dayNumSelected: { fontWeight: "800", color: Colors.white },
-  dayNumOtherMonth: { color: Colors.textSecondary, opacity: 0.4 },
-  eventDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: Colors.accentGreen, marginTop: 2 },
-  eventsSection: { paddingHorizontal: 20, marginTop: 24, flex: 1 },
-  eventsSectionTitle: { fontSize: 15, fontWeight: "800", color: Colors.text, marginBottom: 14 },
-  eventCard: {
-    backgroundColor: Colors.card, borderRadius: 14, padding: 14,
-    flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 10,
-    shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 6, elevation: 1,
-    borderLeftWidth: 3,
+
+  weekText: {
+    width: "14.2%",
+    textAlign: "center",
+    color: Colors.textLight,
+    fontWeight: "600",
   },
-  eventIconBox: { width: 40, height: 40, borderRadius: 12, justifyContent: "center", alignItems: "center" },
-  eventCardTitle: { fontSize: 14, fontWeight: "700", color: Colors.text },
-  eventCardPet: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  eventCardDate: {
-    fontSize: 11, color: Colors.textSecondary,
-    backgroundColor: Colors.background,
-    paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,
+
+  calendarGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: 10,
   },
-  emptyDay: { alignItems: "center", paddingVertical: 32, gap: 10 },
-  emptyDayText: { color: Colors.textSecondary, fontSize: 14, textAlign: "center" },
-  legend: { flexDirection: "row", gap: 16, paddingHorizontal: 20, marginTop: 12, marginBottom: 4 },
-  legendItem: { flexDirection: "row", alignItems: "center", gap: 6 },
-  legendDot: { width: 8, height: 8, borderRadius: 4 },
-  legendText: { fontSize: 11, color: Colors.textSecondary, fontWeight: "500" },
+
+  dayCard: {
+    width: "14.2%",
+    minHeight: 90,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    padding: 4,
+  },
+
+  emptyDayCard: {
+    backgroundColor: "transparent",
+  },
+
+  dayNumber: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+
+  eventList: {
+    gap: 4,
+  },
+
+  eventBadge: {
+    borderRadius: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+  },
+
+  eventBadgeText: {
+    color: Colors.white,
+    fontSize: 9,
+    fontWeight: "600",
+  },
+
+  moreText: {
+    color: Colors.textLight,
+    fontSize: 10,
+    marginTop: 2,
+  },
+
+  legend: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginTop: 24,
+  },
+
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+
+  legendText: {
+    color: Colors.textLight,
+    fontSize: 12,
+  },
+
+  pendingContainer: {
+    padding: 16,
+    gap: 12,
+    marginTop: 20,
+  },
+
+  pendingTitle: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  pendingCard: {
+    backgroundColor: Colors.secondary,
+    borderRadius: 14,
+    padding: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+
+  pendingIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  pendingName: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
+  pendingPet: {
+    color: Colors.textLight,
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  pendingDate: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  emptyText: {
+    color: Colors.textLight,
+    textAlign: "center",
+    marginTop: 20,
+  },
+
+  flexOne: {
+    flex: 1,
+  },
 });
