@@ -37,7 +37,7 @@ A CLYVO VET é um aplicativo mobile criado para auxiliar tutores no acompanhamen
 ## 1️⃣ Clonar o projeto
 
 ```bash
-git clone https://github.com/seuusuario/clyvo-vet.git
+git clone https://github.com/phestalise/challenge-front-clyvo.git
 ```
 
 ## 2️⃣ Entrar na pasta
