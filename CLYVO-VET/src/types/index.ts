@@ -1,11 +1,3 @@
-export interface User {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  createdAt: string;
-}
-
 export interface Vaccine {
   id: string;
   name: string;
@@ -52,7 +44,6 @@ export type RootStackParamList = {
   Vaccines: undefined;
   Medications: undefined;
   Pending: undefined;
-  PetsList: undefined;
 };
 
 export type MainTabParamList = {
