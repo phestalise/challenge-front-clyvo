@@ -1,7 +1,4 @@
-import React, {
-  useCallback,
-  useState,
-} from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -13,15 +10,11 @@ import {
   Modal,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
-import { storageService } from "../../services/StorageService";
+import { useAuth } from "../../hooks/useAuth";
+import { mapFirebaseAuthError } from "../../utils/authErrors";
 
 import { styles } from "../../styles/ProfileScreenStyles";
 
@@ -41,9 +34,7 @@ const FAQ_DATA = [
 ];
 
 export default function ProfileScreen() {
-  const navigation = useNavigation<any>();
-
-  const [user, setUser] = useState<any>(null);
+  const { user, logout, updateName, updateEmailAddress } = useAuth();
 
   const [editModal, setEditModal] =
     useState(false);
@@ -54,28 +45,14 @@ export default function ProfileScreen() {
   const [editEmail, setEditEmail] =
     useState("");
 
+  const [saving, setSaving] =
+    useState(false);
+
   const [openFaq, setOpenFaq] =
     useState<number | null>(null);
 
-  const load = async () => {
-    try {
-      const u =
-        await storageService.getUser();
-
-      setUser(u);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
-
   const openEdit = () => {
-    setEditName(user?.name ?? "");
+    setEditName(user?.displayName ?? "");
 
     setEditEmail(user?.email ?? "");
 
@@ -83,18 +60,23 @@ export default function ProfileScreen() {
   };
 
   const saveEdit = async () => {
+    setSaving(true);
+
     try {
-      const updated = {
-        ...user,
-        name: editName,
-        email: editEmail,
-      };
+      if (
+        editName.trim() &&
+        editName.trim() !== user?.displayName
+      ) {
+        await updateName(editName.trim());
+      }
 
-      await storageService.saveUser(
-        updated
-      );
-
-      setUser(updated);
+      if (
+        editEmail.trim() &&
+        editEmail.trim().toLowerCase() !==
+          user?.email
+      ) {
+        await updateEmailAddress(editEmail);
+      }
 
       setEditModal(false);
 
@@ -102,21 +84,19 @@ export default function ProfileScreen() {
         "Sucesso",
         "Perfil atualizado."
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      Alert.alert(
+        "Erro",
+        mapFirebaseAuthError(error?.code)
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleLogout = async () => {
     try {
-      await storageService.setLoggedIn(
-        false
-      );
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Welcome" }],
-      });
+      await logout();
     } catch (error) {
       console.log(error);
     }
@@ -147,13 +127,13 @@ export default function ProfileScreen() {
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
               {initials(
-                user?.name ?? ""
+                user?.displayName ?? ""
               )}
             </Text>
           </View>
 
           <Text style={styles.name}>
-            {user?.name ?? "Usuário"}
+            {user?.displayName ?? "Usuário"}
           </Text>
 
           <Text style={styles.email}>
@@ -290,15 +270,21 @@ export default function ProfileScreen() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.saveBtn}
+                style={[
+                  styles.saveBtn,
+                  saving && { opacity: 0.6 },
+                ]}
                 onPress={saveEdit}
+                disabled={saving}
               >
                 <Text
                   style={
                     styles.saveText
                   }
                 >
-                  Salvar
+                  {saving
+                    ? "Salvando..."
+                    : "Salvar"}
                 </Text>
               </TouchableOpacity>
             </View>

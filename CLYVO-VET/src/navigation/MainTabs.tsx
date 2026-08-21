@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -21,7 +21,7 @@ import ProfileScreen from "../screens/main/ProfileScreen";
 import CalendarScreen from "../screens/main/HealthCalendarScreen";
 
 import { Colors } from "../styles/colors";
-import { storageService } from "../services/StorageService";
+import { useAuth } from "../hooks/useAuth";
 
 import { styles } from "../styles/MainTabsStyles";
 
@@ -33,21 +33,10 @@ function CustomHeader({ route }: any) {
   const [menuVisible, setMenuVisible] =
     useState(false);
 
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    const data =
-      await storageService.getUser();
-
-    setUser(data);
-  };
+  const { user } = useAuth();
 
   const firstName = (
-    user?.name || "Usuário"
+    user?.displayName || "Usuário"
   ).split(" ")[0];
 
   const currentDate =
