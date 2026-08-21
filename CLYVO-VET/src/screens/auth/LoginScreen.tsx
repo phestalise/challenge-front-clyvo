@@ -25,7 +25,8 @@ import { RootStackParamList } from "../../types";
 
 import { Colors } from "../../styles/colors";
 
-import { storageService } from "../../services/StorageService";
+import { useAuth } from "../../hooks/useAuth";
+import { mapFirebaseAuthError } from "../../utils/authErrors";
 
 import InputField from "../../components/InputField";
 
@@ -41,6 +42,8 @@ type Props = {
 export default function LoginScreen({
   navigation,
 }: Props) {
+  const { login } = useAuth();
+
   const [email, setEmail] =
     useState("");
 
@@ -122,34 +125,12 @@ export default function LoginScreen({
       setLoading(true);
 
       try {
-        const user =
-          await storageService.getUser();
-
-        if (
-          user &&
-          user.email ===
-            email
-              .toLowerCase()
-              .trim()
-        ) {
-          await storageService.setLoggedIn(
-            true
-          );
-
-          navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: "Main",
-              },
-            ],
-          });
-        } else {
-          Alert.alert(
-            "Erro",
-            "Conta não encontrada. Crie uma conta primeiro."
-          );
-        }
+        await login(email, password);
+      } catch (error: any) {
+        Alert.alert(
+          "Erro",
+          mapFirebaseAuthError(error?.code)
+        );
       } finally {
         setLoading(false);
       }

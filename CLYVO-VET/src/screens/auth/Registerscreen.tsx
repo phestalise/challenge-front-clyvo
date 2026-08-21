@@ -25,7 +25,8 @@ import { RootStackParamList } from "../../types";
 
 import { Colors } from "../../styles/colors";
 
-import { storageService } from "../../services/StorageService";
+import { useAuth } from "../../hooks/useAuth";
+import { mapFirebaseAuthError } from "../../utils/authErrors";
 
 import { validarFormularioUsuario } from "../../utils/validators";
 
@@ -58,6 +59,8 @@ const STEPS = [
 export default function RegisterScreen({
   navigation,
 }: Props) {
+  const { register } = useAuth();
+
   const [step, setStep] =
     useState(0);
 
@@ -194,49 +197,15 @@ export default function RegisterScreen({
       setLoading(true);
 
       try {
-        await storageService.saveUser(
-          {
-            name: form.name.trim(),
-
-            email:
-              form.email
-                .toLowerCase()
-                .trim(),
-
-            phone:
-              form.phone.trim(),
-
-            address:
-              form.address.trim(),
-
-            password:
-              form.password,
-
-            createdAt:
-              new Date().toISOString(),
-          }
+        await register(
+          form.name,
+          form.email,
+          form.password
         );
-
-        await storageService.setLoggedIn(
-          true
-        );
-
-        navigation.reset({
-          index: 0,
-
-          routes: [
-            {
-              name:
-                "Main" as never,
-            },
-          ],
-        });
-      } catch (error) {
-        console.log(error);
-
+      } catch (error: any) {
         Alert.alert(
           "Erro",
-          "Não foi possível criar a conta."
+          mapFirebaseAuthError(error?.code)
         );
       } finally {
         setLoading(false);
