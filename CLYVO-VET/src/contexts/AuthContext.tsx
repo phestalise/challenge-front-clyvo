@@ -7,16 +7,21 @@ export type AuthUser = {
   uid: string;
   email: string | null;
   displayName: string | null;
+  emailVerified: boolean;
 };
 
 type AuthContextValue = {
   user: AuthUser | null;
   initializing: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateName: (name: string) => Promise<void>;
   updateEmailAddress: (email: string) => Promise<void>;
+  sendVerificationEmail: () => Promise<void>;
+  refreshEmailVerified: () => Promise<boolean>;
+  resetPassword: (email: string) => Promise<void>;
 };
 
 function mapUser(firebaseUser: FirebaseUser | null): AuthUser | null {
@@ -26,6 +31,7 @@ function mapUser(firebaseUser: FirebaseUser | null): AuthUser | null {
     uid: firebaseUser.uid,
     email: firebaseUser.email,
     displayName: firebaseUser.displayName,
+    emailVerified: firebaseUser.emailVerified,
   };
 }
 
@@ -50,6 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await authService.login(email, password);
   };
 
+  const loginWithGoogle = async () => {
+    await authService.loginWithGoogle();
+  };
+
   const register = async (name: string, email: string, password: string) => {
     await authService.register(name, email, password);
   };
@@ -70,16 +80,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const sendVerificationEmail = async () => {
+    await authService.sendVerificationEmail();
+  };
+
+  const refreshEmailVerified = async () => {
+    const refreshedUser = await authService.reloadUser();
+    setUser(mapUser(refreshedUser));
+
+    return refreshedUser.emailVerified;
+  };
+
+  const resetPassword = async (email: string) => {
+    await authService.resetPassword(email);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         initializing,
         login,
+        loginWithGoogle,
         register,
         logout,
         updateName,
         updateEmailAddress,
+        sendVerificationEmail,
+        refreshEmailVerified,
+        resetPassword,
       }}
     >
       {children}

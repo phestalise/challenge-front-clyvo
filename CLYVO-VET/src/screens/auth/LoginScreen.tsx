@@ -9,13 +9,14 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Animated,
   StatusBar,
   SafeAreaView,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -42,7 +43,7 @@ type Props = {
 export default function LoginScreen({
   navigation,
 }: Props) {
-  const { login } = useAuth();
+  const { login, loginWithGoogle, resetPassword } = useAuth();
 
   const [email, setEmail] =
     useState("");
@@ -51,6 +52,12 @@ export default function LoginScreen({
     useState("");
 
   const [loading, setLoading] =
+    useState(false);
+
+  const [googleLoading, setGoogleLoading] =
+    useState(false);
+
+  const [resetLoading, setResetLoading] =
     useState(false);
 
   const [errors, setErrors] =
@@ -127,7 +134,7 @@ export default function LoginScreen({
       try {
         await login(email, password);
       } catch (error: any) {
-        Alert.alert(
+        showAlert(
           "Erro",
           mapFirebaseAuthError(error?.code)
         );
@@ -135,6 +142,50 @@ export default function LoginScreen({
         setLoading(false);
       }
     };
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      showAlert(
+        "Informe seu e-mail",
+        "Digite seu e-mail no campo acima para receber o link de redefinição de senha."
+      );
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      await resetPassword(email);
+
+      showAlert(
+        "E-mail enviado",
+        "Enviamos um link para redefinir sua senha. Confira sua caixa de entrada (e o spam)."
+      );
+    } catch (error: any) {
+      showAlert("Erro", mapFirebaseAuthError(error?.code));
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+
+    try {
+      await loginWithGoogle();
+    } catch (error: any) {
+      if (
+        error?.code === "auth/popup-closed-by-user" ||
+        error?.code === "auth/cancelled-popup-request"
+      ) {
+        return;
+      }
+
+      showAlert("Erro", mapFirebaseAuthError(error?.code));
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -334,14 +385,21 @@ export default function LoginScreen({
                   styles.forgotBtn
                 }
                 activeOpacity={0.6}
+                onPress={
+                  handleForgotPassword
+                }
+                disabled={
+                  resetLoading
+                }
               >
                 <Text
                   style={
                     styles.forgotText
                   }
                 >
-                  Esqueci minha
-                  senha
+                  {resetLoading
+                    ? "Enviando..."
+                    : "Esqueci minha senha"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -423,6 +481,45 @@ export default function LoginScreen({
                 }
               />
             </View>
+
+            <TouchableOpacity
+              style={[
+                styles.btnSecondary,
+                {
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 8,
+                },
+                googleLoading && {
+                  opacity: 0.6,
+                },
+              ]}
+              onPress={
+                handleGoogleLogin
+              }
+              disabled={
+                googleLoading
+              }
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name="logo-google"
+                size={16}
+                color={
+                  Colors.white
+                }
+              />
+
+              <Text
+                style={
+                  styles.btnSecondaryText
+                }
+              >
+                {googleLoading
+                  ? "Conectando..."
+                  : "Entrar com Google"}
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={

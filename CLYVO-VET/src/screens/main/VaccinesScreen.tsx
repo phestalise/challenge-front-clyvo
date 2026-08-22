@@ -6,10 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Alert,
   Modal,
   TextInput,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import {
   useFocusEffect,
@@ -71,7 +72,7 @@ export default function VaccinesScreen() {
 
   const handleAdd = async () => {
     if (!selectedPetId || !vaccineName) {
-      Alert.alert(
+      showAlert(
         "Preencha o nome da vacina e selecione o pet."
       );
 
@@ -154,7 +155,7 @@ export default function VaccinesScreen() {
     petId: string,
     vaccineId: string
   ) => {
-    Alert.alert(
+    showAlert(
       "Remover vacina",
       "Deseja remover esta vacina?",
       [

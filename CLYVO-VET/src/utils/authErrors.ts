@@ -16,6 +16,10 @@ export function mapFirebaseAuthError(code: unknown): string {
       return "Por segurança, saia e entre novamente antes de alterar o e-mail.";
     case "auth/network-request-failed":
       return "Falha de conexão. Verifique sua internet.";
+    case "auth/popup-blocked":
+      return "O navegador bloqueou a janela do Google. Permita pop-ups e tente novamente.";
+    case "auth/account-exists-with-different-credential":
+      return "Já existe uma conta com esse e-mail usando outro método de login.";
     default:
       return "Não foi possível concluir a operação. Tente novamente.";
   }

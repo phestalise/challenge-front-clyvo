@@ -8,7 +8,7 @@ export interface Vaccine {
 
 export interface Medication {
   id: string;
-  name: string;
+  name: string; 
   dosage: string;
   frequency: string;
   startDate: string;

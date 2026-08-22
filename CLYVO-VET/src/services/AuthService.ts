@@ -1,8 +1,13 @@
 import {
+  GoogleAuthProvider,
   User as FirebaseUser,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  reload,
+  sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateEmail,
   updateProfile,
@@ -38,11 +43,41 @@ class AuthService {
 
     await updateProfile(credential.user, { displayName: name.trim() });
 
+    try {
+      await sendEmailVerification(credential.user);
+    } catch (error) {
+      console.warn("Falha ao enviar e-mail de verificação no cadastro:", error);
+    }
+
     return credential.user;
+  }
+
+  async loginWithGoogle(): Promise<FirebaseUser> {
+    const credential = await signInWithPopup(auth, new GoogleAuthProvider());
+
+    return credential.user;
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    await sendPasswordResetEmail(auth, email.trim().toLowerCase());
   }
 
   async logout(): Promise<void> {
     await signOut(auth);
+  }
+
+  async sendVerificationEmail(): Promise<void> {
+    if (!auth.currentUser) throw new Error("Nenhum usuário autenticado.");
+
+    await sendEmailVerification(auth.currentUser);
+  }
+
+  async reloadUser(): Promise<FirebaseUser> {
+    if (!auth.currentUser) throw new Error("Nenhum usuário autenticado.");
+
+    await reload(auth.currentUser);
+
+    return auth.currentUser;
   }
 
   async updateName(name: string): Promise<void> {

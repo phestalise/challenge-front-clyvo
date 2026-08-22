@@ -9,13 +9,14 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Alert,
  KeyboardAvoidingView,
   Platform,
   Animated,
   StatusBar,
   SafeAreaView,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -59,7 +60,10 @@ const STEPS = [
 export default function RegisterScreen({
   navigation,
 }: Props) {
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
+
+  const [googleLoading, setGoogleLoading] =
+    useState(false);
 
   const [step, setStep] =
     useState(0);
@@ -203,7 +207,7 @@ export default function RegisterScreen({
           form.password
         );
       } catch (error: any) {
-        Alert.alert(
+        showAlert(
           "Erro",
           mapFirebaseAuthError(error?.code)
         );
@@ -211,6 +215,28 @@ export default function RegisterScreen({
         setLoading(false);
       }
     };
+
+  const handleGoogleRegister = async () => {
+    setGoogleLoading(true);
+
+    try {
+      await loginWithGoogle();
+    } catch (error: any) {
+      if (
+        error?.code === "auth/popup-closed-by-user" ||
+        error?.code === "auth/cancelled-popup-request"
+      ) {
+        return;
+      }
+
+      showAlert(
+        "Erro",
+        mapFirebaseAuthError(error?.code)
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -772,6 +798,45 @@ export default function RegisterScreen({
                 }
               />
             </View>
+
+            <TouchableOpacity
+              style={[
+                styles.btnSecondary,
+                {
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 8,
+                },
+                googleLoading && {
+                  opacity: 0.6,
+                },
+              ]}
+              activeOpacity={0.7}
+              onPress={
+                handleGoogleRegister
+              }
+              disabled={
+                googleLoading
+              }
+            >
+              <Ionicons
+                name="logo-google"
+                size={16}
+                color={
+                  Colors.white
+                }
+              />
+
+              <Text
+                style={
+                  styles.btnSecondaryText
+                }
+              >
+                {googleLoading
+                  ? "Conectando..."
+                  : "Cadastrar com Google"}
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={

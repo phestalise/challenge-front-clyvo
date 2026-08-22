@@ -6,9 +6,10 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert,
   Modal,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -80,12 +81,12 @@ export default function ProfileScreen() {
 
       setEditModal(false);
 
-      Alert.alert(
+      showAlert(
         "Sucesso",
         "Perfil atualizado."
       );
     } catch (error: any) {
-      Alert.alert(
+      showAlert(
         "Erro",
         mapFirebaseAuthError(error?.code)
       );

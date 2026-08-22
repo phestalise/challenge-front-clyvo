@@ -8,8 +8,9 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import {
   useFocusEffect,
@@ -84,7 +85,7 @@ export default function PetDetailScreen() {
       return;
     }
 
-    Alert.alert(
+    showAlert(
       "Remover",
       `Remover ${pet.name}?`,
       [

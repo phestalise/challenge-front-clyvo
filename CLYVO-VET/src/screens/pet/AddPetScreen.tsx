@@ -5,8 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -36,7 +37,7 @@ export default function AddPetScreen() {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert(
+      showAlert(
         "Atenção",
         "Informe o nome do pet."
       );
@@ -45,7 +46,7 @@ export default function AddPetScreen() {
     }
 
     if (!species) {
-      Alert.alert(
+      showAlert(
         "Atenção",
         "Selecione a espécie."
       );
@@ -82,7 +83,7 @@ export default function AddPetScreen() {
 
       navigation.goBack();
     } catch {
-      Alert.alert(
+      showAlert(
         "Erro",
         "Erro ao salvar pet. Tente novamente."
       );

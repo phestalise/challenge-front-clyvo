@@ -11,10 +11,11 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Alert,
   Modal,
   TextInput,
 } from "react-native";
+
+import { showAlert } from "../../utils/showAlert";
 
 import {
   useFocusEffect,
@@ -78,7 +79,7 @@ export default function MedicationsScreen() {
       !selectedPetId ||
       !medName
     ) {
-      Alert.alert(
+      showAlert(
         "Selecione o pet e informe o nome do medicamento."
       );
 
@@ -171,7 +172,7 @@ export default function MedicationsScreen() {
     petId: string,
     medId: string
   ) => {
-    Alert.alert(
+    showAlert(
       "Remover medicamento",
       "Deseja remover?",
       [

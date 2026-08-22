@@ -7,6 +7,7 @@ import MainTabs from "./MainTabs";
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/Registerscreen";
+import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen";
 
 import AddPetScreen from "../screens/pet/AddPetScreen";
 import PetDetailScreen from "../screens/pet/PetDetailScreen";
@@ -72,5 +73,9 @@ export default function RootNavigator() {
     );
   }
 
-  return user ? <AppStack /> : <AuthStack />;
+  if (!user) return <AuthStack />;
+
+  if (!user.emailVerified) return <VerifyEmailScreen />;
+
+  return <AppStack />;
 }
