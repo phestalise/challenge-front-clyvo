@@ -37,13 +37,14 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Main: undefined;
-  AddPet: undefined;
+  AddPet: { petId?: string } | undefined;
   PetDetail: { petId: string };
   HealthCalendar: undefined;
   PetChat: undefined;
   Vaccines: undefined;
   Medications: undefined;
   Pending: undefined;
+  AddHealthRecord: undefined;
 };
 
 export type MainTabParamList = {

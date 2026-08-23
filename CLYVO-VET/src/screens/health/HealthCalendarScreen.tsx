@@ -1,6 +1,6 @@
 // HealthCalendarScreen.tsx
 
-import React, { useCallback, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import {
   View,
@@ -8,21 +8,19 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 import {
   styles,
-} from "../../styles/Healthcalendarscreen.styles";
+} from "../../styles/HealthCalendarScreen.styles";
 
-import { storageService } from "../../services/StorageService";
+import { usePets } from "../../hooks/usePets";
 
 type CalendarEvent = {
   id: string;
@@ -40,7 +38,7 @@ const DAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 export default function HealthCalendarScreen() {
   const navigation = useNavigation<any>();
 
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const { pets, loading, error, reload } = usePets();
   const [refreshing, setRefreshing] = useState(false);
 
   const currentDate = new Date();
@@ -53,15 +51,11 @@ export default function HealthCalendarScreen() {
     currentDate.getFullYear()
   );
 
-  const load = async () => {
-    const data = await storageService.getPets();
-
-    const pets = Array.isArray(data) ? data : [];
-
+  const events = useMemo<CalendarEvent[]>(() => {
     const allEvents: CalendarEvent[] = [];
 
-    pets.forEach((pet: any) => {
-      (pet.vaccines ?? []).forEach((v: any) => {
+    pets.forEach((pet) => {
+      (pet.vaccines ?? []).forEach((v) => {
         if (v.date) {
           allEvents.push({
             id: `vac-${v.id}`,
@@ -89,7 +83,7 @@ export default function HealthCalendarScreen() {
         }
       });
 
-      (pet.medications ?? []).forEach((m: any) => {
+      (pet.medications ?? []).forEach((m) => {
         if (m.startDate) {
           allEvents.push({
             id: `med-${m.id}`,
@@ -105,19 +99,13 @@ export default function HealthCalendarScreen() {
       });
     });
 
-    setEvents(allEvents);
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
+    return allEvents;
+  }, [pets]);
 
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };
@@ -272,6 +260,17 @@ export default function HealthCalendarScreen() {
         ))}
       </View>
 
+      {loading && pets.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color={Colors.accentLight} />
+        </View>
+      ) : (
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -282,6 +281,10 @@ export default function HealthCalendarScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
+        {error && (
+          <Text style={styles.emptyText}>{error}</Text>
+        )}
+
         <View style={styles.calendarGrid}>
           {calendarDays.map((day, index) => {
             const dayEvents = day
@@ -472,6 +475,7 @@ export default function HealthCalendarScreen() {
           )}
         </View>
       </ScrollView>
+      )}
     </View>
   );
 }

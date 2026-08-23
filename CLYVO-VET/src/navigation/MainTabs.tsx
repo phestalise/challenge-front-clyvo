@@ -14,11 +14,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-import DashboardScreen from "../screens/main/DashboardScreen";
+import DashboardScreen from "../screens/dashboard/DashboardScreen";
 import PetsScreen from "../screens/pet/PetsScreen";
-import HealthTabScreen from "../screens/main/HealthTabScreen";
-import ProfileScreen from "../screens/main/ProfileScreen";
-import CalendarScreen from "../screens/main/HealthCalendarScreen";
+import HealthTabScreen from "../screens/health/HealthTabScreen";
+import ProfileScreen from "../screens/profile/ProfileScreen";
+import CalendarScreen from "../screens/health/HealthCalendarScreen";
 
 import { Colors } from "../styles/colors";
 import { useAuth } from "../hooks/useAuth";

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -6,54 +6,32 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
-import { storageService } from "../../services/StorageService";
 import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
+import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/PetsScreenStyles";
 
 export default function PetsScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>([]);
+  const { pets, loading, error, reload } = usePets();
+
   const [refreshing, setRefreshing] =
     useState(false);
-
-  const load = async () => {
-    try {
-      const data =
-        await storageService.getPets();
-
-      setPets(
-        Array.isArray(data)
-          ? data
-          : []
-      );
-    } catch {
-      setPets([]);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
 
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };
@@ -90,6 +68,20 @@ export default function PetsScreen() {
         </TouchableOpacity>
       </View>
 
+      {loading && pets.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={Colors.accentLight}
+          />
+        </View>
+      ) : (
       <ScrollView
         showsVerticalScrollIndicator={
           false
@@ -107,6 +99,12 @@ export default function PetsScreen() {
           />
         }
       >
+        {error && (
+          <Text style={styles.emptyText}>
+            {error}
+          </Text>
+        )}
+
         {pets.length === 0 ? (
           <View style={styles.empty}>
             <View style={styles.emptyIcon}>
@@ -379,6 +377,7 @@ export default function PetsScreen() {
           })
         )}
       </ScrollView>
+      )}
     </View>
   );
 }

@@ -19,7 +19,7 @@ import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
 
-import { styles } from "../../styles/Loginscreen.styles";
+import { styles } from "../../styles/LoginScreen.styles";
 
 export default function VerifyEmailScreen() {
   const { user, logout, sendVerificationEmail, refreshEmailVerified } =

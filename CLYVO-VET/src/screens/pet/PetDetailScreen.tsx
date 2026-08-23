@@ -1,19 +1,16 @@
-import React, {
-  useCallback,
-  useState,
-} from "react";
+import React, { useState } from "react";
 
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 
 import { showAlert } from "../../utils/showAlert";
 
 import {
-  useFocusEffect,
   useNavigation,
   useRoute,
   RouteProp,
@@ -23,14 +20,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import {
-  RootStackParamList,
-  Pet,
-} from "../../types";
+import { RootStackParamList } from "../../types";
 
 import { Colors } from "../../styles/colors";
 
 import { petService } from "../../services/PetService";
+import { usePet } from "../../hooks/usePet";
 
 import VaccineCard from "../../components/VaccineCard";
 import MedicationCard from "../../components/MedicationCard";
@@ -59,26 +54,10 @@ export default function PetDetailScreen() {
 
   const petId = route?.params?.petId;
 
-  const [pet, setPet] = useState<Pet | null>(
-    null
-  );
-
   const [tab, setTab] =
     useState<Tab>("info");
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!petId) {
-        return;
-      }
-
-      petService
-        .getById(petId)
-        .then((data) => {
-          setPet(data ?? null);
-        });
-    }, [petId])
-  );
+  const { pet, loading, error, remove } = usePet(petId);
 
   const handleDelete = () => {
     if (!pet || !petId) {
@@ -97,7 +76,15 @@ export default function PetDetailScreen() {
           text: "Remover",
           style: "destructive",
           onPress: async () => {
-            await petService.remove(petId);
+            const ok = await remove();
+
+            if (!ok) {
+              showAlert(
+                "Erro ao remover",
+                "Não foi possível remover o pet. Tente novamente."
+              );
+              return;
+            }
 
             navigation.goBack();
           },
@@ -116,11 +103,19 @@ export default function PetDetailScreen() {
     );
   }
 
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color={Colors.accentLight} />
+      </View>
+    );
+  }
+
   if (!pet) {
     return (
       <View style={styles.center}>
         <Text style={styles.loadingText}>
-          Carregando...
+          {error ?? "Pet não encontrado"}
         </Text>
       </View>
     );
@@ -154,16 +149,31 @@ export default function PetDetailScreen() {
           {pet.name}
         </Text>
 
-        <TouchableOpacity
-          style={styles.deleteBtn}
-          onPress={handleDelete}
-        >
-          <Ionicons
-            name="trash-outline"
-            size={19}
-            color={Colors.accentRed}
-          />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.editBtn}
+            onPress={() =>
+              navigation.navigate("AddPet", { petId })
+            }
+          >
+            <Ionicons
+              name="create-outline"
+              size={19}
+              color={Colors.accentLight}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={handleDelete}
+          >
+            <Ionicons
+              name="trash-outline"
+              size={19}
+              color={Colors.accentRed}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView

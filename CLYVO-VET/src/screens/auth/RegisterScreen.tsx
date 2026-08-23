@@ -29,11 +29,16 @@ import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
 
-import { validarFormularioUsuario } from "../../utils/validators";
+import {
+  validarFormularioUsuario,
+  validarCampoObrigatorio,
+  validarEmail,
+  validarTelefone,
+} from "../../utils/validators";
 
 import InputField from "../../components/InputField";
 
-import { styles } from "../../styles/Registerscreen.styles";
+import { styles } from "../../styles/RegisterScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<
@@ -151,19 +156,25 @@ export default function RegisterScreen({
       string
     > = {};
 
-    if (!form.name.trim()) {
+    if (!validarCampoObrigatorio(form.name)) {
       newErrors.name =
         "Nome obrigatório";
     }
 
-    if (!form.email.trim()) {
+    if (!validarCampoObrigatorio(form.email)) {
       newErrors.email =
         "E-mail obrigatório";
+    } else if (!validarEmail(form.email)) {
+      newErrors.email =
+        "E-mail inválido";
     }
 
-    if (!form.phone.trim()) {
+    if (!validarCampoObrigatorio(form.phone)) {
       newErrors.phone =
         "Telefone obrigatório";
+    } else if (!validarTelefone(form.phone)) {
+      newErrors.phone =
+        "Telefone inválido";
     }
 
     if (

@@ -46,6 +46,21 @@ export const styles = StyleSheet.create({
     color: Colors.white,
   },
 
+  headerActions: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  editBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor:
+      Colors.accentLight + "20",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   deleteBtn: {
     width: 42,
     height: 42,

@@ -1,46 +1,31 @@
-import React, {
-  useCallback,
-  useState,
-} from "react";
+import React, { useState } from "react";
 
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 
-import { storageService } from "../../services/StorageService";
+import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/AddHealthRecordScreen.styles";
 
 export default function AddHealthRecordScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>(
-    []
-  );
+  const { pets, loading, error } = usePets();
 
   const [type, setType] = useState<
     "vaccine" | "medication"
   >("vaccine");
-
-  useFocusEffect(
-    useCallback(() => {
-      storageService
-        .getPets()
-        .then(setPets);
-    }, [])
-  );
 
   const options = [
     {
@@ -181,7 +166,14 @@ export default function AddHealthRecordScreen() {
           Selecionar pet
         </Text>
 
-        {pets.length === 0 ? (
+        {loading && pets.length === 0 ? (
+          <ActivityIndicator
+            size="small"
+            color={Colors.accentLight}
+          />
+        ) : error ? (
+          <Text style={styles.emptyText}>{error}</Text>
+        ) : pets.length === 0 ? (
           <View
             style={
               styles.emptyPets

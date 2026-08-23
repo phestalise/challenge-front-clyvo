@@ -22,12 +22,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 import { styles } from "../../styles/DashboardScreenStyles";
-import { storageService } from "../../services/StorageService";
+import { usePets } from "../../hooks/usePets";
 
 export default function DashboardScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>([]);
+  const { pets, reload } = usePets();
   const [refreshing, setRefreshing] =
     useState(false);
 
@@ -35,25 +35,8 @@ export default function DashboardScreen() {
     new Animated.Value(1)
   ).current;
 
-  const load = async () => {
-    try {
-      const petsData =
-        await storageService.getPets();
-
-      setPets(
-        Array.isArray(petsData)
-          ? petsData
-          : []
-      );
-    } catch {
-      setPets([]);
-    }
-  };
-
   useFocusEffect(
     useCallback(() => {
-      load();
-
       Animated.loop(
         Animated.sequence([
           Animated.timing(
@@ -81,7 +64,7 @@ export default function DashboardScreen() {
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };

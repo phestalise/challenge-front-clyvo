@@ -1,6 +1,6 @@
 // PendingScreen.tsx
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -8,40 +8,29 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
-import { storageService } from "../../services/StorageService";
+import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/PendingScreenStyles";
 
 export default function PendingScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>([]);
+  const { pets, loading, error, reload } = usePets();
   const [refreshing, setRefreshing] =
     useState(false);
-
-  const load = async () =>
-    setPets(await storageService.getPets());
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
 
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };
@@ -81,6 +70,20 @@ export default function PendingScreen() {
         />
       </View>
 
+      {loading && pets.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={Colors.accentLight}
+          />
+        </View>
+      ) : (
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -98,6 +101,10 @@ export default function PendingScreen() {
           false
         }
       >
+        {error && (
+          <Text style={styles.emptyText}>{error}</Text>
+        )}
+
         {pending.length === 0 ? (
           <View style={styles.empty}>
             <Ionicons
@@ -219,6 +226,7 @@ export default function PendingScreen() {
           ))
         )}
       </ScrollView>
+      )}
     </View>
   );
 }

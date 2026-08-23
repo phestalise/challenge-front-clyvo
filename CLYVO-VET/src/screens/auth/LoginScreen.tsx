@@ -28,10 +28,11 @@ import { Colors } from "../../styles/colors";
 
 import { useAuth } from "../../hooks/useAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
+import { validarCampoObrigatorio, validarEmail } from "../../utils/validators";
 
 import InputField from "../../components/InputField";
 
-import { styles } from "../../styles/Loginscreen.styles";
+import { styles } from "../../styles/LoginScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<
@@ -114,12 +115,15 @@ export default function LoginScreen({
         string
       > = {};
 
-      if (!email.trim()) {
+      if (!validarCampoObrigatorio(email)) {
         e.email =
           "E-mail obrigatório";
+      } else if (!validarEmail(email)) {
+        e.email =
+          "E-mail inválido";
       }
 
-      if (!password.trim()) {
+      if (!validarCampoObrigatorio(password)) {
         e.password =
           "Senha obrigatória";
       }

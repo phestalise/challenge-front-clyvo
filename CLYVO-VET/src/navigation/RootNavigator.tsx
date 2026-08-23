@@ -6,17 +6,18 @@ import MainTabs from "./MainTabs";
 
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
-import RegisterScreen from "../screens/auth/Registerscreen";
+import RegisterScreen from "../screens/auth/RegisterScreen";
 import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen";
 
 import AddPetScreen from "../screens/pet/AddPetScreen";
 import PetDetailScreen from "../screens/pet/PetDetailScreen";
+import PetChatScreen from "../screens/pet/PetChatScreen";
 
-import PetChatScreen from "../screens/main/PetChatScreen";
-import HealthCalendarScreen from "../screens/main/HealthCalendarScreen";
-import VaccinesScreen from "../screens/main/VaccinesScreen";
-import MedicationsScreen from "../screens/main/MedicationsScreen";
-import PendingScreen from "../screens/main/PendingScreen";
+import HealthCalendarScreen from "../screens/health/HealthCalendarScreen";
+import VaccinesScreen from "../screens/health/VaccinesScreen";
+import MedicationsScreen from "../screens/health/MedicationsScreen";
+import PendingScreen from "../screens/health/PendingScreen";
+import AddHealthRecordScreen from "../screens/health/AddHealthRecordScreen";
 
 import { useAuth } from "../hooks/useAuth";
 import { Colors } from "../styles/colors";
@@ -51,6 +52,7 @@ function AppStack() {
       <Stack.Screen name="Vaccines" component={VaccinesScreen} />
       <Stack.Screen name="Medications" component={MedicationsScreen} />
       <Stack.Screen name="Pending" component={PendingScreen} />
+      <Stack.Screen name="AddHealthRecord" component={AddHealthRecordScreen} />
     </Stack.Navigator>
   );
 }

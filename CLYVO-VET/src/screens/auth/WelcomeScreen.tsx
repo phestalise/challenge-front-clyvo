@@ -20,7 +20,7 @@ import { RootStackParamList } from "../../types";
 
 import { Colors } from "../../styles/colors";
 
-import { styles } from "../../styles/Welcomescreen.styles ";
+import { styles } from "../../styles/WelcomeScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<

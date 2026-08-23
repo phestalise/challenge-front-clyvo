@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -8,29 +8,35 @@ import {
   RefreshControl,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 
 import { showAlert } from "../../utils/showAlert";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 
-import { storageService } from "../../services/StorageService";
-
 import { obterCorStatus } from "../../utils/formatters";
+import { useVaccines } from "../../hooks/useVaccines";
 
 import { styles } from "../../styles/VaccinesScreenStyles";
 
 export default function VaccinesScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>([]);
+  const {
+    pets,
+    loading,
+    error,
+    saving,
+    reload,
+    addVaccine,
+    toggleDone,
+    removeVaccine,
+  } = useVaccines();
 
   const [refreshing, setRefreshing] =
     useState(false);
@@ -50,61 +56,38 @@ export default function VaccinesScreen() {
   const [vaccineNextDue, setVaccineNextDue] =
     useState("");
 
-  const load = async () => {
-    const p = await storageService.getPets();
-
-    setPets(p);
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
-
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };
 
   const handleAdd = async () => {
-    if (!selectedPetId || !vaccineName) {
-      showAlert(
-        "Preencha o nome da vacina e selecione o pet."
-      );
-
+    if (!selectedPetId) {
+      showAlert("Atenção", "Selecione o pet para a vacina.");
       return;
     }
 
-    const allPets =
-      await storageService.getPets();
+    if (!vaccineName.trim()) {
+      showAlert("Atenção", "Informe o nome da vacina.");
+      return;
+    }
 
-    const updated = allPets.map(
-      (p: any) => {
-        if (p.id !== selectedPetId)
-          return p;
+    const ok = await addVaccine(selectedPetId, {
+      name: vaccineName.trim(),
+      date: vaccineDate,
+      nextDue: vaccineNextDue,
+    });
 
-        const vaccines =
-          p.vaccines ?? [];
-
-        vaccines.push({
-          id: Date.now().toString(),
-          name: vaccineName,
-          date: vaccineDate,
-          nextDue: vaccineNextDue,
-          done: !!vaccineDate,
-        });
-
-        return { ...p, vaccines };
-      }
-    );
-
-    await storageService.savePets(
-      updated
-    );
+    if (!ok) {
+      showAlert(
+        "Erro ao salvar",
+        "Não foi possível salvar a vacina. Tente novamente."
+      );
+      return;
+    }
 
     setModalVisible(false);
 
@@ -112,43 +95,20 @@ export default function VaccinesScreen() {
     setVaccineDate("");
     setVaccineNextDue("");
     setSelectedPetId("");
-
-    load();
   };
 
-  const toggleDone = async (
+  const handleToggleDone = async (
     petId: string,
     vaccineId: string
   ) => {
-    const allPets =
-      await storageService.getPets();
+    const ok = await toggleDone(petId, vaccineId);
 
-    const updated = allPets.map(
-      (p: any) => {
-        if (p.id !== petId) return p;
-
-        return {
-          ...p,
-
-          vaccines: (
-            p.vaccines ?? []
-          ).map((v: any) =>
-            v.id === vaccineId
-              ? {
-                  ...v,
-                  done: !v.done,
-                }
-              : v
-          ),
-        };
-      }
-    );
-
-    await storageService.savePets(
-      updated
-    );
-
-    load();
+    if (!ok) {
+      showAlert(
+        "Erro",
+        "Não foi possível atualizar a vacina. Tente novamente."
+      );
+    }
   };
 
   const handleDelete = async (
@@ -170,31 +130,14 @@ export default function VaccinesScreen() {
           style: "destructive",
 
           onPress: async () => {
-            const allPets =
-              await storageService.getPets();
+            const ok = await removeVaccine(petId, vaccineId);
 
-            const updated =
-              allPets.map((p: any) => {
-                if (p.id !== petId)
-                  return p;
-
-                return {
-                  ...p,
-
-                  vaccines: (
-                    p.vaccines ?? []
-                  ).filter(
-                    (v: any) =>
-                      v.id !== vaccineId
-                  ),
-                };
-              });
-
-            await storageService.savePets(
-              updated
-            );
-
-            load();
+            if (!ok) {
+              showAlert(
+                "Erro ao remover",
+                "Não foi possível remover a vacina. Tente novamente."
+              );
+            }
           },
         },
       ]
@@ -235,6 +178,20 @@ export default function VaccinesScreen() {
         </TouchableOpacity>
       </View>
 
+      {loading && pets.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={Colors.accentLight}
+          />
+        </View>
+      ) : (
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -252,9 +209,13 @@ export default function VaccinesScreen() {
           false
         }
       >
+        {error && (
+          <Text style={styles.emptyText}>{error}</Text>
+        )}
+
         {pets.flatMap((pet) =>
           (pet.vaccines ?? []).map(
-            (v: any) => {
+            (v) => {
               const cor =
                 obterCorStatus(
                   v.done
@@ -338,7 +299,7 @@ export default function VaccinesScreen() {
                   >
                     <TouchableOpacity
                       onPress={() =>
-                        toggleDone(
+                        handleToggleDone(
                           pet.id,
                           v.id
                         )
@@ -424,6 +385,7 @@ export default function VaccinesScreen() {
           </View>
         )}
       </ScrollView>
+      )}
 
       <Modal
         visible={modalVisible}
@@ -565,14 +527,22 @@ export default function VaccinesScreen() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.saveBtn}
+                style={[
+                  styles.saveBtn,
+                  saving && { opacity: 0.6 },
+                ]}
                 onPress={handleAdd}
+                disabled={saving}
               >
-                <Text
-                  style={styles.saveText}
-                >
-                  Salvar
-                </Text>
+                {saving ? (
+                  <ActivityIndicator size="small" color={Colors.white} />
+                ) : (
+                  <Text
+                    style={styles.saveText}
+                  >
+                    Salvar
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

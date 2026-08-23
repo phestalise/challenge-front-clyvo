@@ -1,9 +1,6 @@
 // MedicationsScreen.tsx
 
-import React, {
-  useCallback,
-  useState,
-} from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -13,14 +10,12 @@ import {
   RefreshControl,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 
 import { showAlert } from "../../utils/showAlert";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -28,12 +23,22 @@ import { Colors } from "../../styles/colors";
 
 import { styles } from "../../styles/MedicationsScreenStyles";
 
-import { storageService } from "../../services/StorageService";
+import { useMedications } from "../../hooks/useMedications";
 
 export default function MedicationsScreen() {
   const navigation = useNavigation<any>();
 
-  const [pets, setPets] = useState<any[]>([]);
+  const {
+    pets,
+    loading,
+    error,
+    saving,
+    reload,
+    addMedication,
+    toggleActive,
+    removeMedication,
+  } = useMedications();
+
   const [refreshing, setRefreshing] =
     useState(false);
 
@@ -55,70 +60,39 @@ export default function MedicationsScreen() {
   const [endDate, setEndDate] =
     useState("");
 
-  const load = async () =>
-    setPets(
-      await storageService.getPets()
-    );
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [])
-  );
-
   const onRefresh = async () => {
     setRefreshing(true);
 
-    await load();
+    await reload();
 
     setRefreshing(false);
   };
 
   const handleAdd = async () => {
-    if (
-      !selectedPetId ||
-      !medName
-    ) {
-      showAlert(
-        "Selecione o pet e informe o nome do medicamento."
-      );
-
+    if (!selectedPetId) {
+      showAlert("Atenção", "Selecione o pet do medicamento.");
       return;
     }
 
-    const allPets =
-      await storageService.getPets();
+    if (!medName.trim()) {
+      showAlert("Atenção", "Informe o nome do medicamento.");
+      return;
+    }
 
-    const updated = allPets.map(
-      (p: any) => {
-        if (
-          p.id !== selectedPetId
-        ) {
-          return p;
-        }
+    const ok = await addMedication(selectedPetId, {
+      name: medName.trim(),
+      dosage,
+      frequency,
+      endDate,
+    });
 
-        const medications =
-          p.medications ?? [];
-
-        medications.push({
-          id: Date.now().toString(),
-          name: medName,
-          dosage,
-          frequency,
-          endDate,
-          active: true,
-        });
-
-        return {
-          ...p,
-          medications,
-        };
-      }
-    );
-
-    await storageService.savePets(
-      updated
-    );
+    if (!ok) {
+      showAlert(
+        "Erro ao salvar",
+        "Não foi possível salvar o medicamento. Tente novamente."
+      );
+      return;
+    }
 
     setModalVisible(false);
 
@@ -127,45 +101,20 @@ export default function MedicationsScreen() {
     setFrequency("");
     setEndDate("");
     setSelectedPetId("");
-
-    load();
   };
 
-  const toggleActive = async (
+  const handleToggleActive = async (
     petId: string,
     medId: string
   ) => {
-    const allPets =
-      await storageService.getPets();
+    const ok = await toggleActive(petId, medId);
 
-    const updated = allPets.map(
-      (p: any) => {
-        if (p.id !== petId) {
-          return p;
-        }
-
-        return {
-          ...p,
-          medications: (
-            p.medications ?? []
-          ).map((m: any) =>
-            m.id === medId
-              ? {
-                  ...m,
-                  active:
-                    !m.active,
-                }
-              : m
-          ),
-        };
-      }
-    );
-
-    await storageService.savePets(
-      updated
-    );
-
-    load();
+    if (!ok) {
+      showAlert(
+        "Erro",
+        "Não foi possível atualizar o medicamento. Tente novamente."
+      );
+    }
   };
 
   const handleDelete = async (
@@ -185,38 +134,14 @@ export default function MedicationsScreen() {
           style: "destructive",
 
           onPress: async () => {
-            const allPets =
-              await storageService.getPets();
+            const ok = await removeMedication(petId, medId);
 
-            const updated =
-              allPets.map(
-                (p: any) => {
-                  if (
-                    p.id !== petId
-                  ) {
-                    return p;
-                  }
-
-                  return {
-                    ...p,
-                    medications:
-                      (
-                        p.medications ??
-                        []
-                      ).filter(
-                        (m: any) =>
-                          m.id !==
-                          medId
-                      ),
-                  };
-                }
+            if (!ok) {
+              showAlert(
+                "Erro ao remover",
+                "Não foi possível remover o medicamento. Tente novamente."
               );
-
-            await storageService.savePets(
-              updated
-            );
-
-            load();
+            }
           },
         },
       ]
@@ -257,6 +182,20 @@ export default function MedicationsScreen() {
         </TouchableOpacity>
       </View>
 
+      {loading && pets.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={Colors.accentLight}
+          />
+        </View>
+      ) : (
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -276,10 +215,14 @@ export default function MedicationsScreen() {
           false
         }
       >
+        {error && (
+          <Text style={styles.emptyText}>{error}</Text>
+        )}
+
         {pets.flatMap((pet) =>
           (
             pet.medications ?? []
-          ).map((m: any) => {
+          ).map((m) => {
             const color =
               m.active
                 ? Colors.accentOrange
@@ -348,7 +291,7 @@ export default function MedicationsScreen() {
                 >
                   <TouchableOpacity
                     onPress={() =>
-                      toggleActive(
+                      handleToggleActive(
                         pet.id,
                         m.id
                       )
@@ -446,6 +389,7 @@ export default function MedicationsScreen() {
           </View>
         )}
       </ScrollView>
+      )}
 
       <Modal
         visible={modalVisible}
@@ -625,18 +569,24 @@ export default function MedicationsScreen() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={
-                  styles.saveBtn
-                }
+                style={[
+                  styles.saveBtn,
+                  saving && { opacity: 0.6 },
+                ]}
                 onPress={handleAdd}
+                disabled={saving}
               >
-                <Text
-                  style={
-                    styles.saveBtnText
-                  }
-                >
-                  Salvar
-                </Text>
+                {saving ? (
+                  <ActivityIndicator size="small" color={Colors.white} />
+                ) : (
+                  <Text
+                    style={
+                      styles.saveBtnText
+                    }
+                  >
+                    Salvar
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

@@ -26,28 +26,21 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 import { storageService } from "../../services/StorageService";
+import { usePets } from "../../hooks/usePets";
 
-import { styles } from "../../styles/Petchatscreen.styles";
+import { styles } from "../../styles/PetChatScreen.styles";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-type Pet = {
-  id: string;
-  name: string;
-  species: string;
-  breed: string;
-  age: number;
-  vaccines: any[];
-  medications: any[];
-};
-
 const CHAT_KEY = "@clyvo:chat_history";
 
 export default function PetChatScreen() {
   const navigation = useNavigation<any>();
+
+  const { pets } = usePets();
 
   const [messages, setMessages] =
     useState<Message[]>([]);
@@ -58,25 +51,17 @@ export default function PetChatScreen() {
   const [loading, setLoading] =
     useState(false);
 
-  const [pets, setPets] =
-    useState<Pet[]>([]);
-
   const scrollRef =
     useRef<ScrollView>(null);
 
   useFocusEffect(
     useCallback(() => {
-      loadData();
+      loadHistory();
     }, [])
   );
 
-  const loadData = async () => {
+  const loadHistory = async () => {
     try {
-      const savedPets =
-        await storageService.getPets();
-
-      setPets(savedPets || []);
-
       const savedMessages =
         await storageService.getData(
           CHAT_KEY

@@ -77,6 +77,24 @@ export const styles = StyleSheet.create({
     marginTop: 16,
   },
 
+  errorText: {
+    fontSize: 12,
+    color: Colors.accentRed,
+    marginTop: 6,
+  },
+
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+  },
+
+  loadingText: {
+    color: Colors.textLight,
+    fontSize: 14,
+  },
+
   input: {
     backgroundColor:
       Colors.secondary,
@@ -92,6 +110,10 @@ export const styles = StyleSheet.create({
 
     borderColor:
       "rgba(255,255,255,0.08)",
+  },
+
+  inputError: {
+    borderColor: Colors.accentRed,
   },
 
   row: {
