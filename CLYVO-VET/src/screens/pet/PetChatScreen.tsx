@@ -14,17 +14,21 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 import { usePets } from "../../hooks/usePets";
 import { useChatHistory } from "../../hooks/useChatHistory";
 
 import { styles } from "../../styles/PetChatScreen.styles";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function PetChatScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
 
   const { pets } = usePets();
   const { messages, addMessage, clearHistory } = useChatHistory();

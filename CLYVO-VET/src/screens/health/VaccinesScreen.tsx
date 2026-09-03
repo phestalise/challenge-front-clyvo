@@ -14,20 +14,24 @@ import {
 import { showAlert } from "../../utils/showAlert";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 
 import { obterCorStatus } from "../../utils/formatters";
 import { useVaccines } from "../../hooks/useVaccines";
 
 import { styles } from "../../styles/VaccinesScreenStyles";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function VaccinesScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
 
   const {

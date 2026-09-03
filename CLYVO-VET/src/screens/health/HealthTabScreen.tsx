@@ -12,10 +12,12 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 
 import { styles } from "../../styles/HealthTabStyles";
 
@@ -24,8 +26,10 @@ import { usePets } from "../../hooks/usePets";
 
 import { calcularIdadeTexto } from "../../utils/formatters";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function HealthTabScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
 
   const { pets, loading, error, reload } = usePets();
 

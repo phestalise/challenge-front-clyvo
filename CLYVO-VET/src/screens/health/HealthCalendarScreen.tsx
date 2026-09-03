@@ -12,17 +12,21 @@ import {
 } from "react-native";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 import {
   styles,
 } from "../../styles/HealthCalendarScreen.styles";
 
 import { usePets } from "../../hooks/usePets";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 type CalendarEvent = {
   id: string;
@@ -40,7 +44,7 @@ const DAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MAX_DOTS_PER_DAY = 3;
 
 export default function HealthCalendarScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const route = useRoute();
   const insets = useSafeAreaInsets();
 

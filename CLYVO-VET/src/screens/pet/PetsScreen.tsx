@@ -10,20 +10,24 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
 import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/PetsScreenStyles";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function PetsScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
 
   const { pets, loading, error, reload } = usePets();

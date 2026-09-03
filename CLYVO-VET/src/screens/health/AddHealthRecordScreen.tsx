@@ -9,19 +9,23 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 
 import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/AddHealthRecordScreen.styles";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function AddHealthRecordScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
 
   const { pets, loading, error } = usePets();
@@ -44,7 +48,7 @@ export default function AddHealthRecordScreen() {
       desc:
         "Registrar aplicação ou agendar próxima dose",
 
-      route: "Vaccines",
+      route: "Vaccines" as const,
     },
 
     {
@@ -60,7 +64,7 @@ export default function AddHealthRecordScreen() {
       desc:
         "Adicionar medicamento em uso ou tratamento",
 
-      route: "Medications",
+      route: "Medications" as const,
     },
   ];
 
@@ -123,9 +127,7 @@ export default function AddHealthRecordScreen() {
               onPress={() => {
                 setType(opt.key);
 
-                navigation.navigate(
-                  opt.route as any
-                );
+                navigation.navigate(opt.route);
               }}
               activeOpacity={0.8}
             >
@@ -198,9 +200,7 @@ export default function AddHealthRecordScreen() {
 
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate(
-                  "AddPet" as any
-                )
+                navigation.navigate("AddPet")
               }
             >
               <Text
@@ -219,12 +219,9 @@ export default function AddHealthRecordScreen() {
                 key={pet.id}
                 style={styles.petRow}
                 onPress={() =>
-                  navigation.navigate(
-                    "PetDetail" as any,
-                    {
-                      petId: pet.id,
-                    }
-                  )
+                  navigation.navigate("PetDetail", {
+                    petId: pet.id,
+                  })
                 }
                 activeOpacity={0.8}
               >

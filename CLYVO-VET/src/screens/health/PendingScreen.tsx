@@ -12,18 +12,22 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
+import { RootStackParamList } from "../../types";
 import { usePets } from "../../hooks/usePets";
 
 import { styles } from "../../styles/PendingScreenStyles";
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export default function PendingScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
 
   const { pets, loading, error, reload } = usePets();

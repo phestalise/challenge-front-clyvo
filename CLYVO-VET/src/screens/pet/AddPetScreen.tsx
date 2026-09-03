@@ -16,6 +16,7 @@ import {
   useRoute,
   RouteProp,
 } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -37,10 +38,11 @@ const SPECIES = [
   "Outro",
 ];
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AddPet">;
 
 export default function AddPetScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
 
