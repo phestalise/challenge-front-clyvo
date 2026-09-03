@@ -36,6 +36,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
+  VerifyEmail: undefined;
   Main: undefined;
   AddPet: { petId?: string } | undefined;
   PetDetail: { petId: string };

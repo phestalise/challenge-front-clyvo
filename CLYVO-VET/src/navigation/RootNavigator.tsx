@@ -38,6 +38,17 @@ function AuthStack() {
   );
 }
 
+function VerifyStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="VerifyEmail"
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
+    </Stack.Navigator>
+  );
+}
+
 function AppStack() {
   return (
     <Stack.Navigator
@@ -77,7 +88,7 @@ export default function RootNavigator() {
 
   if (!user) return <AuthStack />;
 
-  if (!user.emailVerified) return <VerifyEmailScreen />;
+  if (!user.emailVerified) return <VerifyStack />;
 
   return <AppStack />;
 }
