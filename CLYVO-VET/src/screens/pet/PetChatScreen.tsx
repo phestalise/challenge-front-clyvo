@@ -1,10 +1,6 @@
 // PetChatScreen.tsx
 
-import React, {
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import React, { useRef, useState } from "react";
 
 import {
   View,
@@ -17,105 +13,43 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import {
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
-import { storageService } from "../../services/StorageService";
 import { usePets } from "../../hooks/usePets";
+import { useChatHistory } from "../../hooks/useChatHistory";
 
 import { styles } from "../../styles/PetChatScreen.styles";
-
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-};
-
-const CHAT_KEY = "@clyvo:chat_history";
 
 export default function PetChatScreen() {
   const navigation = useNavigation<any>();
 
   const { pets } = usePets();
-
-  const [messages, setMessages] =
-    useState<Message[]>([]);
+  const { messages, addMessage, clearHistory } = useChatHistory();
 
   const [input, setInput] =
     useState("");
 
-  const [loading, setLoading] =
+  const [sending, setSending] =
     useState(false);
 
   const scrollRef =
     useRef<ScrollView>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadHistory();
-    }, [])
-  );
-
-  const loadHistory = async () => {
-    try {
-      const savedMessages =
-        await storageService.getData(
-          CHAT_KEY
-        );
-
-      if (savedMessages) {
-        setMessages(
-          JSON.parse(savedMessages)
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const saveHistory = async (
-    msgs: Message[]
-  ) => {
-    try {
-      await storageService.saveData(
-        CHAT_KEY,
-        JSON.stringify(msgs)
-      );
-    } catch {}
-  };
-
-  const clearHistory = async () => {
-    setMessages([]);
-
-    await storageService.saveData(
-      CHAT_KEY,
-      JSON.stringify([])
-    );
-  };
-
   const sendMessage = async () => {
-    if (!input.trim() || loading)
+    if (!input.trim() || sending)
       return;
 
-    const userMsg: Message = {
+    await addMessage({
       role: "user",
       content: input.trim(),
-    };
-
-    const updated = [
-      ...messages,
-      userMsg,
-    ];
-
-    setMessages(updated);
+    });
 
     setInput("");
 
-    setLoading(true);
+    setSending(true);
 
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({
@@ -134,42 +68,20 @@ export default function PetChatScreen() {
               .join(", ")
           : "Nenhum pet cadastrado";
 
-      const fakeAIResponse: Message =
-        {
-          role: "assistant",
-          content: `🐾 Pets: ${petsInfo}`,
-        };
-
-      const finalMessages = [
-        ...updated,
-        fakeAIResponse,
-      ];
-
-      setMessages(finalMessages);
-
-      await saveHistory(
-        finalMessages
-      );
+      await addMessage({
+        role: "assistant",
+        content: `🐾 Pets: ${petsInfo}`,
+      });
     } catch (error) {
       console.log(error);
 
-      const errorMessages = [
-        ...updated,
-        {
-          role:
-            "assistant" as const,
-          content:
-            "Erro ao processar mensagem.",
-        },
-      ];
-
-      setMessages(errorMessages);
-
-      await saveHistory(
-        errorMessages
-      );
+      await addMessage({
+        role: "assistant",
+        content:
+          "Erro ao processar mensagem.",
+      });
     } finally {
-      setLoading(false);
+      setSending(false);
 
       setTimeout(() => {
         scrollRef.current?.scrollToEnd({
@@ -305,7 +217,7 @@ export default function PetChatScreen() {
           }
         )}
 
-        {loading && (
+        {sending && (
           <View
             style={
               styles.typingBubble
