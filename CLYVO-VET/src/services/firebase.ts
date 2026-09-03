@@ -7,14 +7,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // @ts-expect-error
 import { getReactNativePersistence } from "firebase/auth";
 
+const REQUIRED_ENV_VARS = [
+  "EXPO_PUBLIC_FIREBASE_API_KEY",
+  "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN",
+  "EXPO_PUBLIC_FIREBASE_PROJECT_ID",
+  "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET",
+  "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+  "EXPO_PUBLIC_FIREBASE_APP_ID",
+  "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID",
+] as const;
+
+function readEnv(name: (typeof REQUIRED_ENV_VARS)[number]): string {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(
+      `Configuração do Firebase incompleta: variável de ambiente ${name} não definida. Copie .env.example para .env e preencha os valores do seu projeto Firebase.`
+    );
+  }
+
+  return value;
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAR6HRJkZdaVhV64T4mUQKyK9JUskzrgEA",
-  authDomain: "clyvo-vet-a0a28.firebaseapp.com",
-  projectId: "clyvo-vet-a0a28",
-  storageBucket: "clyvo-vet-a0a28.firebasestorage.app",
-  messagingSenderId: "366192133380",
-  appId: "1:366192133380:web:36be2e4b142d7799a6fc51",
-  measurementId: "G-ZE4PHSHN6G",
+  apiKey: readEnv("EXPO_PUBLIC_FIREBASE_API_KEY"),
+  authDomain: readEnv("EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN"),
+  projectId: readEnv("EXPO_PUBLIC_FIREBASE_PROJECT_ID"),
+  storageBucket: readEnv("EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET"),
+  messagingSenderId: readEnv("EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID"),
+  appId: readEnv("EXPO_PUBLIC_FIREBASE_APP_ID"),
+  measurementId: readEnv("EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID"),
 };
 
 export const firebaseApp: FirebaseApp = getApps().length
