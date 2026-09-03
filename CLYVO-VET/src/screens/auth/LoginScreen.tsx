@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import {
   View,
@@ -36,15 +32,10 @@ import InputField from "../../components/InputField";
 import { styles } from "../../styles/LoginScreen.styles";
 
 type Props = {
-  navigation: NativeStackNavigationProp<
-    RootStackParamList,
-    "Login"
-  >;
+  navigation: NativeStackNavigationProp<RootStackParamList, "Login">;
 };
 
-export default function LoginScreen({
-  navigation,
-}: Props) {
+export default function LoginScreen({ navigation }: Props) {
   const { login, resetPassword } = useAuth();
 
   const {
@@ -53,55 +44,36 @@ export default function LoginScreen({
     loading: googleLoading,
   } = useGoogleAuth();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [resetLoading, setResetLoading] =
-    useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
 
-  const [errors, setErrors] =
-    useState<
-      Record<string, string>
-    >({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const fadeAnim = useRef(
-    new Animated.Value(0)
-  ).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const slideAnim = useRef(
-    new Animated.Value(30)
-  ).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
 
-  const cardAnim = useRef(
-    new Animated.Value(40)
-  ).current;
+  const cardAnim = useRef(new Animated.Value(40)).current;
 
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(
-          fadeAnim,
-          {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
 
-        Animated.timing(
-          slideAnim,
-          {
-            toValue: 0,
-            duration: 500,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
       ]),
 
       Animated.timing(cardAnim, {
@@ -112,50 +84,40 @@ export default function LoginScreen({
     ]).start();
   }, []);
 
-  const handleLogin =
-    async () => {
-      const e: Record<
-        string,
-        string
-      > = {};
+  const handleLogin = async () => {
+    const e: Record<string, string> = {};
 
-      if (!validarCampoObrigatorio(email)) {
-        e.email =
-          "E-mail obrigatório";
-      } else if (!validarEmail(email)) {
-        e.email =
-          "E-mail inválido";
-      }
+    if (!validarCampoObrigatorio(email)) {
+      e.email = "E-mail obrigatório";
+    } else if (!validarEmail(email)) {
+      e.email = "E-mail inválido";
+    }
 
-      if (!validarCampoObrigatorio(password)) {
-        e.password =
-          "Senha obrigatória";
-      }
+    if (!validarCampoObrigatorio(password)) {
+      e.password = "Senha obrigatória";
+    }
 
-      if (Object.keys(e).length) {
-        setErrors(e);
-        return;
-      }
+    if (Object.keys(e).length) {
+      setErrors(e);
+      return;
+    }
 
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        await login(email, password);
-      } catch (error: any) {
-        showAlert(
-          "Erro",
-          mapFirebaseAuthError(error?.code)
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      await login(email, password);
+    } catch (error: any) {
+      showAlert("Erro", mapFirebaseAuthError(error?.code));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
       showAlert(
         "Informe seu e-mail",
-        "Digite seu e-mail no campo acima para receber o link de redefinição de senha."
+        "Digite seu e-mail no campo acima para receber o link de redefinição de senha.",
       );
       return;
     }
@@ -167,7 +129,7 @@ export default function LoginScreen({
 
       showAlert(
         "E-mail enviado",
-        "Enviamos um link para redefinir sua senha. Confira sua caixa de entrada (e o spam)."
+        "Enviamos um link para redefinir sua senha. Confira sua caixa de entrada (e o spam).",
       );
     } catch (error: any) {
       showAlert("Erro", mapFirebaseAuthError(error?.code));
@@ -185,78 +147,39 @@ export default function LoginScreen({
   };
 
   return (
-    <SafeAreaView
-      style={styles.safe}
-    >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={
-          Colors.primary
-        }
-      />
+    <SafeAreaView style={styles.safe}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
 
       <KeyboardAvoidingView
-        style={
-          styles.keyboardContainer
-        }
-        behavior={
-          Platform.OS === "ios"
-            ? "padding"
-            : undefined
-        }
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
           style={styles.container}
-          contentContainerStyle={
-            styles.content
-          }
+          contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={
-            false
-          }
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.orb} />
 
-          <View
-            style={styles.orbBottom}
-          />
+          <View style={styles.orbBottom} />
 
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.goBack()
-              }
+              onPress={() => navigation.goBack()}
               style={styles.back}
               activeOpacity={0.7}
             >
-              <Ionicons
-                name="arrow-back"
-                size={20}
-                color={Colors.white}
-              />
+              <Ionicons name="arrow-back" size={20} color={Colors.white} />
             </TouchableOpacity>
 
-            <View
-              style={styles.logoRow}
-            >
-              <Ionicons
-                name="paw"
-                size={14}
-                color={
-                  Colors.accentLight
-                }
-              />
+            <View style={styles.logoRow}>
+              <Ionicons name="paw" size={14} color={Colors.accentLight} />
 
-              <Text
-                style={styles.logo}
-              >
-                CLYVO VET
-              </Text>
+              <Text style={styles.logo}>CLYVO VET</Text>
             </View>
 
-            <View
-              style={styles.headerSpacer}
-            />
+            <View style={styles.headerSpacer} />
           </View>
 
           <Animated.View
@@ -264,46 +187,26 @@ export default function LoginScreen({
               opacity: fadeAnim,
               transform: [
                 {
-                  translateY:
-                    slideAnim,
+                  translateY: slideAnim,
                 },
               ],
             }}
           >
-            <View
-              style={styles.badgeRow}
-            >
-              <View
-                style={styles.badge}
-              >
-                <View
-                  style={
-                    styles.badgeDot
-                  }
-                />
+            <View style={styles.badgeRow}>
+              <View style={styles.badge}>
+                <View style={styles.badgeDot} />
 
-                <Text
-                  style={
-                    styles.badgeText
-                  }
-                >
-                  ENTRAR
-                </Text>
+                <Text style={styles.badgeText}>ENTRAR</Text>
               </View>
             </View>
 
-            <Text
-              style={styles.title}
-            >
+            <Text style={styles.title}>
               Bem-vindo{"\n"}
               de volta 👋
             </Text>
 
-            <Text
-              style={styles.sub}
-            >
-              Acesse sua conta
-              para continuar
+            <Text style={styles.sub}>
+              Acesse sua conta para continuar
               {"\n"}
               cuidando do seu pet
             </Text>
@@ -316,8 +219,7 @@ export default function LoginScreen({
                 opacity: fadeAnim,
                 transform: [
                   {
-                    translateY:
-                      cardAnim,
+                    translateY: cardAnim,
                   },
                 ],
               },
@@ -326,9 +228,7 @@ export default function LoginScreen({
             <InputField
               label="E-mail"
               value={email}
-              onChangeText={
-                setEmail
-              }
+              onChangeText={setEmail}
               error={errors.email}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -337,74 +237,44 @@ export default function LoginScreen({
                 <Ionicons
                   name="mail-outline"
                   size={18}
-                  color={
-                    Colors.textSecondary
-                  }
+                  color={Colors.textSecondary}
                 />
               }
             />
 
-            <View
-              style={
-                styles.dividerField
-              }
-            />
+            <View style={styles.dividerField} />
 
             <InputField
               label="Senha"
               value={password}
-              onChangeText={
-                setPassword
-              }
-              error={
-                errors.password
-              }
+              onChangeText={setPassword}
+              error={errors.password}
               secureTextEntry
               placeholder="••••••••"
               icon={
                 <Ionicons
                   name="lock-closed-outline"
                   size={18}
-                  color={
-                    Colors.textSecondary
-                  }
+                  color={Colors.textSecondary}
                 />
               }
             />
 
-            <View
-              style={
-                styles.forgotRow
-              }
-            >
+            <View style={styles.forgotRow}>
               <TouchableOpacity
-                style={
-                  styles.forgotBtn
-                }
+                style={styles.forgotBtn}
                 activeOpacity={0.6}
-                onPress={
-                  handleForgotPassword
-                }
-                disabled={
-                  resetLoading
-                }
+                onPress={handleForgotPassword}
+                disabled={resetLoading}
               >
-                <Text
-                  style={
-                    styles.forgotText
-                  }
-                >
-                  {resetLoading
-                    ? "Enviando..."
-                    : "Esqueci minha senha"}
+                <Text style={styles.forgotText}>
+                  {resetLoading ? "Enviando..." : "Esqueci minha senha"}
                 </Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
 
-          <View
-            style={styles.actions}
-          >
+          <View style={styles.actions}>
             <TouchableOpacity
               style={[
                 styles.btnPrimary,
@@ -412,71 +282,33 @@ export default function LoginScreen({
                   opacity: 0.6,
                 },
               ]}
-              onPress={
-                handleLogin
-              }
+              onPress={handleLogin}
               disabled={loading}
               activeOpacity={0.85}
             >
               {loading ? (
-                <Text
-                  style={
-                    styles.btnPrimaryText
-                  }
-                >
-                  Entrando...
-                </Text>
+                <Text style={styles.btnPrimaryText}>Entrando...</Text>
               ) : (
                 <>
-                  <Text
-                    style={
-                      styles.btnPrimaryText
-                    }
-                  >
-                    Entrar na conta
-                  </Text>
+                  <Text style={styles.btnPrimaryText}>Entrar na conta</Text>
 
-                  <View
-                    style={
-                      styles.btnArrow
-                    }
-                  >
+                  <View style={styles.btnArrow}>
                     <Ionicons
                       name="arrow-forward"
                       size={15}
-                      color={
-                        Colors.accentLight
-                      }
+                      color={Colors.accentLight}
                     />
                   </View>
                 </>
               )}
             </TouchableOpacity>
 
-            <View
-              style={
-                styles.dividerRow
-              }
-            >
-              <View
-                style={
-                  styles.divider
-                }
-              />
+            <View style={styles.dividerRow}>
+              <View style={styles.divider} />
 
-              <Text
-                style={
-                  styles.dividerText
-                }
-              >
-                ou
-              </Text>
+              <Text style={styles.dividerText}>ou</Text>
 
-              <View
-                style={
-                  styles.divider
-                }
-              />
+              <View style={styles.divider} />
             </View>
 
             <TouchableOpacity
@@ -491,117 +323,54 @@ export default function LoginScreen({
                   opacity: 0.6,
                 },
               ]}
-              onPress={
-                handleGoogleLogin
-              }
-              disabled={
-                googleLoading ||
-                !googleReady
-              }
+              onPress={handleGoogleLogin}
+              disabled={googleLoading || !googleReady}
               activeOpacity={0.7}
             >
-              <Ionicons
-                name="logo-google"
-                size={16}
-                color={
-                  Colors.white
-                }
-              />
+              <Ionicons name="logo-google" size={16} color={Colors.white} />
 
-              <Text
-                style={
-                  styles.btnSecondaryText
-                }
-              >
-                {googleLoading
-                  ? "Conectando..."
-                  : "Entrar com Google"}
+              <Text style={styles.btnSecondaryText}>
+                {googleLoading ? "Conectando..." : "Entrar com Google"}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={
-                styles.btnSecondary
-              }
-              onPress={() =>
-                navigation.navigate(
-                  "Register"
-                )
-              }
+              style={styles.btnSecondary}
+              onPress={() => navigation.navigate("Register")}
               activeOpacity={0.7}
             >
-              <Text
-                style={
-                  styles.btnSecondaryText
-                }
-              >
-                Criar nova conta
-              </Text>
+              <Text style={styles.btnSecondaryText}>Criar nova conta</Text>
             </TouchableOpacity>
 
-            <View
-              style={
-                styles.trustRow
-              }
-            >
-              <View
-                style={
-                  styles.trustItem
-                }
-              >
+            <View style={styles.trustRow}>
+              <View style={styles.trustItem}>
                 <Ionicons
                   name="shield-checkmark-outline"
                   size={12}
                   color="rgba(255,255,255,0.3)"
                 />
 
-                <Text
-                  style={
-                    styles.trustText
-                  }
-                >
-                  Seguro
-                </Text>
+                <Text style={styles.trustText}>Seguro</Text>
               </View>
 
-              <View
-                style={
-                  styles.trustItem
-                }
-              >
+              <View style={styles.trustItem}>
                 <Ionicons
                   name="lock-closed-outline"
                   size={12}
                   color="rgba(255,255,255,0.3)"
                 />
 
-                <Text
-                  style={
-                    styles.trustText
-                  }
-                >
-                  Criptografado
-                </Text>
+                <Text style={styles.trustText}>Criptografado</Text>
               </View>
 
-              <View
-                style={
-                  styles.trustItem
-                }
-              >
+              <View style={styles.trustItem}>
                 <Ionicons
                   name="heart-outline"
                   size={12}
                   color="rgba(255,255,255,0.3)"
                 />
 
-                <Text
-                  style={
-                    styles.trustText
-                  }
-                >
-                  Privado
-                </Text>
+                <Text style={styles.trustText}>Privado</Text>
               </View>
             </View>
           </View>

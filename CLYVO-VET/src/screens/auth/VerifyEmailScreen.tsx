@@ -37,7 +37,7 @@ export default function VerifyEmailScreen() {
       if (!verified) {
         showAlert(
           "Ainda não confirmado",
-          "Não encontramos a confirmação do seu e-mail. Verifique sua caixa de entrada e clique no link antes de continuar."
+          "Não encontramos a confirmação do seu e-mail. Verifique sua caixa de entrada e clique no link antes de continuar.",
         );
       }
     } catch (error: any) {
@@ -55,7 +55,7 @@ export default function VerifyEmailScreen() {
 
       showAlert(
         "E-mail reenviado",
-        "Enviamos um novo link de confirmação para o seu e-mail."
+        "Enviamos um novo link de confirmação para o seu e-mail.",
       );
     } catch (error: any) {
       showAlert("Erro", mapFirebaseAuthError(error?.code));
@@ -82,11 +82,7 @@ export default function VerifyEmailScreen() {
 
           <View style={styles.header}>
             <View style={styles.logoRow}>
-              <Ionicons
-                name="paw"
-                size={14}
-                color={Colors.accentLight}
-              />
+              <Ionicons name="paw" size={14} color={Colors.accentLight} />
 
               <Text style={styles.logo}>CLYVO VET</Text>
             </View>
@@ -103,9 +99,8 @@ export default function VerifyEmailScreen() {
           <Text style={styles.title}>Confirme seu{"\n"}e-mail 📧</Text>
 
           <Text style={styles.sub}>
-            Enviamos um link de confirmação para{" "}
-            {user?.email ?? "o seu e-mail"}. Abra o link e depois toque em
-            "Já confirmei" para continuar.
+            Enviamos um link de confirmação para {user?.email ?? "o seu e-mail"}
+            . Abra o link e depois toque em "Já confirmei" para continuar.
           </Text>
 
           <View style={styles.actions}>

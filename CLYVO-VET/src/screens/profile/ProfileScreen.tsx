@@ -37,20 +37,15 @@ const FAQ_DATA = [
 export default function ProfileScreen() {
   const { user, logout, updateName, updateEmailAddress } = useAuth();
 
-  const [editModal, setEditModal] =
-    useState(false);
+  const [editModal, setEditModal] = useState(false);
 
-  const [editName, setEditName] =
-    useState("");
+  const [editName, setEditName] = useState("");
 
-  const [editEmail, setEditEmail] =
-    useState("");
+  const [editEmail, setEditEmail] = useState("");
 
-  const [saving, setSaving] =
-    useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const [openFaq, setOpenFaq] =
-    useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const openEdit = () => {
     setEditName(user?.displayName ?? "");
@@ -64,32 +59,19 @@ export default function ProfileScreen() {
     setSaving(true);
 
     try {
-      if (
-        editName.trim() &&
-        editName.trim() !== user?.displayName
-      ) {
+      if (editName.trim() && editName.trim() !== user?.displayName) {
         await updateName(editName.trim());
       }
 
-      if (
-        editEmail.trim() &&
-        editEmail.trim().toLowerCase() !==
-          user?.email
-      ) {
+      if (editEmail.trim() && editEmail.trim().toLowerCase() !== user?.email) {
         await updateEmailAddress(editEmail);
       }
 
       setEditModal(false);
 
-      showAlert(
-        "Sucesso",
-        "Perfil atualizado."
-      );
+      showAlert("Sucesso", "Perfil atualizado.");
     } catch (error: any) {
-      showAlert(
-        "Erro",
-        mapFirebaseAuthError(error?.code)
-      );
+      showAlert("Erro", mapFirebaseAuthError(error?.code));
     } finally {
       setSaving(false);
     }
@@ -117,90 +99,52 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <ScrollView
-        showsVerticalScrollIndicator={
-          false
-        }
-        contentContainerStyle={
-          styles.content
-        }
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
       >
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
-              {initials(
-                user?.displayName ?? ""
-              )}
+              {initials(user?.displayName ?? "")}
             </Text>
           </View>
 
-          <Text style={styles.name}>
-            {user?.displayName ?? "Usuário"}
-          </Text>
+          <Text style={styles.name}>{user?.displayName ?? "Usuário"}</Text>
 
-          <Text style={styles.email}>
-            {user?.email ?? ""}
-          </Text>
+          <Text style={styles.email}>{user?.email ?? ""}</Text>
 
           <TouchableOpacity
             style={styles.editBtn}
             onPress={openEdit}
             activeOpacity={0.8}
           >
-            <Ionicons
-              name="create-outline"
-              size={18}
-              color={Colors.white}
-            />
+            <Ionicons name="create-outline" size={18} color={Colors.white} />
 
-            <Text
-              style={styles.editBtnText}
-            >
-              Editar perfil
-            </Text>
+            <Text style={styles.editBtnText}>Editar perfil</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            Perguntas rápidas
-          </Text>
+          <Text style={styles.sectionTitle}>Perguntas rápidas</Text>
 
           {FAQ_DATA.map((item, i) => (
             <TouchableOpacity
               key={i}
               style={styles.faqItem}
               activeOpacity={0.8}
-              onPress={() =>
-                setOpenFaq(
-                  openFaq === i
-                    ? null
-                    : i
-                )
-              }
+              onPress={() => setOpenFaq(openFaq === i ? null : i)}
             >
               <View style={styles.faqRow}>
-                <Text style={styles.faqQ}>
-                  {item.q}
-                </Text>
+                <Text style={styles.faqQ}>{item.q}</Text>
 
                 <Ionicons
-                  name={
-                    openFaq === i
-                      ? "chevron-up"
-                      : "chevron-down"
-                  }
+                  name={openFaq === i ? "chevron-up" : "chevron-down"}
                   size={18}
-                  color={
-                    Colors.textLight
-                  }
+                  color={Colors.textLight}
                 />
               </View>
 
-              {openFaq === i && (
-                <Text style={styles.faqA}>
-                  {item.a}
-                </Text>
-              )}
+              {openFaq === i && <Text style={styles.faqA}>{item.a}</Text>}
             </TouchableOpacity>
           ))}
         </View>
@@ -210,37 +154,23 @@ export default function ProfileScreen() {
           activeOpacity={0.8}
           onPress={handleLogout}
         >
-          <Ionicons
-            name="log-out-outline"
-            size={20}
-            color="#FF6B6B"
-          />
+          <Ionicons name="log-out-outline" size={20} color="#FF6B6B" />
 
-          <Text style={styles.logoutText}>
-            Sair da conta
-          </Text>
+          <Text style={styles.logoutText}>Sair da conta</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      <Modal
-        visible={editModal}
-        transparent
-        animationType="slide"
-      >
+      <Modal visible={editModal} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>
-              Editar perfil
-            </Text>
+            <Text style={styles.modalTitle}>Editar perfil</Text>
 
             <TextInput
               style={styles.input}
               value={editName}
               onChangeText={setEditName}
               placeholder="Nome"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
             />
 
             <TextInput
@@ -248,44 +178,25 @@ export default function ProfileScreen() {
               value={editEmail}
               onChangeText={setEditEmail}
               placeholder="E-mail"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               autoCapitalize="none"
             />
 
             <View style={styles.modalBtns}>
               <TouchableOpacity
                 style={styles.cancelBtn}
-                onPress={() =>
-                  setEditModal(false)
-                }
+                onPress={() => setEditModal(false)}
               >
-                <Text
-                  style={
-                    styles.cancelText
-                  }
-                >
-                  Cancelar
-                </Text>
+                <Text style={styles.cancelText}>Cancelar</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  saving && { opacity: 0.6 },
-                ]}
+                style={[styles.saveBtn, saving && { opacity: 0.6 }]}
                 onPress={saveEdit}
                 disabled={saving}
               >
-                <Text
-                  style={
-                    styles.saveText
-                  }
-                >
-                  {saving
-                    ? "Salvando..."
-                    : "Salvar"}
+                <Text style={styles.saveText}>
+                  {saving ? "Salvando..." : "Salvar"}
                 </Text>
               </TouchableOpacity>
             </View>

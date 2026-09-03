@@ -41,7 +41,7 @@ export function useVaccines() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   const addVaccine = useCallback(
@@ -76,7 +76,7 @@ export function useVaccines() {
         setSaving(false);
       }
     },
-    [user, load]
+    [user, load],
   );
 
   const toggleDone = useCallback(
@@ -88,7 +88,7 @@ export function useVaccines() {
         if (!pet) return false;
 
         const vaccines = (pet.vaccines ?? []).map((v) =>
-          v.id === vaccineId ? { ...v, done: !v.done } : v
+          v.id === vaccineId ? { ...v, done: !v.done } : v,
         );
 
         await petService.save({ ...pet, vaccines });
@@ -100,7 +100,7 @@ export function useVaccines() {
         return false;
       }
     },
-    [user, load]
+    [user, load],
   );
 
   const removeVaccine = useCallback(
@@ -111,9 +111,7 @@ export function useVaccines() {
         const pet = await petService.getById(petId, user.uid);
         if (!pet) return false;
 
-        const vaccines = (pet.vaccines ?? []).filter(
-          (v) => v.id !== vaccineId
-        );
+        const vaccines = (pet.vaccines ?? []).filter((v) => v.id !== vaccineId);
 
         await petService.save({ ...pet, vaccines });
         await load();
@@ -124,7 +122,7 @@ export function useVaccines() {
         return false;
       }
     },
-    [user, load]
+    [user, load],
   );
 
   return {

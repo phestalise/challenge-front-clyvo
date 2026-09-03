@@ -24,7 +24,7 @@ class AuthService {
     const credential = await signInWithEmailAndPassword(
       auth,
       email.trim().toLowerCase(),
-      password
+      password,
     );
 
     return credential.user;
@@ -33,12 +33,12 @@ class AuthService {
   async register(
     name: string,
     email: string,
-    password: string
+    password: string,
   ): Promise<FirebaseUser> {
     const credential = await createUserWithEmailAndPassword(
       auth,
       email.trim().toLowerCase(),
-      password
+      password,
     );
 
     await updateProfile(credential.user, { displayName: name.trim() });

@@ -34,8 +34,7 @@ export const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor:
-      "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -55,8 +54,7 @@ export const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor:
-      Colors.accentLight + "20",
+    backgroundColor: Colors.accentLight + "20",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -65,8 +63,7 @@ export const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor:
-      Colors.accentRed + "20",
+    backgroundColor: Colors.accentRed + "20",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -89,8 +86,7 @@ export const styles = StyleSheet.create({
     width: 76,
     height: 76,
     borderRadius: 22,
-    backgroundColor:
-      Colors.accentLight + "15",
+    backgroundColor: Colors.accentLight + "15",
     justifyContent: "center",
     alignItems: "center",
   },

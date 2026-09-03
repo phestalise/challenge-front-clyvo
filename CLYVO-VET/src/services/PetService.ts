@@ -27,7 +27,7 @@ class PetService implements IPetService {
   async remove(id: string, ownerId: string): Promise<void> {
     const pets = await this.storage.getPets();
     await this.storage.savePets(
-      pets.filter((p) => !(p.id === id && p.ownerId === ownerId))
+      pets.filter((p) => !(p.id === id && p.ownerId === ownerId)),
     );
   }
 

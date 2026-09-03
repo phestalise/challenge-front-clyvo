@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-} from "react";
+import React, { useEffect, useRef } from "react";
 
 import {
   View,
@@ -23,85 +20,53 @@ import { Colors } from "../../styles/colors";
 import { styles } from "../../styles/WelcomeScreen.styles";
 
 type Props = {
-  navigation: NativeStackNavigationProp<
-    RootStackParamList,
-    "Welcome"
-  >;
+  navigation: NativeStackNavigationProp<RootStackParamList, "Welcome">;
 };
 
-export default function WelcomeScreen({
-  navigation,
-}: Props) {
-  const fadeAnim = useRef(
-    new Animated.Value(0)
-  ).current;
+export default function WelcomeScreen({ navigation }: Props) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const slideAnim = useRef(
-    new Animated.Value(40)
-  ).current;
+  const slideAnim = useRef(new Animated.Value(40)).current;
 
-  const scaleAnim = useRef(
-    new Animated.Value(0.8)
-  ).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
-  const actionsAnim = useRef(
-    new Animated.Value(0)
-  ).current;
+  const actionsAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(
-          scaleAnim,
-          {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
 
-        Animated.timing(
-          fadeAnim,
-          {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
       ]),
 
       Animated.parallel([
-        Animated.timing(
-          slideAnim,
-          {
-            toValue: 0,
-            duration: 500,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
 
-        Animated.timing(
-          actionsAnim,
-          {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }
-        ),
+        Animated.timing(actionsAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
       ]),
     ]).start();
   }, []);
 
   return (
-    <SafeAreaView
-      style={styles.safe}
-    >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={
-          Colors.primary
-        }
-      />
+    <SafeAreaView style={styles.safe}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
 
       <View style={styles.container}>
         <View style={styles.orb1} />
@@ -124,22 +89,10 @@ export default function WelcomeScreen({
             },
           ]}
         >
-          <View
-            style={styles.logoWrap}
-          >
-            <View
-              style={styles.logoRing}
-            >
-              <View
-                style={styles.logoBox}
-              >
-                <Ionicons
-                  name="paw"
-                  size={32}
-                  color={
-                    Colors.primary
-                  }
-                />
+          <View style={styles.logoWrap}>
+            <View style={styles.logoRing}>
+              <View style={styles.logoBox}>
+                <Ionicons name="paw" size={32} color={Colors.primary} />
               </View>
             </View>
           </View>
@@ -148,43 +101,21 @@ export default function WelcomeScreen({
             style={{
               transform: [
                 {
-                  translateY:
-                    slideAnim,
+                  translateY: slideAnim,
                 },
               ],
 
               opacity: fadeAnim,
             }}
           >
-            <Text
-              style={styles.brand}
-            >
+            <Text style={styles.brand}>
               CLYVO
-              <Text
-                style={
-                  styles.brandAccent
-                }
-              >
-                {" "}
-                VET
-              </Text>
+              <Text style={styles.brandAccent}> VET</Text>
             </Text>
 
-            <Text
-              style={
-                styles.tagline
-              }
-            >
-              O sistema
-              operacional{"\n"}
-              do{" "}
-              <Text
-                style={
-                  styles.taglineHL
-                }
-              >
-                cuidado contínuo
-              </Text>
+            <Text style={styles.tagline}>
+              O sistema operacional{"\n"}
+              do <Text style={styles.taglineHL}>cuidado contínuo</Text>
               {"\n"}
               do seu pet
             </Text>
@@ -194,27 +125,13 @@ export default function WelcomeScreen({
             style={[
               styles.pillsRow,
               {
-                opacity:
-                  actionsAnim,
+                opacity: actionsAnim,
               },
             ]}
           >
-            {[
-              "Preventivo",
-              "Terapêutico",
-              "Chat Personalizado",
-            ].map((p) => (
-              <View
-                key={p}
-                style={styles.pill}
-              >
-                <Text
-                  style={
-                    styles.pillText
-                  }
-                >
-                  {p}
-                </Text>
+            {["Preventivo", "Terapêutico", "Chat Personalizado"].map((p) => (
+              <View key={p} style={styles.pill}>
+                <Text style={styles.pillText}>{p}</Text>
               </View>
             ))}
           </Animated.View>
@@ -229,67 +146,31 @@ export default function WelcomeScreen({
           ]}
         >
           <TouchableOpacity
-            style={
-              styles.btnPrimary
-            }
+            style={styles.btnPrimary}
             activeOpacity={0.85}
-            onPress={() =>
-              navigation.navigate(
-                "Register"
-              )
-            }
+            onPress={() => navigation.navigate("Register")}
           >
-            <Text
-              style={
-                styles.btnPrimaryText
-              }
-            >
-              Criar conta
-              gratuita
-            </Text>
+            <Text style={styles.btnPrimaryText}>Criar conta gratuita</Text>
 
-            <View
-              style={
-                styles.btnArrow
-              }
-            >
+            <View style={styles.btnArrow}>
               <Ionicons
                 name="arrow-forward"
                 size={16}
-                color={
-                  Colors.accentLight
-                }
+                color={Colors.accentLight}
               />
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={
-              styles.btnSecondary
-            }
+            style={styles.btnSecondary}
             activeOpacity={0.7}
-            onPress={() =>
-              navigation.navigate(
-                "Login"
-              )
-            }
+            onPress={() => navigation.navigate("Login")}
           >
-            <Text
-              style={
-                styles.btnSecondaryText
-              }
-            >
-              Já tenho conta —
-              Entrar
-            </Text>
+            <Text style={styles.btnSecondaryText}>Já tenho conta — Entrar</Text>
           </TouchableOpacity>
 
-          <Text
-            style={styles.legal}
-          >
-            Ao continuar, você
-            aceita os Termos de
-            Uso
+          <Text style={styles.legal}>
+            Ao continuar, você aceita os Termos de Uso
           </Text>
         </Animated.View>
       </View>

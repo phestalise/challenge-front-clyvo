@@ -11,11 +11,7 @@ import {
 
 import { showAlert } from "../../utils/showAlert";
 
-import {
-  useNavigation,
-  useRoute,
-  RouteProp,
-} from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,13 +26,7 @@ import { validarFormularioPet } from "../../utils/validators";
 
 import { styles } from "../../styles/AddPetScreenStyles";
 
-const SPECIES = [
-  "Cachorro",
-  "Gato",
-  "Pássaro",
-  "Coelho",
-  "Outro",
-];
+const SPECIES = ["Cachorro", "Gato", "Pássaro", "Coelho", "Outro"];
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AddPet">;
@@ -112,7 +102,7 @@ export default function AddPetScreen() {
           "Erro ao salvar",
           isEditing
             ? "Não foi possível atualizar o pet. Tente novamente."
-            : "Não foi possível cadastrar o pet. Tente novamente."
+            : "Não foi possível cadastrar o pet. Tente novamente.",
         );
         return;
       }
@@ -126,12 +116,7 @@ export default function AddPetScreen() {
   if (isEditing && loading) {
     return (
       <View style={styles.container}>
-        <View
-          style={[
-            styles.header,
-            { paddingTop: insets.top + 16 },
-          ]}
-        >
+        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.back}
@@ -155,12 +140,7 @@ export default function AddPetScreen() {
   if (isEditing && !loading && !pet) {
     return (
       <View style={styles.container}>
-        <View
-          style={[
-            styles.header,
-            { paddingTop: insets.top + 16 },
-          ]}
-        >
+        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.back}
@@ -186,16 +166,10 @@ export default function AddPetScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() =>
-            navigation.goBack()
-          }
+          onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons
-            name="arrow-back"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
 
         <Text style={styles.title}>
@@ -206,12 +180,8 @@ export default function AddPetScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={
-          styles.content
-        }
-        showsVerticalScrollIndicator={
-          false
-        }
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.avatarArea}>
@@ -220,38 +190,26 @@ export default function AddPetScreen() {
               name={
                 species === "Gato"
                   ? "happy"
-                  : species ===
-                      "Pássaro"
+                  : species === "Pássaro"
                     ? "sunny"
                     : "paw"
               }
               size={40}
-              color={
-                Colors.accentLight
-              }
+              color={Colors.accentLight}
             />
           </View>
 
           <Text style={styles.avatarHint}>
-            {name.trim()
-              ? name
-              : "Novo pet"}
+            {name.trim() ? name : "Novo pet"}
           </Text>
         </View>
 
-        <Text style={styles.label}>
-          Nome *
-        </Text>
+        <Text style={styles.label}>Nome *</Text>
 
         <TextInput
-          style={[
-            styles.input,
-            errors.name && styles.inputError,
-          ]}
+          style={[styles.input, errors.name && styles.inputError]}
           placeholder="Ex: Thor, Luna..."
-          placeholderTextColor={
-            Colors.textLight
-          }
+          placeholderTextColor={Colors.textLight}
           value={name}
           onChangeText={(v) => {
             setName(v);
@@ -262,19 +220,13 @@ export default function AddPetScreen() {
           <Text style={styles.errorText}>{errors.name}</Text>
         ) : null}
 
-        <Text style={styles.label}>
-          Espécie *
-        </Text>
+        <Text style={styles.label}>Espécie *</Text>
 
         <View style={styles.chipRow}>
           {SPECIES.map((s) => (
             <TouchableOpacity
               key={s}
-              style={[
-                styles.chip,
-                species === s &&
-                  styles.chipSelected,
-              ]}
+              style={[styles.chip, species === s && styles.chipSelected]}
               onPress={() => {
                 setSpecies(s);
                 setErrors((prev) => ({ ...prev, species: "" }));
@@ -283,8 +235,7 @@ export default function AddPetScreen() {
               <Text
                 style={[
                   styles.chipText,
-                  species === s &&
-                    styles.chipTextSelected,
+                  species === s && styles.chipTextSelected,
                 ]}
               >
                 {s}
@@ -296,35 +247,24 @@ export default function AddPetScreen() {
           <Text style={styles.errorText}>{errors.species}</Text>
         ) : null}
 
-        <Text style={styles.label}>
-          Raça
-        </Text>
+        <Text style={styles.label}>Raça</Text>
 
         <TextInput
           style={styles.input}
           placeholder="Ex: Labrador, Persa..."
-          placeholderTextColor={
-            Colors.textLight
-          }
+          placeholderTextColor={Colors.textLight}
           value={breed}
           onChangeText={setBreed}
         />
 
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>
-              Idade (anos)
-            </Text>
+            <Text style={styles.label}>Idade (anos)</Text>
 
             <TextInput
-              style={[
-                styles.input,
-                errors.age && styles.inputError,
-              ]}
+              style={[styles.input, errors.age && styles.inputError]}
               placeholder="Ex: 3"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={age}
               onChangeText={(v) => {
                 setAge(v);
@@ -340,19 +280,12 @@ export default function AddPetScreen() {
           <View style={{ width: 12 }} />
 
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>
-              Peso (kg)
-            </Text>
+            <Text style={styles.label}>Peso (kg)</Text>
 
             <TextInput
-              style={[
-                styles.input,
-                errors.weight && styles.inputError,
-              ]}
+              style={[styles.input, errors.weight && styles.inputError]}
               placeholder="Ex: 12.5"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={weight}
               onChangeText={(v) => {
                 setWeight(v);
@@ -367,11 +300,7 @@ export default function AddPetScreen() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.saveBtn,
-            saving &&
-              styles.saveBtnDisabled,
-          ]}
+          style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
           onPress={handleSave}
           disabled={saving}
           activeOpacity={0.85}
@@ -379,11 +308,7 @@ export default function AddPetScreen() {
           {saving ? (
             <ActivityIndicator size="small" color={Colors.white} />
           ) : (
-            <Ionicons
-              name="checkmark-circle"
-              size={22}
-              color={Colors.white}
-            />
+            <Ionicons name="checkmark-circle" size={22} color={Colors.white} />
           )}
 
           <Text style={styles.saveBtnText}>

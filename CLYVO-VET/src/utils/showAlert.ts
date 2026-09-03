@@ -9,7 +9,7 @@ type AlertButton = {
 export function showAlert(
   title: string,
   message?: string,
-  buttons?: AlertButton[]
+  buttons?: AlertButton[],
 ) {
   if (Platform.OS !== "web") {
     Alert.alert(title, message, buttons);

@@ -30,9 +30,7 @@ export default function AddHealthRecordScreen() {
 
   const { pets, loading, error } = usePets();
 
-  const [type, setType] = useState<
-    "vaccine" | "medication"
-  >("vaccine");
+  const [type, setType] = useState<"vaccine" | "medication">("vaccine");
 
   const options = [
     {
@@ -42,11 +40,9 @@ export default function AddHealthRecordScreen() {
 
       icon: "shield-checkmark",
 
-      color:
-        Colors.accentGreen,
+      color: Colors.accentGreen,
 
-      desc:
-        "Registrar aplicação ou agendar próxima dose",
+      desc: "Registrar aplicação ou agendar próxima dose",
 
       route: "Vaccines" as const,
     },
@@ -58,11 +54,9 @@ export default function AddHealthRecordScreen() {
 
       icon: "medical",
 
-      color:
-        Colors.accentOrange,
+      color: Colors.accentOrange,
 
-      desc:
-        "Adicionar medicamento em uso ou tratamento",
+      desc: "Adicionar medicamento em uso ou tratamento",
 
       route: "Medications" as const,
     },
@@ -70,45 +64,24 @@ export default function AddHealthRecordScreen() {
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.header,
-          { paddingTop: insets.top + 16 },
-        ]}
-      >
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
-          onPress={() =>
-            navigation.goBack()
-          }
+          onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons
-            name="arrow-back"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>
-          Saúde
-        </Text>
+        <Text style={styles.title}>Saúde</Text>
 
-        <View
-          style={styles.headerSpacer}
-        />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
-        contentContainerStyle={
-          styles.content
-        }
-        showsVerticalScrollIndicator={
-          false
-        }
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.label}>
-          O que deseja registrar?
-        </Text>
+        <Text style={styles.label}>O que deseja registrar?</Text>
 
         <View style={styles.typeRow}>
           {options.map((opt) => (
@@ -118,8 +91,7 @@ export default function AddHealthRecordScreen() {
                 styles.typeCard,
 
                 type === opt.key && {
-                  borderColor:
-                    opt.color,
+                  borderColor: opt.color,
 
                   borderWidth: 2,
                 },
@@ -136,80 +108,32 @@ export default function AddHealthRecordScreen() {
                   styles.typeIcon,
 
                   {
-                    backgroundColor:
-                      opt.color + "20",
+                    backgroundColor: opt.color + "20",
                   },
                 ]}
               >
-                <Ionicons
-                  name={opt.icon as any}
-                  size={26}
-                  color={opt.color}
-                />
+                <Ionicons name={opt.icon as any} size={26} color={opt.color} />
               </View>
 
-              <Text
-                style={
-                  styles.typeLabel
-                }
-              >
-                {opt.label}
-              </Text>
+              <Text style={styles.typeLabel}>{opt.label}</Text>
 
-              <Text
-                style={
-                  styles.typeDesc
-                }
-              >
-                {opt.desc}
-              </Text>
+              <Text style={styles.typeDesc}>{opt.desc}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text
-          style={[
-            styles.label,
-            styles.petLabel,
-          ]}
-        >
-          Selecionar pet
-        </Text>
+        <Text style={[styles.label, styles.petLabel]}>Selecionar pet</Text>
 
         {loading && pets.length === 0 ? (
-          <ActivityIndicator
-            size="small"
-            color={Colors.accentLight}
-          />
+          <ActivityIndicator size="small" color={Colors.accentLight} />
         ) : error ? (
           <Text style={styles.emptyText}>{error}</Text>
         ) : pets.length === 0 ? (
-          <View
-            style={
-              styles.emptyPets
-            }
-          >
-            <Text
-              style={
-                styles.emptyText
-              }
-            >
-              Nenhum pet
-              cadastrado.
-            </Text>
+          <View style={styles.emptyPets}>
+            <Text style={styles.emptyText}>Nenhum pet cadastrado.</Text>
 
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AddPet")
-              }
-            >
-              <Text
-                style={
-                  styles.linkText
-                }
-              >
-                Cadastrar pet →
-              </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AddPet")}>
+              <Text style={styles.linkText}>Cadastrar pet →</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -225,49 +149,22 @@ export default function AddHealthRecordScreen() {
                 }
                 activeOpacity={0.8}
               >
-                <View
-                  style={
-                    styles.petAvatar
-                  }
-                >
-                  <Ionicons
-                    name="paw"
-                    size={20}
-                    color={
-                      Colors.accentLight
-                    }
-                  />
+                <View style={styles.petAvatar}>
+                  <Ionicons name="paw" size={20} color={Colors.accentLight} />
                 </View>
 
-                <View
-                  style={
-                    styles.petInfo
-                  }
-                >
-                  <Text
-                    style={
-                      styles.petName
-                    }
-                  >
-                    {pet.name}
-                  </Text>
+                <View style={styles.petInfo}>
+                  <Text style={styles.petName}>{pet.name}</Text>
 
-                  <Text
-                    style={
-                      styles.petMeta
-                    }
-                  >
-                    {pet.species} ·{" "}
-                    {pet.breed}
+                  <Text style={styles.petMeta}>
+                    {pet.species} · {pet.breed}
                   </Text>
                 </View>
 
                 <Ionicons
                   name="chevron-forward"
                   size={18}
-                  color={
-                    Colors.textLight
-                  }
+                  color={Colors.textLight}
                 />
               </TouchableOpacity>
             ))}

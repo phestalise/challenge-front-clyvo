@@ -4,21 +4,18 @@ import { Colors } from "./colors";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
 
     paddingHorizontal: 20,
     paddingBottom: 16,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
   },
 
   back: {
@@ -26,8 +23,7 @@ export const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
 
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
 
     alignItems: "center",
     justifyContent: "center",
@@ -55,8 +51,7 @@ export const styles = StyleSheet.create({
     height: 80,
     borderRadius: 24,
 
-    backgroundColor:
-      Colors.accentLight + "20",
+    backgroundColor: Colors.accentLight + "20",
 
     alignItems: "center",
     justifyContent: "center",
@@ -95,8 +90,7 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderRadius: 12,
 
@@ -107,8 +101,7 @@ export const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor:
-      "rgba(255,255,255,0.08)",
+    borderColor: "rgba(255,255,255,0.08)",
   },
 
   inputError: {
@@ -131,21 +124,17 @@ export const styles = StyleSheet.create({
 
     borderRadius: 20,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderWidth: 1,
 
-    borderColor:
-      "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
 
   chipSelected: {
-    backgroundColor:
-      Colors.accentLight,
+    backgroundColor: Colors.accentLight,
 
-    borderColor:
-      Colors.accentLight,
+    borderColor: Colors.accentLight,
   },
 
   chipText: {
@@ -165,8 +154,7 @@ export const styles = StyleSheet.create({
 
     gap: 10,
 
-    backgroundColor:
-      Colors.accentLight,
+    backgroundColor: Colors.accentLight,
 
     borderRadius: 14,
 

@@ -10,11 +10,7 @@ import {
 
 import { showAlert } from "../../utils/showAlert";
 
-import {
-  useNavigation,
-  useRoute,
-  RouteProp,
-} from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -34,18 +30,11 @@ import { calcularIdadeTexto } from "../../utils/formatters";
 
 import { styles } from "../../styles/PetDetailScreenStyles";
 
-type Nav =
-  NativeStackNavigationProp<RootStackParamList>;
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-type Route = RouteProp<
-  RootStackParamList,
-  "PetDetail"
->;
+type Route = RouteProp<RootStackParamList, "PetDetail">;
 
-type Tab =
-  | "info"
-  | "vacinas"
-  | "medicamentos";
+type Tab = "info" | "vacinas" | "medicamentos";
 
 export default function PetDetailScreen() {
   const navigation = useNavigation<Nav>();
@@ -54,8 +43,7 @@ export default function PetDetailScreen() {
 
   const petId = route?.params?.petId;
 
-  const [tab, setTab] =
-    useState<Tab>("info");
+  const [tab, setTab] = useState<Tab>("info");
 
   const { pet, loading, error, remove } = usePet(petId);
 
@@ -64,41 +52,35 @@ export default function PetDetailScreen() {
       return;
     }
 
-    showAlert(
-      "Remover",
-      `Remover ${pet.name}?`,
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Remover",
-          style: "destructive",
-          onPress: async () => {
-            const ok = await remove();
+    showAlert("Remover", `Remover ${pet.name}?`, [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Remover",
+        style: "destructive",
+        onPress: async () => {
+          const ok = await remove();
 
-            if (!ok) {
-              showAlert(
-                "Erro ao remover",
-                "Não foi possível remover o pet. Tente novamente."
-              );
-              return;
-            }
+          if (!ok) {
+            showAlert(
+              "Erro ao remover",
+              "Não foi possível remover o pet. Tente novamente.",
+            );
+            return;
+          }
 
-            navigation.goBack();
-          },
+          navigation.goBack();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   if (!petId) {
     return (
       <View style={styles.center}>
-        <Text style={styles.loadingText}>
-          Pet não encontrado
-        </Text>
+        <Text style={styles.loadingText}>Pet não encontrado</Text>
       </View>
     );
   }
@@ -114,22 +96,19 @@ export default function PetDetailScreen() {
   if (!pet) {
     return (
       <View style={styles.center}>
-        <Text style={styles.loadingText}>
-          {error ?? "Pet não encontrado"}
-        </Text>
+        <Text style={styles.loadingText}>{error ?? "Pet não encontrado"}</Text>
       </View>
     );
   }
 
-  const score =
-    petService.getHealthScore(pet);
+  const score = petService.getHealthScore(pet);
 
   const scoreColor =
     score > 70
       ? Colors.accentGreen
       : score > 40
-      ? Colors.accentOrange
-      : Colors.accentRed;
+        ? Colors.accentOrange
+        : Colors.accentRed;
 
   return (
     <View style={styles.container}>
@@ -138,23 +117,15 @@ export default function PetDetailScreen() {
           onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons
-            name="arrow-back"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>
-          {pet.name}
-        </Text>
+        <Text style={styles.headerTitle}>{pet.name}</Text>
 
         <View style={styles.headerActions}>
           <TouchableOpacity
             style={styles.editBtn}
-            onPress={() =>
-              navigation.navigate("AddPet", { petId })
-            }
+            onPress={() => navigation.navigate("AddPet", { petId })}
           >
             <Ionicons
               name="create-outline"
@@ -163,15 +134,8 @@ export default function PetDetailScreen() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.deleteBtn}
-            onPress={handleDelete}
-          >
-            <Ionicons
-              name="trash-outline"
-              size={19}
-              color={Colors.accentRed}
-            />
+          <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={19} color={Colors.accentRed} />
           </TouchableOpacity>
         </View>
       </View>
@@ -183,19 +147,13 @@ export default function PetDetailScreen() {
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Ionicons
-              name={
-                pet.species === "Gato"
-                  ? "happy"
-                  : "paw"
-              }
+              name={pet.species === "Gato" ? "happy" : "paw"}
               size={42}
               color={Colors.accentLight}
             />
           </View>
 
-          <Text style={styles.petName}>
-            {pet.name}
-          </Text>
+          <Text style={styles.petName}>{pet.name}</Text>
 
           <Text style={styles.petMeta}>
             {pet.species} · {pet.breed}
@@ -220,18 +178,14 @@ export default function PetDetailScreen() {
               {score}%
             </Text>
 
-            <Text style={styles.ringLabel}>
-              Saúde
-            </Text>
+            <Text style={styles.ringLabel}>Saúde</Text>
           </View>
 
           <View style={styles.chips}>
             {[
               {
                 icon: "calendar-outline",
-                text: calcularIdadeTexto(
-                  pet.age
-                ),
+                text: calcularIdadeTexto(pet.age),
               },
               {
                 icon: "fitness-outline",
@@ -242,21 +196,14 @@ export default function PetDetailScreen() {
                 text: pet.color,
               },
             ].map((c, i) => (
-              <View
-                key={i}
-                style={styles.chip}
-              >
+              <View key={i} style={styles.chip}>
                 <Ionicons
                   name={c.icon as any}
                   size={13}
-                  color={
-                    Colors.textSecondary
-                  }
+                  color={Colors.textSecondary}
                 />
 
-                <Text style={styles.chipText}>
-                  {c.text}
-                </Text>
+                <Text style={styles.chipText}>{c.text}</Text>
               </View>
             ))}
           </View>
@@ -268,21 +215,15 @@ export default function PetDetailScreen() {
               style={[
                 styles.statVal,
                 {
-                  color:
-                    Colors.accentGreen,
+                  color: Colors.accentGreen,
                 },
               ]}
             >
-              {pet.vaccines?.filter(
-                (v) => v.done
-              ).length ?? 0}
-              /
+              {pet.vaccines?.filter((v) => v.done).length ?? 0}/
               {pet.vaccines?.length ?? 0}
             </Text>
 
-            <Text style={styles.statLabel}>
-              Vacinas
-            </Text>
+            <Text style={styles.statLabel}>Vacinas</Text>
           </View>
 
           <View style={styles.statDiv} />
@@ -292,19 +233,14 @@ export default function PetDetailScreen() {
               style={[
                 styles.statVal,
                 {
-                  color:
-                    Colors.accentLight,
+                  color: Colors.accentLight,
                 },
               ]}
             >
-              {pet.medications?.filter(
-                (m) => m.active
-              ).length ?? 0}
+              {pet.medications?.filter((m) => m.active).length ?? 0}
             </Text>
 
-            <Text style={styles.statLabel}>
-              Medicamentos
-            </Text>
+            <Text style={styles.statLabel}>Medicamentos</Text>
           </View>
 
           <View style={styles.statDiv} />
@@ -314,8 +250,7 @@ export default function PetDetailScreen() {
               style={[
                 styles.statVal,
                 {
-                  color:
-                    Colors.accentOrange,
+                  color: Colors.accentOrange,
                   fontSize: 12,
                 },
               ]}
@@ -323,38 +258,24 @@ export default function PetDetailScreen() {
               {pet.nextCheckup || "—"}
             </Text>
 
-            <Text style={styles.statLabel}>
-              Retorno
-            </Text>
+            <Text style={styles.statLabel}>Retorno</Text>
           </View>
         </View>
 
         <View style={styles.tabsRow}>
-          {(
-            [
-              "info",
-              "vacinas",
-              "medicamentos",
-            ] as Tab[]
-          ).map((t) => (
+          {(["info", "vacinas", "medicamentos"] as Tab[]).map((t) => (
             <TouchableOpacity
               key={t}
-              style={[
-                styles.tabBtn,
-                tab === t &&
-                  styles.tabBtnActive,
-              ]}
+              style={[styles.tabBtn, tab === t && styles.tabBtnActive]}
               onPress={() => setTab(t)}
             >
               <Text
                 style={[
                   styles.tabBtnText,
-                  tab === t &&
-                    styles.tabBtnTextActive,
+                  tab === t && styles.tabBtnTextActive,
                 ]}
               >
-                {t.charAt(0).toUpperCase() +
-                  t.slice(1)}
+                {t.charAt(0).toUpperCase() + t.slice(1)}
               </Text>
             </TouchableOpacity>
           ))}
@@ -366,29 +287,13 @@ export default function PetDetailScreen() {
               ["Nome", pet.name],
               ["Espécie", pet.species],
               ["Raça", pet.breed],
-              [
-                "Idade",
-                calcularIdadeTexto(
-                  pet.age
-                ),
-              ],
-              [
-                "Peso",
-                `${pet.weight} kg`,
-              ],
+              ["Idade", calcularIdadeTexto(pet.age)],
+              ["Peso", `${pet.weight} kg`],
               ["Cor", pet.color],
-              [
-                "Próximo retorno",
-                pet.nextCheckup ||
-                  "Não agendado",
-              ],
+              ["Próximo retorno", pet.nextCheckup || "Não agendado"],
               [
                 "Cadastrado",
-                new Date(
-                  pet.createdAt
-                ).toLocaleDateString(
-                  "pt-BR"
-                ),
+                new Date(pet.createdAt).toLocaleDateString("pt-BR"),
               ],
             ].map(([k, v], i, arr) => (
               <View
@@ -400,48 +305,29 @@ export default function PetDetailScreen() {
                   },
                 ]}
               >
-                <Text style={styles.infoKey}>
-                  {k}
-                </Text>
+                <Text style={styles.infoKey}>{k}</Text>
 
-                <Text style={styles.infoVal}>
-                  {v}
-                </Text>
+                <Text style={styles.infoVal}>{v}</Text>
               </View>
             ))}
           </View>
         )}
 
         {tab === "vacinas" &&
-          ((pet.vaccines ?? []).length ===
-          0 ? (
-            <Text style={styles.noData}>
-              Nenhuma vacina registrada
-            </Text>
+          ((pet.vaccines ?? []).length === 0 ? (
+            <Text style={styles.noData}>Nenhuma vacina registrada</Text>
           ) : (
             pet.vaccines!.map((v, i) => (
-              <VaccineCard
-                key={i}
-                vaccine={v}
-                petName={pet.name}
-              />
+              <VaccineCard key={i} vaccine={v} petName={pet.name} />
             ))
           ))}
 
         {tab === "medicamentos" &&
-          ((pet.medications ?? [])
-            .length === 0 ? (
-            <Text style={styles.noData}>
-              Nenhum medicamento
-              registrado
-            </Text>
+          ((pet.medications ?? []).length === 0 ? (
+            <Text style={styles.noData}>Nenhum medicamento registrado</Text>
           ) : (
             pet.medications!.map((m, i) => (
-              <MedicationCard
-                key={i}
-                medication={m}
-                petName={pet.name}
-              />
+              <MedicationCard key={i} medication={m} petName={pet.name} />
             ))
           ))}
       </ScrollView>

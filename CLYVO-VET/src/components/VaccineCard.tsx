@@ -4,10 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Vaccine } from "../types";
 import { Colors } from "../styles/colors";
-import {
-  obterCorStatus,
-  obterTextoStatus,
-} from "../utils/formatters";
+import { obterCorStatus, obterTextoStatus } from "../utils/formatters";
 
 import { styles } from "../styles/VaccineCardStyles";
 
@@ -16,13 +13,8 @@ type Props = {
   petName: string;
 };
 
-export default function VaccineCard({
-  vaccine,
-  petName,
-}: Props) {
-  const cor = obterCorStatus(
-    vaccine.done ? "done" : "pendente"
-  );
+export default function VaccineCard({ vaccine, petName }: Props) {
+  const cor = obterCorStatus(vaccine.done ? "done" : "pendente");
 
   return (
     <View style={styles.card}>
@@ -35,33 +27,21 @@ export default function VaccineCard({
         ]}
       >
         <Ionicons
-          name={
-            vaccine.done
-              ? "checkmark-circle"
-              : "time"
-          }
+          name={vaccine.done ? "checkmark-circle" : "time"}
           size={22}
           color={cor}
         />
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.name}>
-          {vaccine.name}
-        </Text>
+        <Text style={styles.name}>{vaccine.name}</Text>
 
-        <Text style={styles.sub}>
-          Pet: {petName}
-        </Text>
+        <Text style={styles.sub}>Pet: {petName}</Text>
 
         <View style={styles.dates}>
-          <Text style={styles.date}>
-            Aplicada: {vaccine.date || "—"}
-          </Text>
+          <Text style={styles.date}>Aplicada: {vaccine.date || "—"}</Text>
 
-          <Text style={styles.date}>
-            Próxima: {vaccine.nextDue || "—"}
-          </Text>
+          <Text style={styles.date}>Próxima: {vaccine.nextDue || "—"}</Text>
         </View>
       </View>
 
@@ -74,11 +54,7 @@ export default function VaccineCard({
         ]}
       >
         <Text style={styles.badgeText}>
-          {obterTextoStatus(
-            vaccine.done
-              ? "done"
-              : "pendente"
-          )}
+          {obterTextoStatus(vaccine.done ? "done" : "pendente")}
         </Text>
       </View>
     </View>

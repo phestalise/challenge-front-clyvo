@@ -1,314 +1,283 @@
-
-import {
-  StyleSheet,
-} from "react-native";
+import { StyleSheet } from "react-native";
 
 import { Colors } from "./colors";
 
-export const styles =
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor:
-        Colors.primary,
-    },
-
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent:
-        "space-between",
-
-      paddingHorizontal: 20,
-      paddingBottom: 16,
-
-      backgroundColor:
-        Colors.secondary,
-    },
-
-    back: {
-      width: 36,
-      height: 36,
-
-      borderRadius: 18,
-
-      backgroundColor:
-        "rgba(255,255,255,0.08)",
-
-      alignItems: "center",
-      justifyContent:
-        "center",
-    },
-
-    title: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: Colors.white,
-    },
-
-    addBtn: {
-      width: 36,
-      height: 36,
-
-      borderRadius: 18,
-
-      backgroundColor:
-        Colors.accentOrange +
-        "30",
-
-      alignItems: "center",
-      justifyContent:
-        "center",
-    },
-
-    scrollContent: {
-      padding: 16,
-      gap: 12,
-      paddingBottom: 40,
-    },
-
-    card: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 12,
-
-      backgroundColor:
-        Colors.secondary,
-
-      borderRadius: 14,
-
-      padding: 14,
-    },
-
-    iconBox: {
-      width: 42,
-      height: 42,
-
-      borderRadius: 12,
-
-      alignItems: "center",
-      justifyContent:
-        "center",
-    },
-
-    flexOne: {
-      flex: 1,
-    },
-
-    medName: {
-      fontSize: 15,
-      fontWeight: "600",
-      color: Colors.white,
-    },
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
 
-    medSub: {
-      fontSize: 12,
-      color:
-        Colors.textLight,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
 
-      marginTop: 2,
-    },
+    paddingHorizontal: 20,
+    paddingBottom: 16,
 
-    actions: {
-      alignItems: "center",
-      gap: 6,
-    },
+    backgroundColor: Colors.secondary,
+  },
 
-    actionBtn: {
-      padding: 4,
-    },
+  back: {
+    width: 36,
+    height: 36,
 
-    badge: {
-      paddingHorizontal: 10,
-      paddingVertical: 4,
+    borderRadius: 18,
 
-      borderRadius: 20,
-    },
+    backgroundColor: "rgba(255,255,255,0.08)",
 
-    badgeText: {
-      color: Colors.white,
-      fontSize: 11,
-      fontWeight: "700",
-    },
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-    empty: {
-      alignItems: "center",
-      paddingTop: 80,
-      gap: 12,
-    },
+  title: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.white,
+  },
 
-    emptyText: {
-      color:
-        Colors.textLight,
+  addBtn: {
+    width: 36,
+    height: 36,
 
-      fontSize: 15,
-      fontWeight: "600",
-    },
+    borderRadius: 18,
 
-    emptyBtn: {
-      marginTop: 4,
+    backgroundColor: Colors.accentOrange + "30",
 
-      paddingHorizontal: 24,
-      paddingVertical: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-      backgroundColor:
-        Colors.accentOrange,
+  scrollContent: {
+    padding: 16,
+    gap: 12,
+    paddingBottom: 40,
+  },
 
-      borderRadius: 12,
-    },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
 
-    emptyBtnText: {
-      color: Colors.white,
-      fontWeight: "700",
-    },
+    backgroundColor: Colors.secondary,
 
-    modalOverlay: {
-      flex: 1,
+    borderRadius: 14,
 
-      backgroundColor:
-        "rgba(0,0,0,0.6)",
+    padding: 14,
+  },
 
-      justifyContent:
-        "flex-end",
-    },
+  iconBox: {
+    width: 42,
+    height: 42,
 
-    modalBox: {
-      backgroundColor:
-        Colors.secondary,
+    borderRadius: 12,
 
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-      padding: 24,
-      paddingBottom: 40,
-    },
+  flexOne: {
+    flex: 1,
+  },
 
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: "700",
+  medName: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: Colors.white,
+  },
 
-      color: Colors.white,
+  medSub: {
+    fontSize: 12,
+    color: Colors.textLight,
 
-      marginBottom: 16,
-    },
+    marginTop: 2,
+  },
 
-    inputLabel: {
-      fontSize: 12,
+  actions: {
+    alignItems: "center",
+    gap: 6,
+  },
 
-      color:
-        Colors.textLight,
+  actionBtn: {
+    padding: 4,
+  },
 
-      marginBottom: 6,
-      marginTop: 4,
-    },
+  badge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
 
-    input: {
-      backgroundColor:
-        Colors.primary,
+    borderRadius: 20,
+  },
 
-      borderRadius: 12,
+  badgeText: {
+    color: Colors.white,
+    fontSize: 11,
+    fontWeight: "700",
+  },
 
-      padding: 14,
+  empty: {
+    alignItems: "center",
+    paddingTop: 80,
+    gap: 12,
+  },
 
-      color: Colors.white,
+  emptyText: {
+    color: Colors.textLight,
 
-      fontSize: 15,
+    fontSize: 15,
+    fontWeight: "600",
+  },
 
-      marginBottom: 4,
+  emptyBtn: {
+    marginTop: 4,
 
-      borderWidth: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
 
-      borderColor:
-        "rgba(255,255,255,0.08)",
-    },
+    backgroundColor: Colors.accentOrange,
 
-    petScroll: {
-      marginBottom: 12,
-    },
+    borderRadius: 12,
+  },
 
-    petScrollRow: {
-      flexDirection: "row",
-      gap: 8,
-    },
+  emptyBtnText: {
+    color: Colors.white,
+    fontWeight: "700",
+  },
 
-    petChip: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
+  modalOverlay: {
+    flex: 1,
 
-      borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.6)",
 
-      backgroundColor:
-        Colors.primary,
+    justifyContent: "flex-end",
+  },
 
-      borderWidth: 1,
+  modalBox: {
+    backgroundColor: Colors.secondary,
 
-      borderColor:
-        "rgba(255,255,255,0.1)",
-    },
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
 
-    petChipSelected: {
-      backgroundColor:
-        Colors.accentOrange,
+    padding: 24,
+    paddingBottom: 40,
+  },
 
-      borderColor:
-        Colors.accentOrange,
-    },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
 
-    petChipText: {
-      color:
-        Colors.textLight,
+    color: Colors.white,
 
-      fontWeight: "600",
+    marginBottom: 16,
+  },
 
-      fontSize: 13,
-    },
+  inputLabel: {
+    fontSize: 12,
 
-    petChipTextSelected: {
-      color: Colors.white,
-    },
+    color: Colors.textLight,
 
-    modalBtns: {
-      flexDirection: "row",
-      gap: 12,
+    marginBottom: 6,
+    marginTop: 4,
+  },
 
-      marginTop: 16,
-    },
+  input: {
+    backgroundColor: Colors.primary,
 
-    cancelBtn: {
-      flex: 1,
+    borderRadius: 12,
 
-      padding: 14,
+    padding: 14,
 
-      borderRadius: 12,
+    color: Colors.white,
 
-      backgroundColor:
-        Colors.primary,
+    fontSize: 15,
 
-      alignItems: "center",
-    },
+    marginBottom: 4,
 
-    cancelBtnText: {
-      color:
-        Colors.textLight,
+    borderWidth: 1,
 
-      fontWeight: "600",
-    },
+    borderColor: "rgba(255,255,255,0.08)",
+  },
 
-    saveBtn: {
-      flex: 1,
+  petScroll: {
+    marginBottom: 12,
+  },
 
-      padding: 14,
+  petScrollRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
 
-      borderRadius: 12,
+  petChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
 
-      backgroundColor:
-        Colors.accentOrange,
+    borderRadius: 20,
 
-      alignItems: "center",
-    },
+    backgroundColor: Colors.primary,
 
-    saveBtnText: {
-      color: Colors.white,
-      fontWeight: "700",
-    },
-  });
+    borderWidth: 1,
+
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+
+  petChipSelected: {
+    backgroundColor: Colors.accentOrange,
+
+    borderColor: Colors.accentOrange,
+  },
+
+  petChipText: {
+    color: Colors.textLight,
+
+    fontWeight: "600",
+
+    fontSize: 13,
+  },
+
+  petChipTextSelected: {
+    color: Colors.white,
+  },
+
+  modalBtns: {
+    flexDirection: "row",
+    gap: 12,
+
+    marginTop: 16,
+  },
+
+  cancelBtn: {
+    flex: 1,
+
+    padding: 14,
+
+    borderRadius: 12,
+
+    backgroundColor: Colors.primary,
+
+    alignItems: "center",
+  },
+
+  cancelBtnText: {
+    color: Colors.textLight,
+
+    fontWeight: "600",
+  },
+
+  saveBtn: {
+    flex: 1,
+
+    padding: 14,
+
+    borderRadius: 12,
+
+    backgroundColor: Colors.accentOrange,
+
+    alignItems: "center",
+  },
+
+  saveBtnText: {
+    color: Colors.white,
+    fontWeight: "700",
+  },
+});

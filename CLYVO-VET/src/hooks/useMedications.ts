@@ -42,7 +42,7 @@ export function useMedications() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   const addMedication = useCallback(
@@ -79,7 +79,7 @@ export function useMedications() {
         setSaving(false);
       }
     },
-    [user, load]
+    [user, load],
   );
 
   const toggleActive = useCallback(
@@ -91,7 +91,7 @@ export function useMedications() {
         if (!pet) return false;
 
         const medications = (pet.medications ?? []).map((m) =>
-          m.id === medicationId ? { ...m, active: !m.active } : m
+          m.id === medicationId ? { ...m, active: !m.active } : m,
         );
 
         await petService.save({ ...pet, medications });
@@ -103,7 +103,7 @@ export function useMedications() {
         return false;
       }
     },
-    [user, load]
+    [user, load],
   );
 
   const removeMedication = useCallback(
@@ -115,7 +115,7 @@ export function useMedications() {
         if (!pet) return false;
 
         const medications = (pet.medications ?? []).filter(
-          (m) => m.id !== medicationId
+          (m) => m.id !== medicationId,
         );
 
         await petService.save({ ...pet, medications });
@@ -127,7 +127,7 @@ export function useMedications() {
         return false;
       }
     },
-    [user, load]
+    [user, load],
   );
 
   return {

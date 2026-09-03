@@ -45,23 +45,17 @@ export default function VaccinesScreen() {
     removeVaccine,
   } = useVaccines();
 
-  const [refreshing, setRefreshing] =
-    useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const [modalVisible, setModalVisible] =
-    useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [selectedPetId, setSelectedPetId] =
-    useState("");
+  const [selectedPetId, setSelectedPetId] = useState("");
 
-  const [vaccineName, setVaccineName] =
-    useState("");
+  const [vaccineName, setVaccineName] = useState("");
 
-  const [vaccineDate, setVaccineDate] =
-    useState("");
+  const [vaccineDate, setVaccineDate] = useState("");
 
-  const [vaccineNextDue, setVaccineNextDue] =
-    useState("");
+  const [vaccineNextDue, setVaccineNextDue] = useState("");
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -91,7 +85,7 @@ export default function VaccinesScreen() {
     if (!ok) {
       showAlert(
         "Erro ao salvar",
-        "Não foi possível salvar a vacina. Tente novamente."
+        "Não foi possível salvar a vacina. Tente novamente.",
       );
       return;
     }
@@ -104,89 +98,60 @@ export default function VaccinesScreen() {
     setSelectedPetId("");
   };
 
-  const handleToggleDone = async (
-    petId: string,
-    vaccineId: string
-  ) => {
+  const handleToggleDone = async (petId: string, vaccineId: string) => {
     const ok = await toggleDone(petId, vaccineId);
 
     if (!ok) {
       showAlert(
         "Erro",
-        "Não foi possível atualizar a vacina. Tente novamente."
+        "Não foi possível atualizar a vacina. Tente novamente.",
       );
     }
   };
 
-  const handleDelete = async (
-    petId: string,
-    vaccineId: string
-  ) => {
-    showAlert(
-      "Remover vacina",
-      "Deseja remover esta vacina?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
+  const handleDelete = async (petId: string, vaccineId: string) => {
+    showAlert("Remover vacina", "Deseja remover esta vacina?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+
+      {
+        text: "Remover",
+
+        style: "destructive",
+
+        onPress: async () => {
+          const ok = await removeVaccine(petId, vaccineId);
+
+          if (!ok) {
+            showAlert(
+              "Erro ao remover",
+              "Não foi possível remover a vacina. Tente novamente.",
+            );
+          }
         },
-
-        {
-          text: "Remover",
-
-          style: "destructive",
-
-          onPress: async () => {
-            const ok = await removeVaccine(petId, vaccineId);
-
-            if (!ok) {
-              showAlert(
-                "Erro ao remover",
-                "Não foi possível remover a vacina. Tente novamente."
-              );
-            }
-          },
-        },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.header,
-          { paddingTop: insets.top + 16 },
-        ]}
-      >
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
-          onPress={() =>
-            navigation.goBack()
-          }
+          onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons
-            name="arrow-back"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>
-          Vacinas
-        </Text>
+        <Text style={styles.title}>Vacinas</Text>
 
         <TouchableOpacity
           style={styles.addBtn}
-          onPress={() =>
-            setModalVisible(true)
-          }
+          onPress={() => setModalVisible(true)}
         >
-          <Ionicons
-            name="add"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="add" size={22} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -198,63 +163,38 @@ export default function VaccinesScreen() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator
-            size="large"
-            color={Colors.accentLight}
-          />
+          <ActivityIndicator size="large" color={Colors.accentLight} />
         </View>
       ) : (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={
-              Colors.accentLight
-            }
-          />
-        }
-        contentContainerStyle={
-          styles.scrollContent
-        }
-        showsVerticalScrollIndicator={
-          false
-        }
-      >
-        {error && (
-          <Text style={styles.emptyText}>{error}</Text>
-        )}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={Colors.accentLight}
+            />
+          }
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {error && <Text style={styles.emptyText}>{error}</Text>}
 
-        {pets.flatMap((pet) =>
-          (pet.vaccines ?? []).map(
-            (v) => {
-              const cor =
-                obterCorStatus(
-                  v.done
-                    ? "done"
-                    : "pendente"
-                );
+          {pets.flatMap((pet) =>
+            (pet.vaccines ?? []).map((v) => {
+              const cor = obterCorStatus(v.done ? "done" : "pendente");
 
               return (
-                <View
-                  key={v.id}
-                  style={styles.card}
-                >
+                <View key={v.id} style={styles.card}>
                   <View
                     style={[
                       styles.iconBox,
                       {
-                        backgroundColor:
-                          cor + "20",
+                        backgroundColor: cor + "20",
                       },
                     ]}
                   >
                     <Ionicons
-                      name={
-                        v.done
-                          ? "checkmark-circle"
-                          : "time"
-                      }
+                      name={v.done ? "checkmark-circle" : "time"}
                       size={22}
                       color={cor}
                     />
@@ -265,195 +205,99 @@ export default function VaccinesScreen() {
                       flex: 1,
                     }}
                   >
-                    <Text
-                      style={
-                        styles.vacName
-                      }
-                    >
-                      {v.name}
-                    </Text>
+                    <Text style={styles.vacName}>{v.name}</Text>
 
-                    <Text
-                      style={
-                        styles.vacSub
-                      }
-                    >
-                      Pet: {pet.name}
-                    </Text>
+                    <Text style={styles.vacSub}>Pet: {pet.name}</Text>
 
                     {v.date ? (
-                      <Text
-                        style={
-                          styles.vacDate
-                        }
-                      >
-                        Aplicada:{" "}
-                        {v.date}
-                      </Text>
+                      <Text style={styles.vacDate}>Aplicada: {v.date}</Text>
                     ) : null}
 
                     {v.nextDue ? (
-                      <Text
-                        style={
-                          styles.vacDate
-                        }
-                      >
-                        Próxima:{" "}
-                        {v.nextDue}
-                      </Text>
+                      <Text style={styles.vacDate}>Próxima: {v.nextDue}</Text>
                     ) : null}
                   </View>
 
-                  <View
-                    style={
-                      styles.actions
-                    }
-                  >
+                  <View style={styles.actions}>
                     <TouchableOpacity
-                      onPress={() =>
-                        handleToggleDone(
-                          pet.id,
-                          v.id
-                        )
-                      }
-                      style={
-                        styles.actionBtn
-                      }
+                      onPress={() => handleToggleDone(pet.id, v.id)}
+                      style={styles.actionBtn}
                     >
                       <Ionicons
-                        name={
-                          v.done
-                            ? "close-circle"
-                            : "checkmark-circle"
-                        }
+                        name={v.done ? "close-circle" : "checkmark-circle"}
                         size={20}
-                        color={
-                          v.done
-                            ? Colors.textLight
-                            : Colors.accentGreen
-                        }
+                        color={v.done ? Colors.textLight : Colors.accentGreen}
                       />
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={() =>
-                        handleDelete(
-                          pet.id,
-                          v.id
-                        )
-                      }
-                      style={
-                        styles.actionBtn
-                      }
+                      onPress={() => handleDelete(pet.id, v.id)}
+                      style={styles.actionBtn}
                     >
                       <Ionicons
                         name="trash"
                         size={18}
-                        color={
-                          Colors.accentRed
-                        }
+                        color={Colors.accentRed}
                       />
                     </TouchableOpacity>
                   </View>
                 </View>
               );
-            }
-          )
-        )}
+            }),
+          )}
 
-        {pets.flatMap(
-          (p) => p.vaccines ?? []
-        ).length === 0 && (
-          <View style={styles.empty}>
-            <Ionicons
-              name="shield-checkmark"
-              size={48}
-              color={
-                Colors.accentGreen +
-                "40"
-              }
-            />
+          {pets.flatMap((p) => p.vaccines ?? []).length === 0 && (
+            <View style={styles.empty}>
+              <Ionicons
+                name="shield-checkmark"
+                size={48}
+                color={Colors.accentGreen + "40"}
+              />
 
-            <Text
-              style={styles.emptyText}
-            >
-              Nenhuma vacina cadastrada
-            </Text>
+              <Text style={styles.emptyText}>Nenhuma vacina cadastrada</Text>
 
-            <TouchableOpacity
-              style={styles.emptyBtn}
-              onPress={() =>
-                setModalVisible(true)
-              }
-            >
-              <Text
-                style={
-                  styles.emptyBtnText
-                }
+              <TouchableOpacity
+                style={styles.emptyBtn}
+                onPress={() => setModalVisible(true)}
               >
-                Adicionar vacina
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+                <Text style={styles.emptyBtnText}>Adicionar vacina</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
       )}
 
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-      >
+      <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text
-              style={styles.modalTitle}
-            >
-              Nova Vacina
-            </Text>
+            <Text style={styles.modalTitle}>Nova Vacina</Text>
 
-            <Text
-              style={styles.inputLabel}
-            >
-              Pet
-            </Text>
+            <Text style={styles.inputLabel}>Pet</Text>
 
             <ScrollView
               horizontal
-              showsHorizontalScrollIndicator={
-                false
-              }
+              showsHorizontalScrollIndicator={false}
               style={{
                 marginBottom: 12,
               }}
             >
-              <View
-                style={styles.petRow}
-              >
+              <View style={styles.petRow}>
                 {pets.map((p) => (
                   <TouchableOpacity
                     key={p.id}
                     style={[
                       styles.petChip,
 
-                      selectedPetId ===
-                        p.id &&
-                        styles.petChipSelected,
+                      selectedPetId === p.id && styles.petChipSelected,
                     ]}
-                    onPress={() =>
-                      setSelectedPetId(
-                        p.id
-                      )
-                    }
+                    onPress={() => setSelectedPetId(p.id)}
                   >
                     <Text
                       style={[
                         styles.petChipText,
 
-                        selectedPetId ===
-                          p.id && {
-                          color:
-                            Colors.white,
+                        selectedPetId === p.id && {
+                          color: Colors.white,
                         },
                       ]}
                     >
@@ -464,96 +308,53 @@ export default function VaccinesScreen() {
               </View>
             </ScrollView>
 
-            <Text
-              style={styles.inputLabel}
-            >
-              Nome da vacina
-            </Text>
+            <Text style={styles.inputLabel}>Nome da vacina</Text>
 
             <TextInput
               style={styles.input}
               placeholder="Ex: V10, Antirrábica..."
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={vaccineName}
-              onChangeText={
-                setVaccineName
-              }
+              onChangeText={setVaccineName}
             />
 
-            <Text
-              style={styles.inputLabel}
-            >
-              Data de aplicação
-            </Text>
+            <Text style={styles.inputLabel}>Data de aplicação</Text>
 
             <TextInput
               style={styles.input}
               placeholder="DD/MM/AAAA"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={vaccineDate}
-              onChangeText={
-                setVaccineDate
-              }
+              onChangeText={setVaccineDate}
             />
 
-            <Text
-              style={styles.inputLabel}
-            >
-              Próxima dose
-            </Text>
+            <Text style={styles.inputLabel}>Próxima dose</Text>
 
             <TextInput
               style={styles.input}
               placeholder="DD/MM/AAAA"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={vaccineNextDue}
-              onChangeText={
-                setVaccineNextDue
-              }
+              onChangeText={setVaccineNextDue}
             />
 
-            <View
-              style={styles.modalBtns}
-            >
+            <View style={styles.modalBtns}>
               <TouchableOpacity
-                style={
-                  styles.cancelBtn
-                }
-                onPress={() =>
-                  setModalVisible(false)
-                }
+                style={styles.cancelBtn}
+                onPress={() => setModalVisible(false)}
               >
-                <Text
-                  style={
-                    styles.cancelText
-                  }
-                >
-                  Cancelar
-                </Text>
+                <Text style={styles.cancelText}>Cancelar</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  saving && { opacity: 0.6 },
-                ]}
+                style={[styles.saveBtn, saving && { opacity: 0.6 }]}
                 onPress={handleAdd}
                 disabled={saving}
               >
                 {saving ? (
                   <ActivityIndicator size="small" color={Colors.white} />
                 ) : (
-                  <Text
-                    style={styles.saveText}
-                  >
-                    Salvar
-                  </Text>
+                  <Text style={styles.saveText}>Salvar</Text>
                 )}
               </TouchableOpacity>
             </View>

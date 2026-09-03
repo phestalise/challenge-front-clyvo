@@ -1,433 +1,396 @@
-import {
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 import { Colors } from "./colors";
 
-const { width } =
-  Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
-export const styles =
-  StyleSheet.create({
-    flex: {
-      flex: 1,
-    },
+export const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
 
-    safe: {
-      flex: 1,
-      backgroundColor:
-        Colors.background,
-    },
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
 
-    container: {
-      flex: 1,
-      backgroundColor:
-        Colors.background,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
 
-    content: {
-      paddingBottom: 40,
-    },
+  content: {
+    paddingBottom: 40,
+  },
 
-    orb: {
-      position: "absolute",
+  orb: {
+    position: "absolute",
 
-      top: -120,
-      right: -80,
+    top: -120,
+    right: -80,
 
-      width: 240,
-      height: 240,
+    width: 240,
+    height: 240,
 
-      borderRadius: 120,
+    borderRadius: 120,
 
-      backgroundColor:
-        Colors.primary + "20",
-    },
+    backgroundColor: Colors.primary + "20",
+  },
 
-    orbBottom: {
-      position: "absolute",
+  orbBottom: {
+    position: "absolute",
 
-      bottom: -100,
-      left: -80,
+    bottom: -100,
+    left: -80,
 
-      width: 220,
-      height: 220,
+    width: 220,
+    height: 220,
 
-      borderRadius: 110,
+    borderRadius: 110,
 
-      backgroundColor:
-        Colors.primary + "12",
-    },
+    backgroundColor: Colors.primary + "12",
+  },
 
-    header: {
-      paddingTop: 24,
-      paddingHorizontal: 24,
-      paddingBottom: 20,
+  header: {
+    paddingTop: 24,
+    paddingHorizontal: 24,
+    paddingBottom: 20,
 
-      flexDirection: "row",
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      justifyContent:
-        "space-between",
-    },
+    justifyContent: "space-between",
+  },
 
-    back: {
-      width: 44,
-      height: 44,
+  back: {
+    width: 44,
+    height: 44,
 
-      borderRadius: 14,
+    borderRadius: 14,
 
-      backgroundColor:
-        Colors.card,
+    backgroundColor: Colors.card,
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
-    },
+    alignItems: "center",
+  },
 
-    logoRow: {
-      flexDirection: "row",
+  logoRow: {
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      gap: 8,
-    },
+    gap: 8,
+  },
 
-    logo: {
-      fontSize: 14,
+  logo: {
+    fontSize: 14,
 
-      fontWeight: "800",
+    fontWeight: "800",
 
-      color: Colors.accentLight,
+    color: Colors.accentLight,
 
-      letterSpacing: 1,
-    },
+    letterSpacing: 1,
+  },
 
-    headerSpacer: {
-      width: 44,
-    },
+  headerSpacer: {
+    width: 44,
+  },
 
-    badgeRow: {
-      alignItems: "center",
+  badgeRow: {
+    alignItems: "center",
 
-      marginTop: 12,
-    },
+    marginTop: 12,
+  },
 
-    badge: {
-      flexDirection: "row",
+  badge: {
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      gap: 8,
+    gap: 8,
 
-      paddingHorizontal: 14,
+    paddingHorizontal: 14,
 
-      paddingVertical: 8,
+    paddingVertical: 8,
 
-      borderRadius: 999,
+    borderRadius: 999,
 
-      backgroundColor:
-        Colors.card,
-    },
+    backgroundColor: Colors.card,
+  },
 
-    badgeDot: {
-      width: 8,
-      height: 8,
+  badgeDot: {
+    width: 8,
+    height: 8,
 
-      borderRadius: 999,
+    borderRadius: 999,
 
-      backgroundColor:
-        "#007BFF",
-    },
+    backgroundColor: "#007BFF",
+  },
 
-    badgeText: {
-      color:
-        Colors.textSecondary,
+  badgeText: {
+    color: Colors.textSecondary,
 
-      fontSize: 11,
+    fontSize: 11,
 
-      fontWeight: "700",
+    fontWeight: "700",
 
-      letterSpacing: 1,
-    },
+    letterSpacing: 1,
+  },
 
-    title: {
-      marginTop: 26,
+  title: {
+    marginTop: 26,
 
-      textAlign: "center",
+    textAlign: "center",
 
-      color: "#007BFF",
+    color: "#007BFF",
 
-      fontSize: 34,
+    fontSize: 34,
 
-      fontWeight: "800",
+    fontWeight: "800",
 
-      lineHeight: 40,
-    },
+    lineHeight: 40,
+  },
 
-    sub: {
-      marginTop: 14,
+  sub: {
+    marginTop: 14,
 
-      textAlign: "center",
+    textAlign: "center",
 
-      color:
-        Colors.textSecondary,
+    color: Colors.textSecondary,
 
-      fontSize: 15,
+    fontSize: 15,
 
-      lineHeight: 24,
+    lineHeight: 24,
 
-      paddingHorizontal: 30,
-    },
+    paddingHorizontal: 30,
+  },
 
-    stepIndicator: {
-      flexDirection: "row",
+  stepIndicator: {
+    flexDirection: "row",
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      marginTop: 34,
+    marginTop: 34,
 
-      marginBottom: 26,
+    marginBottom: 26,
 
-      paddingHorizontal: 20,
-    },
+    paddingHorizontal: 20,
+  },
 
-    stepItem: {
-      flexDirection: "row",
+  stepItem: {
+    flexDirection: "row",
 
-      alignItems: "center",
-    },
+    alignItems: "center",
+  },
 
-    stepDot: {
-      width: 38,
-      height: 38,
+  stepDot: {
+    width: 38,
+    height: 38,
 
-      borderRadius: 19,
+    borderRadius: 19,
 
-      backgroundColor:
-        Colors.card,
+    backgroundColor: Colors.card,
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      borderWidth: 1.5,
+    borderWidth: 1.5,
 
-      borderColor:
-        "rgba(255,255,255,0.08)",
-    },
+    borderColor: "rgba(255,255,255,0.08)",
+  },
 
-    stepDotActive: {
-      backgroundColor:
-        "#007BFF",
-    },
+  stepDotActive: {
+    backgroundColor: "#007BFF",
+  },
 
-    stepDotDone: {
-      backgroundColor:
-        "#007BFF",
-    },
+  stepDotDone: {
+    backgroundColor: "#007BFF",
+  },
 
-    stepLabel: {
-      marginLeft: 8,
+  stepLabel: {
+    marginLeft: 8,
 
-      color:
-        Colors.textSecondary,
+    color: Colors.textSecondary,
 
-      fontSize: 12,
+    fontSize: 12,
 
-      fontWeight: "600",
-    },
+    fontWeight: "600",
+  },
 
-    stepLabelActive: {
-      color: "#007BFF",
-    },
+  stepLabelActive: {
+    color: "#007BFF",
+  },
 
-    stepLine: {
-      width: 40,
-      height: 2,
+  stepLine: {
+    width: 40,
+    height: 2,
 
-      backgroundColor:
-        "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.1)",
 
-      marginHorizontal: 10,
-    },
+    marginHorizontal: 10,
+  },
 
-    stepLineDone: {
-      backgroundColor:
-        "#007BFF",
-    },
+  stepLineDone: {
+    backgroundColor: "#007BFF",
+  },
 
-    formCard: {
-      marginHorizontal: 20,
+  formCard: {
+    marginHorizontal: 20,
 
-      padding: 22,
+    padding: 22,
 
-      borderRadius: 28,
+    borderRadius: 28,
 
-      backgroundColor:
-        Colors.card,
-    },
+    backgroundColor: Colors.card,
+  },
 
-    sectionTitle: {
-      color: "#007BFF",
+  sectionTitle: {
+    color: "#007BFF",
 
-      fontSize: 18,
+    fontSize: 18,
 
-      fontWeight: "800",
+    fontWeight: "800",
 
-      marginBottom: 20,
-    },
+    marginBottom: 20,
+  },
 
-    dividerField: {
-      height: 14,
-    },
+  dividerField: {
+    height: 14,
+  },
 
-    passwordHint: {
-      flexDirection: "row",
+  passwordHint: {
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      gap: 8,
+    gap: 8,
 
-      marginTop: 16,
-    },
+    marginTop: 16,
+  },
 
-    passwordHintText: {
-      color:
-        Colors.textSecondary,
+  passwordHintText: {
+    color: Colors.textSecondary,
 
-      fontSize: 12,
+    fontSize: 12,
 
-      flex: 1,
-    },
+    flex: 1,
+  },
 
-    actions: {
-      marginTop: 28,
+  actions: {
+    marginTop: 28,
 
-      paddingHorizontal: 20,
-    },
+    paddingHorizontal: 20,
+  },
 
-    btnPrimary: {
-      height: 58,
+  btnPrimary: {
+    height: 58,
 
-      borderRadius: 20,
+    borderRadius: 20,
 
-      backgroundColor:
-        Colors.primary,
+    backgroundColor: Colors.primary,
 
-      flexDirection: "row",
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      justifyContent:
-        "center",
-    },
+    justifyContent: "center",
+  },
 
-    btnPrimaryText: {
-      color: "#007BFF",
+  btnPrimaryText: {
+    color: "#007BFF",
 
-      fontSize: 16,
+    fontSize: 16,
 
-      fontWeight: "800",
-    },
+    fontWeight: "800",
+  },
 
-    btnArrow: {
-      position: "absolute",
+  btnArrow: {
+    position: "absolute",
 
-      right: 18,
+    right: 18,
 
-      width: 32,
-      height: 32,
+    width: 32,
+    height: 32,
 
-      borderRadius: 16,
+    borderRadius: 16,
 
-      backgroundColor:
-        "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(255,255,255,0.12)",
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
-    },
+    alignItems: "center",
+  },
 
-    dividerRow: {
-      flexDirection: "row",
+  dividerRow: {
+    flexDirection: "row",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      marginVertical: 24,
-    },
+    marginVertical: 24,
+  },
 
-    divider: {
-      flex: 1,
+  divider: {
+    flex: 1,
 
-      height: 1,
+    height: 1,
 
-      backgroundColor:
-        "rgba(255,255,255,0.08)",
-    },
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
 
-    dividerText: {
-      marginHorizontal: 14,
+  dividerText: {
+    marginHorizontal: 14,
 
-      color:
-        Colors.textSecondary,
+    color: Colors.textSecondary,
 
-      fontSize: 12,
+    fontSize: 12,
 
-      fontWeight: "600",
-    },
+    fontWeight: "600",
+  },
 
-    btnSecondary: {
-      height: 56,
+  btnSecondary: {
+    height: 56,
 
-      borderRadius: 18,
+    borderRadius: 18,
 
-      borderWidth: 1.5,
+    borderWidth: 1.5,
 
-      borderColor: "#007BFF",
+    borderColor: "#007BFF",
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      backgroundColor:
-        Colors.card,
-    },
+    backgroundColor: Colors.card,
+  },
 
-    btnSecondaryText: {
-      color: "#007BFF",
+  btnSecondaryText: {
+    color: "#007BFF",
 
-      fontSize: 15,
+    fontSize: 15,
 
-      fontWeight: "700",
-    },
+    fontWeight: "700",
+  },
 
-    legalRow: {
-      marginTop: 22,
+  legalRow: {
+    marginTop: 22,
 
-      flexDirection: "row",
+    flexDirection: "row",
 
-      justifyContent:
-        "center",
+    justifyContent: "center",
 
-      alignItems: "center",
+    alignItems: "center",
 
-      gap: 6,
-    },
+    gap: 6,
+  },
 
-    legalText: {
-      color:
-        Colors.textSecondary,
+  legalText: {
+    color: Colors.textSecondary,
 
-      fontSize: 11,
-    },
-  });
+    fontSize: 11,
+  },
+});

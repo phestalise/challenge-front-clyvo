@@ -9,11 +9,9 @@ export const styles = StyleSheet.create({
 
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
 
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
   },
 
   centerArea: {
@@ -45,8 +43,7 @@ export const styles = StyleSheet.create({
   date: {
     marginTop: 6,
     fontSize: 13,
-    color:
-      "rgba(255,255,255,0.55)",
+    color: "rgba(255,255,255,0.55)",
     textTransform: "capitalize",
   },
 
@@ -66,8 +63,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 18,
 
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
 
     alignItems: "center",
     justifyContent: "center",
@@ -79,8 +75,7 @@ export const styles = StyleSheet.create({
 
   overlay: {
     flex: 1,
-    backgroundColor:
-      "rgba(0,0,0,0.45)",
+    backgroundColor: "rgba(0,0,0,0.45)",
 
     justifyContent: "flex-start",
     alignItems: "flex-start",
@@ -94,8 +89,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 22,
 
-    backgroundColor:
-      "#17315B",
+    backgroundColor: "#17315B",
 
     paddingVertical: 10,
   },
@@ -127,8 +121,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 28,
 
-    backgroundColor:
-      "#17315B",
+    backgroundColor: "#17315B",
 
     borderTopWidth: 0,
 
@@ -155,7 +148,6 @@ export const styles = StyleSheet.create({
   },
 
   activeTabIcon: {
-    backgroundColor:
-      "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
 });

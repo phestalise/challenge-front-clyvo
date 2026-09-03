@@ -46,26 +46,19 @@ export default function MedicationsScreen() {
     removeMedication,
   } = useMedications();
 
-  const [refreshing, setRefreshing] =
-    useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const [modalVisible, setModalVisible] =
-    useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [selectedPetId, setSelectedPetId] =
-    useState("");
+  const [selectedPetId, setSelectedPetId] = useState("");
 
-  const [medName, setMedName] =
-    useState("");
+  const [medName, setMedName] = useState("");
 
-  const [dosage, setDosage] =
-    useState("");
+  const [dosage, setDosage] = useState("");
 
-  const [frequency, setFrequency] =
-    useState("");
+  const [frequency, setFrequency] = useState("");
 
-  const [endDate, setEndDate] =
-    useState("");
+  const [endDate, setEndDate] = useState("");
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -96,7 +89,7 @@ export default function MedicationsScreen() {
     if (!ok) {
       showAlert(
         "Erro ao salvar",
-        "Não foi possível salvar o medicamento. Tente novamente."
+        "Não foi possível salvar o medicamento. Tente novamente.",
       );
       return;
     }
@@ -110,87 +103,58 @@ export default function MedicationsScreen() {
     setSelectedPetId("");
   };
 
-  const handleToggleActive = async (
-    petId: string,
-    medId: string
-  ) => {
+  const handleToggleActive = async (petId: string, medId: string) => {
     const ok = await toggleActive(petId, medId);
 
     if (!ok) {
       showAlert(
         "Erro",
-        "Não foi possível atualizar o medicamento. Tente novamente."
+        "Não foi possível atualizar o medicamento. Tente novamente.",
       );
     }
   };
 
-  const handleDelete = async (
-    petId: string,
-    medId: string
-  ) => {
-    showAlert(
-      "Remover medicamento",
-      "Deseja remover?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Remover",
-          style: "destructive",
+  const handleDelete = async (petId: string, medId: string) => {
+    showAlert("Remover medicamento", "Deseja remover?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Remover",
+        style: "destructive",
 
-          onPress: async () => {
-            const ok = await removeMedication(petId, medId);
+        onPress: async () => {
+          const ok = await removeMedication(petId, medId);
 
-            if (!ok) {
-              showAlert(
-                "Erro ao remover",
-                "Não foi possível remover o medicamento. Tente novamente."
-              );
-            }
-          },
+          if (!ok) {
+            showAlert(
+              "Erro ao remover",
+              "Não foi possível remover o medicamento. Tente novamente.",
+            );
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.header,
-          { paddingTop: insets.top + 16 },
-        ]}
-      >
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
-          onPress={() =>
-            navigation.goBack()
-          }
+          onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons
-            name="arrow-back"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
 
-        <Text style={styles.title}>
-          Medicamentos
-        </Text>
+        <Text style={styles.title}>Medicamentos</Text>
 
         <TouchableOpacity
           style={styles.addBtn}
-          onPress={() =>
-            setModalVisible(true)
-          }
+          onPress={() => setModalVisible(true)}
         >
-          <Ionicons
-            name="add"
-            size={22}
-            color={Colors.white}
-          />
+          <Ionicons name="add" size={22} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -202,271 +166,140 @@ export default function MedicationsScreen() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator
-            size="large"
-            color={Colors.accentLight}
-          />
+          <ActivityIndicator size="large" color={Colors.accentLight} />
         </View>
       ) : (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={
-              refreshing
-            }
-            onRefresh={onRefresh}
-            tintColor={
-              Colors.accentLight
-            }
-          />
-        }
-        contentContainerStyle={
-          styles.scrollContent
-        }
-        showsVerticalScrollIndicator={
-          false
-        }
-      >
-        {error && (
-          <Text style={styles.emptyText}>{error}</Text>
-        )}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={Colors.accentLight}
+            />
+          }
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {error && <Text style={styles.emptyText}>{error}</Text>}
 
-        {pets.flatMap((pet) =>
-          (
-            pet.medications ?? []
-          ).map((m) => {
-            const color =
-              m.active
-                ? Colors.accentOrange
-                : Colors.textLight;
+          {pets.flatMap((pet) =>
+            (pet.medications ?? []).map((m) => {
+              const color = m.active ? Colors.accentOrange : Colors.textLight;
 
-            return (
-              <View
-                key={m.id}
-                style={styles.card}
-              >
-                <View
-                  style={[
-                    styles.iconBox,
-                    {
-                      backgroundColor:
-                        Colors.accentOrange +
-                        "20",
-                    },
-                  ]}
-                >
-                  <Ionicons
-                    name="medical"
-                    size={22}
-                    color={
-                      Colors.accentOrange
-                    }
-                  />
-                </View>
-
-                <View
-                  style={styles.flexOne}
-                >
-                  <Text
-                    style={
-                      styles.medName
-                    }
-                  >
-                    {m.name}
-                  </Text>
-
-                  <Text
-                    style={
-                      styles.medSub
-                    }
-                  >
-                    Pet: {pet.name} ·{" "}
-                    {m.dosage}
-                  </Text>
-
-                  <Text
-                    style={
-                      styles.medSub
-                    }
-                  >
-                    {m.frequency}
-                    {m.endDate
-                      ? ` · até ${m.endDate}`
-                      : ""}
-                  </Text>
-                </View>
-
-                <View
-                  style={
-                    styles.actions
-                  }
-                >
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleToggleActive(
-                        pet.id,
-                        m.id
-                      )
-                    }
-                    style={
-                      styles.actionBtn
-                    }
-                  >
-                    <View
-                      style={[
-                        styles.badge,
-                        {
-                          backgroundColor:
-                            color,
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={
-                          styles.badgeText
-                        }
-                      >
-                        {m.active
-                          ? "Ativo"
-                          : "Fim"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleDelete(
-                        pet.id,
-                        m.id
-                      )
-                    }
-                    style={
-                      styles.actionBtn
-                    }
+              return (
+                <View key={m.id} style={styles.card}>
+                  <View
+                    style={[
+                      styles.iconBox,
+                      {
+                        backgroundColor: Colors.accentOrange + "20",
+                      },
+                    ]}
                   >
                     <Ionicons
-                      name="trash"
-                      size={18}
-                      color={
-                        Colors.accentRed
-                      }
+                      name="medical"
+                      size={22}
+                      color={Colors.accentOrange}
                     />
-                  </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.flexOne}>
+                    <Text style={styles.medName}>{m.name}</Text>
+
+                    <Text style={styles.medSub}>
+                      Pet: {pet.name} · {m.dosage}
+                    </Text>
+
+                    <Text style={styles.medSub}>
+                      {m.frequency}
+                      {m.endDate ? ` · até ${m.endDate}` : ""}
+                    </Text>
+                  </View>
+
+                  <View style={styles.actions}>
+                    <TouchableOpacity
+                      onPress={() => handleToggleActive(pet.id, m.id)}
+                      style={styles.actionBtn}
+                    >
+                      <View
+                        style={[
+                          styles.badge,
+                          {
+                            backgroundColor: color,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.badgeText}>
+                          {m.active ? "Ativo" : "Fim"}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => handleDelete(pet.id, m.id)}
+                      style={styles.actionBtn}
+                    >
+                      <Ionicons
+                        name="trash"
+                        size={18}
+                        color={Colors.accentRed}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            );
-          })
-        )}
+              );
+            }),
+          )}
 
-        {pets.flatMap(
-          (p) =>
-            p.medications ?? []
-        ).length === 0 && (
-          <View style={styles.empty}>
-            <Ionicons
-              name="medical"
-              size={48}
-              color={
-                Colors.accentOrange +
-                "40"
-              }
-            />
+          {pets.flatMap((p) => p.medications ?? []).length === 0 && (
+            <View style={styles.empty}>
+              <Ionicons
+                name="medical"
+                size={48}
+                color={Colors.accentOrange + "40"}
+              />
 
-            <Text
-              style={
-                styles.emptyText
-              }
-            >
-              Nenhum medicamento
-              cadastrado
-            </Text>
-
-            <TouchableOpacity
-              style={
-                styles.emptyBtn
-              }
-              onPress={() =>
-                setModalVisible(true)
-              }
-            >
-              <Text
-                style={
-                  styles.emptyBtnText
-                }
-              >
-                Adicionar
-                medicamento
+              <Text style={styles.emptyText}>
+                Nenhum medicamento cadastrado
               </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+
+              <TouchableOpacity
+                style={styles.emptyBtn}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={styles.emptyBtnText}>Adicionar medicamento</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
       )}
 
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-      >
-        <View
-          style={
-            styles.modalOverlay
-          }
-        >
-          <View
-            style={styles.modalBox}
-          >
-            <Text
-              style={
-                styles.modalTitle
-              }
-            >
-              Novo Medicamento
-            </Text>
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Novo Medicamento</Text>
 
-            <Text
-              style={
-                styles.inputLabel
-              }
-            >
-              Pet
-            </Text>
+            <Text style={styles.inputLabel}>Pet</Text>
 
             <ScrollView
               horizontal
-              showsHorizontalScrollIndicator={
-                false
-              }
-              style={
-                styles.petScroll
-              }
+              showsHorizontalScrollIndicator={false}
+              style={styles.petScroll}
             >
-              <View
-                style={
-                  styles.petScrollRow
-                }
-              >
+              <View style={styles.petScrollRow}>
                 {pets.map((p) => (
                   <TouchableOpacity
                     key={p.id}
                     style={[
                       styles.petChip,
-                      selectedPetId ===
-                        p.id &&
-                        styles.petChipSelected,
+                      selectedPetId === p.id && styles.petChipSelected,
                     ]}
-                    onPress={() =>
-                      setSelectedPetId(
-                        p.id
-                      )
-                    }
+                    onPress={() => setSelectedPetId(p.id)}
                   >
                     <Text
                       style={[
                         styles.petChipText,
-                        selectedPetId ===
-                          p.id &&
-                          styles.petChipTextSelected,
+                        selectedPetId === p.id && styles.petChipTextSelected,
                       ]}
                     >
                       {p.name}
@@ -476,128 +309,63 @@ export default function MedicationsScreen() {
               </View>
             </ScrollView>
 
-            <Text
-              style={
-                styles.inputLabel
-              }
-            >
-              Nome do medicamento
-            </Text>
+            <Text style={styles.inputLabel}>Nome do medicamento</Text>
 
             <TextInput
               style={styles.input}
               placeholder="Ex: Simparic, Bravecto..."
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={medName}
-              onChangeText={
-                setMedName
-              }
+              onChangeText={setMedName}
             />
 
-            <Text
-              style={
-                styles.inputLabel
-              }
-            >
-              Dosagem
-            </Text>
+            <Text style={styles.inputLabel}>Dosagem</Text>
 
             <TextInput
               style={styles.input}
               placeholder="Ex: 1 comprimido"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={dosage}
-              onChangeText={
-                setDosage
-              }
+              onChangeText={setDosage}
             />
 
-            <Text
-              style={
-                styles.inputLabel
-              }
-            >
-              Frequência
-            </Text>
+            <Text style={styles.inputLabel}>Frequência</Text>
 
             <TextInput
               style={styles.input}
               placeholder="Ex: 1x ao dia"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={frequency}
-              onChangeText={
-                setFrequency
-              }
+              onChangeText={setFrequency}
             />
 
-            <Text
-              style={
-                styles.inputLabel
-              }
-            >
-              Data de término
-            </Text>
+            <Text style={styles.inputLabel}>Data de término</Text>
 
             <TextInput
               style={styles.input}
               placeholder="DD/MM/AAAA"
-              placeholderTextColor={
-                Colors.textLight
-              }
+              placeholderTextColor={Colors.textLight}
               value={endDate}
-              onChangeText={
-                setEndDate
-              }
+              onChangeText={setEndDate}
             />
 
-            <View
-              style={
-                styles.modalBtns
-              }
-            >
+            <View style={styles.modalBtns}>
               <TouchableOpacity
-                style={
-                  styles.cancelBtn
-                }
-                onPress={() =>
-                  setModalVisible(
-                    false
-                  )
-                }
+                style={styles.cancelBtn}
+                onPress={() => setModalVisible(false)}
               >
-                <Text
-                  style={
-                    styles.cancelBtnText
-                  }
-                >
-                  Cancelar
-                </Text>
+                <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  saving && { opacity: 0.6 },
-                ]}
+                style={[styles.saveBtn, saving && { opacity: 0.6 }]}
                 onPress={handleAdd}
                 disabled={saving}
               >
                 {saving ? (
                   <ActivityIndicator size="small" color={Colors.white} />
                 ) : (
-                  <Text
-                    style={
-                      styles.saveBtnText
-                    }
-                  >
-                    Salvar
-                  </Text>
+                  <Text style={styles.saveBtnText}>Salvar</Text>
                 )}
               </TouchableOpacity>
             </View>

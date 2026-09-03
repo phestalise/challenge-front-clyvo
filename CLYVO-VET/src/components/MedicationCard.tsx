@@ -10,27 +10,13 @@ type Props = {
   petName: string;
 };
 
-export default function MedicationCard({
-  medication,
-  petName,
-}: Props) {
-  const color = medication.active
-    ? Colors.accentGreen
-    : Colors.textLight;
+export default function MedicationCard({ medication, petName }: Props) {
+  const color = medication.active ? Colors.accentGreen : Colors.textLight;
 
   return (
     <View style={styles.card}>
-      <View
-        style={[
-          styles.iconBox,
-          { backgroundColor: Colors.accent + "15" },
-        ]}
-      >
-        <Ionicons
-          name="medical"
-          size={22}
-          color={Colors.accent}
-        />
+      <View style={[styles.iconBox, { backgroundColor: Colors.accent + "15" }]}>
+        <Ionicons name="medical" size={22} color={Colors.accent} />
       </View>
 
       <View style={styles.info}>
@@ -41,17 +27,11 @@ export default function MedicationCard({
         </Text>
 
         <Text style={styles.sub}>
-          {medication.frequency} · até{" "}
-          {medication.endDate || "—"}
+          {medication.frequency} · até {medication.endDate || "—"}
         </Text>
       </View>
 
-      <View
-        style={[
-          styles.badge,
-          { backgroundColor: color },
-        ]}
-      >
+      <View style={[styles.badge, { backgroundColor: color }]}>
         <Text style={styles.badgeText}>
           {medication.active ? "Ativo" : "Fim"}
         </Text>

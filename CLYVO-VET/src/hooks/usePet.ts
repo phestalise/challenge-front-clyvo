@@ -34,7 +34,7 @@ export function usePet(petId?: string) {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   const save = useCallback(async (data: Pet) => {

@@ -13,15 +13,13 @@ export const styles = StyleSheet.create({
 
     alignItems: "center",
 
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
 
     paddingHorizontal: 20,
 
     paddingBottom: 16,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
   },
 
   back: {
@@ -30,8 +28,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 18,
 
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
 
     alignItems: "center",
 
@@ -50,8 +47,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 18,
 
-    backgroundColor:
-      Colors.accentGreen + "30",
+    backgroundColor: Colors.accentGreen + "30",
 
     alignItems: "center",
 
@@ -71,8 +67,7 @@ export const styles = StyleSheet.create({
 
     gap: 12,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderRadius: 14,
 
@@ -105,8 +100,7 @@ export const styles = StyleSheet.create({
   vacDate: {
     fontSize: 12,
 
-    color:
-      "rgba(255,255,255,0.4)",
+    color: "rgba(255,255,255,0.4)",
 
     marginTop: 1,
   },
@@ -141,8 +135,7 @@ export const styles = StyleSheet.create({
 
     paddingVertical: 12,
 
-    backgroundColor:
-      Colors.accentGreen,
+    backgroundColor: Colors.accentGreen,
 
     borderRadius: 12,
   },
@@ -155,15 +148,13 @@ export const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
 
-    backgroundColor:
-      "rgba(0,0,0,0.6)",
+    backgroundColor: "rgba(0,0,0,0.6)",
 
     justifyContent: "flex-end",
   },
 
   modalBox: {
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderTopLeftRadius: 24,
 
@@ -195,8 +186,7 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
 
     borderRadius: 12,
 
@@ -210,8 +200,7 @@ export const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor:
-      "rgba(255,255,255,0.08)",
+    borderColor: "rgba(255,255,255,0.08)",
   },
 
   petRow: {
@@ -226,21 +215,17 @@ export const styles = StyleSheet.create({
 
     borderRadius: 20,
 
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
 
     borderWidth: 1,
 
-    borderColor:
-      "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
 
   petChipSelected: {
-    backgroundColor:
-      Colors.accentGreen,
+    backgroundColor: Colors.accentGreen,
 
-    borderColor:
-      Colors.accentGreen,
+    borderColor: Colors.accentGreen,
   },
 
   petChipText: {
@@ -264,8 +249,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 12,
 
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
 
     alignItems: "center",
   },
@@ -277,8 +261,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 12,
 
-    backgroundColor:
-      Colors.accentGreen,
+    backgroundColor: Colors.accentGreen,
 
     alignItems: "center",
   },

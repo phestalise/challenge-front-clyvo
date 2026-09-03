@@ -1,5 +1,3 @@
-
-
 import { StyleSheet } from "react-native";
 
 import { Colors } from "./colors";
@@ -7,21 +5,18 @@ import { Colors } from "./colors";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
 
     paddingHorizontal: 20,
     paddingBottom: 16,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
   },
 
   back: {
@@ -30,12 +25,10 @@ export const styles = StyleSheet.create({
 
     borderRadius: 18,
 
-    backgroundColor:
-      "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
 
     alignItems: "center",
-    justifyContent:
-      "center",
+    justifyContent: "center",
   },
 
   title: {
@@ -60,8 +53,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
 
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderRadius: 14,
     padding: 14,
@@ -74,8 +66,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
 
     alignItems: "center",
-    justifyContent:
-      "center",
+    justifyContent: "center",
   },
 
   info: {
@@ -100,9 +91,7 @@ export const styles = StyleSheet.create({
   itemDate: {
     fontSize: 12,
 
-    color:
-      Colors.accentRed +
-      "cc",
+    color: Colors.accentRed + "cc",
 
     marginTop: 2,
   },
@@ -113,9 +102,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 10,
 
-    backgroundColor:
-      Colors.accentRed +
-      "20",
+    backgroundColor: Colors.accentRed + "20",
   },
 
   resolveBtnText: {
@@ -152,8 +139,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
 
-    backgroundColor:
-      Colors.accentGreen,
+    backgroundColor: Colors.accentGreen,
 
     borderRadius: 12,
   },

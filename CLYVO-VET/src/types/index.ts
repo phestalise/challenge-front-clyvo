@@ -8,7 +8,7 @@ export interface Vaccine {
 
 export interface Medication {
   id: string;
-  name: string; 
+  name: string;
   dosage: string;
   frequency: string;
   startDate: string;
@@ -30,7 +30,6 @@ export interface Pet {
   nextCheckup: string;
   createdAt: string;
 }
-
 
 export type RootStackParamList = {
   Welcome: undefined;

@@ -13,8 +13,7 @@ export const styles = StyleSheet.create({
   },
 
   profileCard: {
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderRadius: 22,
 
@@ -31,8 +30,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 45,
 
-    backgroundColor:
-      Colors.accentLight + "25",
+    backgroundColor: Colors.accentLight + "25",
 
     alignItems: "center",
     justifyContent: "center",
@@ -70,8 +68,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor:
-      Colors.accentLight,
+    backgroundColor: Colors.accentLight,
   },
 
   editBtnText: {
@@ -87,8 +84,7 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
 
-    color:
-      "rgba(255,255,255,0.45)",
+    color: "rgba(255,255,255,0.45)",
 
     marginBottom: 12,
 
@@ -96,8 +92,7 @@ export const styles = StyleSheet.create({
   },
 
   faqItem: {
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderRadius: 16,
 
@@ -109,8 +104,7 @@ export const styles = StyleSheet.create({
   faqRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
   },
 
   faqQ: {
@@ -139,8 +133,7 @@ export const styles = StyleSheet.create({
 
     borderRadius: 16,
 
-    backgroundColor:
-      "rgba(255,107,107,0.12)",
+    backgroundColor: "rgba(255,107,107,0.12)",
 
     flexDirection: "row",
     alignItems: "center",
@@ -162,13 +155,11 @@ export const styles = StyleSheet.create({
 
     justifyContent: "flex-end",
 
-    backgroundColor:
-      "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 
   modalBox: {
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
 
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
@@ -197,8 +188,7 @@ export const styles = StyleSheet.create({
 
     color: Colors.white,
 
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
   },
 
   modalBtns: {
@@ -218,8 +208,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    backgroundColor:
-      Colors.primary,
+    backgroundColor: Colors.primary,
   },
 
   saveBtn: {
@@ -232,8 +221,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    backgroundColor:
-      Colors.accentLight,
+    backgroundColor: Colors.accentLight,
   },
 
   cancelText: {

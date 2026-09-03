@@ -1,257 +1,242 @@
-
-import {
-  StyleSheet,
-} from "react-native";
+import { StyleSheet } from "react-native";
 
 import { Colors } from "./colors";
 
-export const styles =
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor:
-        Colors.primary,
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
+
+  header: {
+    paddingHorizontal: 20,
+    marginBottom: 14,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+
+  addButton: {
+    width: 52,
+    height: 52,
+
+    borderRadius: 18,
+
+    backgroundColor: Colors.accentRed,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
 
-    header: {
-      paddingHorizontal: 20,
-      marginBottom: 14,
+    elevation: 5,
+  },
 
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "flex-end",
-    },
+  scrollContent: {
+    paddingHorizontal: 18,
+    paddingBottom: 120,
+    gap: 14,
+  },
 
-    addButton: {
-      width: 52,
-      height: 52,
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 90,
+  },
 
-      borderRadius: 18,
+  emptyIcon: {
+    width: 110,
+    height: 110,
 
-      backgroundColor:
-        Colors.accentRed,
+    borderRadius: 30,
 
-      alignItems: "center",
-      justifyContent: "center",
+    backgroundColor: Colors.secondary,
 
-      shadowColor: "#000",
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
+    alignItems: "center",
+    justifyContent: "center",
 
-      elevation: 5,
-    },
+    marginBottom: 24,
+  },
 
-    scrollContent: {
-      paddingHorizontal: 18,
-      paddingBottom: 120,
-      gap: 14,
-    },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: Colors.white,
+  },
 
-    emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingTop: 90,
-    },
+  emptyText: {
+    marginTop: 10,
 
-    emptyIcon: {
-      width: 110,
-      height: 110,
+    fontSize: 14,
+    lineHeight: 22,
 
-      borderRadius: 30,
+    textAlign: "center",
 
-      backgroundColor:
-        Colors.secondary,
+    color: Colors.textLight,
+  },
 
-      alignItems: "center",
-      justifyContent: "center",
+  emptyButton: {
+    marginTop: 26,
 
-      marginBottom: 24,
-    },
+    paddingHorizontal: 28,
+    paddingVertical: 14,
 
-    emptyTitle: {
-      fontSize: 24,
-      fontWeight: "800",
-      color: Colors.white,
-    },
+    borderRadius: 18,
 
-    emptyText: {
-      marginTop: 10,
+    backgroundColor: Colors.accentRed,
+  },
 
-      fontSize: 14,
-      lineHeight: 22,
+  emptyButtonText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: Colors.white,
+  },
 
-      textAlign: "center",
+  card: {
+    padding: 16,
 
-      color: Colors.textLight,
-    },
+    borderRadius: 24,
 
-    emptyButton: {
-      marginTop: 26,
+    backgroundColor: Colors.secondary,
 
-      paddingHorizontal: 28,
-      paddingVertical: 14,
+    borderWidth: 1,
 
-      borderRadius: 18,
+    borderColor: "rgba(255,255,255,0.05)",
+  },
 
-      backgroundColor:
-        Colors.accentRed,
-    },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-    emptyButtonText: {
-      fontSize: 15,
-      fontWeight: "700",
-      color: Colors.white,
-    },
+  avatar: {
+    width: 60,
+    height: 60,
 
-    card: {
-      padding: 16,
+    borderRadius: 18,
 
-      borderRadius: 24,
+    backgroundColor: Colors.accentLight + "18",
 
-      backgroundColor:
-        Colors.secondary,
+    alignItems: "center",
+    justifyContent: "center",
 
-      borderWidth: 1,
+    marginRight: 14,
+  },
 
-      borderColor:
-        "rgba(255,255,255,0.05)",
-    },
+  cardInfo: {
+    flex: 1,
+  },
 
-    cardHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
+  petName: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.white,
+  },
 
-    avatar: {
-      width: 60,
-      height: 60,
+  petMeta: {
+    marginTop: 2,
 
-      borderRadius: 18,
+    fontSize: 13,
+    color: Colors.textLight,
+  },
 
-      backgroundColor:
-        Colors.accentLight + "18",
+  pendingBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
 
-      alignItems: "center",
-      justifyContent: "center",
+    borderRadius: 999,
 
-      marginRight: 14,
-    },
+    marginRight: 10,
 
-    cardInfo: {
-      flex: 1,
-    },
+    backgroundColor: Colors.accentRed + "20",
+  },
 
-    petName: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: Colors.white,
-    },
+  pendingText: {
+    fontSize: 11,
+    fontWeight: "700",
 
-    petMeta: {
-      marginTop: 2,
+    color: Colors.accentRed,
+  },
 
-      fontSize: 13,
-      color: Colors.textLight,
-    },
+  healthContainer: {
+    flexDirection: "row",
+    alignItems: "center",
 
-    pendingBadge: {
-      paddingHorizontal: 10,
-      paddingVertical: 5,
+    marginTop: 18,
+  },
 
-      borderRadius: 999,
+  healthLabel: {
+    width: 50,
+    fontSize: 12,
+    color: Colors.textLight,
+  },
 
-      marginRight: 10,
+  progressBackground: {
+    flex: 1,
+    height: 7,
 
-      backgroundColor:
-        Colors.accentRed + "20",
-    },
+    borderRadius: 999,
 
-    pendingText: {
-      fontSize: 11,
-      fontWeight: "700",
+    overflow: "hidden",
 
-      color: Colors.accentRed,
-    },
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
 
-    healthContainer: {
-      flexDirection: "row",
-      alignItems: "center",
+  progressFill: {
+    height: "100%",
+    borderRadius: 999,
+  },
 
-      marginTop: 18,
-    },
+  healthValue: {
+    width: 45,
 
-    healthLabel: {
-      width: 50,
-      fontSize: 12,
-      color: Colors.textLight,
-    },
+    fontSize: 12,
+    fontWeight: "700",
 
-    progressBackground: {
-      flex: 1,
-      height: 7,
+    textAlign: "right",
+  },
 
-      borderRadius: 999,
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
 
-      overflow: "hidden",
+    marginTop: 18,
+  },
 
-      backgroundColor:
-        "rgba(255,255,255,0.08)",
-    },
+  stat: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
 
-    progressFill: {
-      height: "100%",
-      borderRadius: 999,
-    },
+  statText: {
+    fontSize: 11,
+    color: Colors.textLight,
+  },
 
-    healthValue: {
-      width: 45,
+  checkupContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
 
-      fontSize: 12,
-      fontWeight: "700",
+    marginTop: 18,
 
-      textAlign: "right",
-    },
+    paddingTop: 14,
 
-    statsContainer: {
-      flexDirection: "row",
-      justifyContent:
-        "space-between",
+    borderTopWidth: 1,
 
-      marginTop: 18,
-    },
+    borderTopColor: "rgba(255,255,255,0.06)",
+  },
 
-    stat: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 6,
-    },
-
-    statText: {
-      fontSize: 11,
-      color: Colors.textLight,
-    },
-
-    checkupContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-
-      marginTop: 18,
-
-      paddingTop: 14,
-
-      borderTopWidth: 1,
-
-      borderTopColor:
-        "rgba(255,255,255,0.06)",
-    },
-
-    checkupText: {
-      fontSize: 12,
-      color: Colors.textLight,
-    },
-  });
+  checkupText: {
+    fontSize: 12,
+    color: Colors.textLight,
+  },
+});

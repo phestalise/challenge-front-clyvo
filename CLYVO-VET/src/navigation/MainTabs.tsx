@@ -22,7 +22,10 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TAB_ICONS: Record<
   keyof MainTabParamList,
-  { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }
+  {
+    active: keyof typeof Ionicons.glyphMap;
+    inactive: keyof typeof Ionicons.glyphMap;
+  }
 > = {
   Dashboard: { active: "home", inactive: "home-outline" },
   Pets: { active: "paw", inactive: "paw-outline" },
@@ -55,9 +58,7 @@ export default function MainTabs() {
           const icon = TAB_ICONS[route.name];
 
           return (
-            <View
-              style={[styles.tabIcon, focused && styles.activeTabIcon]}
-            >
+            <View style={[styles.tabIcon, focused && styles.activeTabIcon]}>
               <Ionicons
                 name={focused ? icon.active : icon.inactive}
                 size={24}

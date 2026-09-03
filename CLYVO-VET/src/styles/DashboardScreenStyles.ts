@@ -20,15 +20,12 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 20,
     padding: 18,
-    backgroundColor:
-      Colors.accentLight + "15",
+    backgroundColor: Colors.accentLight + "15",
     borderWidth: 1,
-    borderColor:
-      Colors.accentLight + "30",
+    borderColor: Colors.accentLight + "30",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
   },
 
   bannerLeft: {
@@ -42,8 +39,7 @@ export const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 14,
-    backgroundColor:
-      Colors.accentLight + "20",
+    backgroundColor: Colors.accentLight + "20",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -61,8 +57,7 @@ export const styles = StyleSheet.create({
     height: 50,
     borderRadius: 16,
     marginLeft: 14,
-    backgroundColor:
-      Colors.accentLight,
+    backgroundColor: Colors.accentLight,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -78,8 +73,7 @@ export const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     marginTop: 16,
     gap: 10,
@@ -87,20 +81,17 @@ export const styles = StyleSheet.create({
 
   card: {
     width: "48%",
-    backgroundColor:
-      Colors.secondary,
+    backgroundColor: Colors.secondary,
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor:
-      "rgba(255,255,255,0.06)",
+    borderColor: "rgba(255,255,255,0.06)",
   },
 
   cardTop: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
     marginBottom: 12,
   },
 
@@ -113,23 +104,19 @@ export const styles = StyleSheet.create({
   },
 
   iconBlue: {
-    backgroundColor:
-      Colors.accentLight + "20",
+    backgroundColor: Colors.accentLight + "20",
   },
 
   iconGreen: {
-    backgroundColor:
-      Colors.accentGreen + "20",
+    backgroundColor: Colors.accentGreen + "20",
   },
 
   iconOrange: {
-    backgroundColor:
-      Colors.accentOrange + "20",
+    backgroundColor: Colors.accentOrange + "20",
   },
 
   iconRed: {
-    backgroundColor:
-      Colors.accentRed + "20",
+    backgroundColor: Colors.accentRed + "20",
   },
 
   cardValue: {

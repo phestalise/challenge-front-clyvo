@@ -36,7 +36,7 @@ function mapUser(firebaseUser: FirebaseUser | null): AuthUser | null {
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -70,13 +70,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateName = async (name: string) => {
     await authService.updateName(name);
-    setUser((current) => (current ? { ...current, displayName: name.trim() } : current));
+    setUser((current) =>
+      current ? { ...current, displayName: name.trim() } : current,
+    );
   };
 
   const updateEmailAddress = async (email: string) => {
     await authService.updateEmailAddress(email);
     setUser((current) =>
-      current ? { ...current, email: email.trim().toLowerCase() } : current
+      current ? { ...current, email: email.trim().toLowerCase() } : current,
     );
   };
 

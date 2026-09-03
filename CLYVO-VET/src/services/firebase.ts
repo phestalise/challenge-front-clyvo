@@ -22,7 +22,7 @@ function readEnv(name: (typeof REQUIRED_ENV_VARS)[number]): string {
 
   if (!value) {
     throw new Error(
-      `Configuração do Firebase incompleta: variável de ambiente ${name} não definida. Copie .env.example para .env e preencha os valores do seu projeto Firebase.`
+      `Configuração do Firebase incompleta: variável de ambiente ${name} não definida. Copie .env.example para .env e preencha os valores do seu projeto Firebase.`,
     );
   }
 

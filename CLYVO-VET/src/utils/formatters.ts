@@ -29,13 +29,20 @@ export const obterCorStatus = (status: string): string => {
 
 export const obterTextoStatus = (status: string): string => {
   switch (status) {
-    case "done": return "Aplicada";
-    case "pendente": return "Pendente";
-    case "ativo": return "Em uso";
-    case "inativo": return "Concluído";
-    case "agendada": return "Agendada";
-    case "cancelada": return "Cancelada";
-    default: return status;
+    case "done":
+      return "Aplicada";
+    case "pendente":
+      return "Pendente";
+    case "ativo":
+      return "Em uso";
+    case "inativo":
+      return "Concluído";
+    case "agendada":
+      return "Agendada";
+    case "cancelada":
+      return "Cancelada";
+    default:
+      return status;
   }
 };
 

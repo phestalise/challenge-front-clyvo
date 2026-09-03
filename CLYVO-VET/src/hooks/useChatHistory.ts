@@ -32,7 +32,7 @@ export function useChatHistory() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   const addMessage = useCallback(async (message: ChatMessage) => {

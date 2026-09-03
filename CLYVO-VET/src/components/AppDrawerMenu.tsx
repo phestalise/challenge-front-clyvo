@@ -31,8 +31,7 @@ type Props = {
 };
 
 export default function AppDrawerMenu({ visible, onClose }: Props) {
-  const navigation =
-    useNavigation<BottomTabNavigationProp<MainTabParamList>>();
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
 
   const handleNavigate = (rota: keyof MainTabParamList) => {
     onClose();

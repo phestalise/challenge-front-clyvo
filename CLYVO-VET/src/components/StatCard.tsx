@@ -12,12 +12,7 @@ type Props = {
   color: string;
 };
 
-export default function StatCard({
-  label,
-  value,
-  icon,
-  color,
-}: Props) {
+export default function StatCard({ label, value, icon, color }: Props) {
   return (
     <View style={styles.card}>
       <View
@@ -28,20 +23,12 @@ export default function StatCard({
           },
         ]}
       >
-        <Ionicons
-          name={icon as any}
-          size={20}
-          color={color}
-        />
+        <Ionicons name={icon as any} size={20} color={color} />
       </View>
 
-      <Text style={styles.value}>
-        {value}
-      </Text>
+      <Text style={styles.value}>{value}</Text>
 
-      <Text style={styles.label}>
-        {label}
-      </Text>
+      <Text style={styles.label}>{label}</Text>
     </View>
   );
 }

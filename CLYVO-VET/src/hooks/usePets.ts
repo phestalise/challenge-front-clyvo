@@ -34,7 +34,7 @@ export function usePets() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   return { pets, loading, error, reload: load };
