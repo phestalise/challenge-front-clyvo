@@ -1,12 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-class StorageService {
-  async getPets(): Promise<any[]> {
+import { Pet } from "../types";
+import { IStorage } from "../interfaces/IStorage";
+
+class StorageService implements IStorage {
+  async getPets(): Promise<Pet[]> {
     const raw = await AsyncStorage.getItem("pets");
     return raw ? JSON.parse(raw) : [];
   }
 
-  async savePets(pets: any[]): Promise<void> {
+  async savePets(pets: Pet[]): Promise<void> {
     await AsyncStorage.setItem("pets", JSON.stringify(pets));
   }
 
