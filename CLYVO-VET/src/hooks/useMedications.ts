@@ -2,7 +2,8 @@ import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { Pet } from "../types";
-import { storageService } from "../services/StorageService";
+import { petService } from "../services/PetService";
+import { useAuth } from "./useAuth";
 
 type NewMedication = {
   name: string;
@@ -12,24 +13,31 @@ type NewMedication = {
 };
 
 export function useMedications() {
+  const { user } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
+    if (!user) {
+      setPets([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const data = await storageService.getPets();
-      setPets(Array.isArray(data) ? data : []);
+      const data = await petService.getAll(user.uid);
+      setPets(data);
     } catch {
       setError("Não foi possível carregar os medicamentos.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,31 +47,28 @@ export function useMedications() {
 
   const addMedication = useCallback(
     async (petId: string, medication: NewMedication) => {
+      if (!user) return false;
+
       setSaving(true);
       setError(null);
 
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const medications = pet.medications ?? [];
 
-          const medications = p.medications ?? [];
-
-          medications.push({
-            id: Date.now().toString(),
-            name: medication.name,
-            dosage: medication.dosage,
-            frequency: medication.frequency,
-            startDate: "",
-            endDate: medication.endDate,
-            active: true,
-          });
-
-          return { ...p, medications };
+        medications.push({
+          id: Date.now().toString(),
+          name: medication.name,
+          dosage: medication.dosage,
+          frequency: medication.frequency,
+          startDate: "",
+          endDate: medication.endDate,
+          active: true,
         });
 
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, medications });
         await load();
 
         return true;
@@ -74,26 +79,22 @@ export function useMedications() {
         setSaving(false);
       }
     },
-    [load]
+    [user, load]
   );
 
   const toggleActive = useCallback(
     async (petId: string, medicationId: string) => {
+      if (!user) return false;
+
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const medications = (pet.medications ?? []).map((m) =>
+          m.id === medicationId ? { ...m, active: !m.active } : m
+        );
 
-          return {
-            ...p,
-            medications: (p.medications ?? []).map((m) =>
-              m.id === medicationId ? { ...m, active: !m.active } : m
-            ),
-          };
-        });
-
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, medications });
         await load();
 
         return true;
@@ -102,26 +103,22 @@ export function useMedications() {
         return false;
       }
     },
-    [load]
+    [user, load]
   );
 
   const removeMedication = useCallback(
     async (petId: string, medicationId: string) => {
+      if (!user) return false;
+
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const medications = (pet.medications ?? []).filter(
+          (m) => m.id !== medicationId
+        );
 
-          return {
-            ...p,
-            medications: (p.medications ?? []).filter(
-              (m) => m.id !== medicationId
-            ),
-          };
-        });
-
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, medications });
         await load();
 
         return true;
@@ -130,7 +127,7 @@ export function useMedications() {
         return false;
       }
     },
-    [load]
+    [user, load]
   );
 
   return {

@@ -1,9 +1,9 @@
 import { Pet } from "../types";
 
 export interface IPetService {
-  getAll(): Promise<Pet[]>;
-  getById(id: string): Promise<Pet | null>;
+  getAll(ownerId: string): Promise<Pet[]>;
+  getById(id: string, ownerId: string): Promise<Pet | null>;
   save(pet: Pet): Promise<void>;
-  remove(id: string): Promise<void>;
+  remove(id: string, ownerId: string): Promise<void>;
   getHealthScore(pet: Pet): number;
 }

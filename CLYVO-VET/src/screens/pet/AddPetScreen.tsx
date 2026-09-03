@@ -24,6 +24,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 import { usePet } from "../../hooks/usePet";
+import { useAuth } from "../../hooks/useAuth";
 import { validarFormularioPet } from "../../utils/validators";
 
 import { styles } from "../../styles/AddPetScreenStyles";
@@ -46,6 +47,7 @@ export default function AddPetScreen() {
   const petId = route.params?.petId;
   const isEditing = !!petId;
 
+  const { user } = useAuth();
   const { pet, loading, error, save } = usePet(petId);
 
   const [name, setName] = useState("");
@@ -89,6 +91,7 @@ export default function AddPetScreen() {
       const updatedPet = {
         ...(pet ?? {}),
         id: pet?.id ?? Date.now().toString(),
+        ownerId: pet?.ownerId ?? user?.uid ?? "",
         name: name.trim(),
         species,
         breed: breedEffective,

@@ -3,14 +3,16 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { Pet } from "../types";
 import { petService } from "../services/PetService";
+import { useAuth } from "./useAuth";
 
 export function usePet(petId?: string) {
+  const { user } = useAuth();
   const [pet, setPet] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!petId) {
+    if (!petId || !user) {
       setPet(null);
       setLoading(false);
       return;
@@ -20,14 +22,14 @@ export function usePet(petId?: string) {
     setError(null);
 
     try {
-      const data = await petService.getById(petId);
+      const data = await petService.getById(petId, user.uid);
       setPet(data);
     } catch {
       setError("Não foi possível carregar os dados do pet.");
     } finally {
       setLoading(false);
     }
-  }, [petId]);
+  }, [petId, user]);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,16 +48,16 @@ export function usePet(petId?: string) {
   }, []);
 
   const remove = useCallback(async () => {
-    if (!petId) return false;
+    if (!petId || !user) return false;
 
     try {
-      await petService.remove(petId);
+      await petService.remove(petId, user.uid);
       return true;
     } catch {
       setError("Não foi possível remover o pet. Tente novamente.");
       return false;
     }
-  }, [petId]);
+  }, [petId, user]);
 
   return { pet, loading, error, reload: load, save, remove };
 }

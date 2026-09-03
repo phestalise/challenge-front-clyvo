@@ -2,7 +2,8 @@ import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { Pet } from "../types";
-import { storageService } from "../services/StorageService";
+import { petService } from "../services/PetService";
+import { useAuth } from "./useAuth";
 
 type NewVaccine = {
   name: string;
@@ -11,24 +12,31 @@ type NewVaccine = {
 };
 
 export function useVaccines() {
+  const { user } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
+    if (!user) {
+      setPets([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const data = await storageService.getPets();
-      setPets(Array.isArray(data) ? data : []);
+      const data = await petService.getAll(user.uid);
+      setPets(data);
     } catch {
       setError("Não foi possível carregar as vacinas.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,29 +46,26 @@ export function useVaccines() {
 
   const addVaccine = useCallback(
     async (petId: string, vaccine: NewVaccine) => {
+      if (!user) return false;
+
       setSaving(true);
       setError(null);
 
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const vaccines = pet.vaccines ?? [];
 
-          const vaccines = p.vaccines ?? [];
-
-          vaccines.push({
-            id: Date.now().toString(),
-            name: vaccine.name,
-            date: vaccine.date,
-            nextDue: vaccine.nextDue,
-            done: !!vaccine.date,
-          });
-
-          return { ...p, vaccines };
+        vaccines.push({
+          id: Date.now().toString(),
+          name: vaccine.name,
+          date: vaccine.date,
+          nextDue: vaccine.nextDue,
+          done: !!vaccine.date,
         });
 
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, vaccines });
         await load();
 
         return true;
@@ -71,26 +76,22 @@ export function useVaccines() {
         setSaving(false);
       }
     },
-    [load]
+    [user, load]
   );
 
   const toggleDone = useCallback(
     async (petId: string, vaccineId: string) => {
+      if (!user) return false;
+
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const vaccines = (pet.vaccines ?? []).map((v) =>
+          v.id === vaccineId ? { ...v, done: !v.done } : v
+        );
 
-          return {
-            ...p,
-            vaccines: (p.vaccines ?? []).map((v) =>
-              v.id === vaccineId ? { ...v, done: !v.done } : v
-            ),
-          };
-        });
-
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, vaccines });
         await load();
 
         return true;
@@ -99,24 +100,22 @@ export function useVaccines() {
         return false;
       }
     },
-    [load]
+    [user, load]
   );
 
   const removeVaccine = useCallback(
     async (petId: string, vaccineId: string) => {
+      if (!user) return false;
+
       try {
-        const allPets = await storageService.getPets();
+        const pet = await petService.getById(petId, user.uid);
+        if (!pet) return false;
 
-        const updated = allPets.map((p: Pet) => {
-          if (p.id !== petId) return p;
+        const vaccines = (pet.vaccines ?? []).filter(
+          (v) => v.id !== vaccineId
+        );
 
-          return {
-            ...p,
-            vaccines: (p.vaccines ?? []).filter((v) => v.id !== vaccineId),
-          };
-        });
-
-        await storageService.savePets(updated);
+        await petService.save({ ...pet, vaccines });
         await load();
 
         return true;
@@ -125,7 +124,7 @@ export function useVaccines() {
         return false;
       }
     },
-    [load]
+    [user, load]
   );
 
   return {
