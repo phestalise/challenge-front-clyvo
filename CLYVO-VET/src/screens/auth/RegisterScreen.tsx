@@ -27,6 +27,7 @@ import { RootStackParamList } from "../../types";
 import { Colors } from "../../styles/colors";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
 
 import {
@@ -65,10 +66,13 @@ const STEPS = [
 export default function RegisterScreen({
   navigation,
 }: Props) {
-  const { register, loginWithGoogle } = useAuth();
+  const { register } = useAuth();
 
-  const [googleLoading, setGoogleLoading] =
-    useState(false);
+  const {
+    promptGoogleSignIn,
+    isReady: googleReady,
+    loading: googleLoading,
+  } = useGoogleAuth();
 
   const [step, setStep] =
     useState(0);
@@ -228,24 +232,13 @@ export default function RegisterScreen({
     };
 
   const handleGoogleRegister = async () => {
-    setGoogleLoading(true);
-
     try {
-      await loginWithGoogle();
+      await promptGoogleSignIn();
     } catch (error: any) {
-      if (
-        error?.code === "auth/popup-closed-by-user" ||
-        error?.code === "auth/cancelled-popup-request"
-      ) {
-        return;
-      }
-
       showAlert(
         "Erro",
         mapFirebaseAuthError(error?.code)
       );
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -301,7 +294,7 @@ export default function RegisterScreen({
               <Ionicons
                 name="arrow-back"
                 size={20}
-                color={Colors.white}
+                color={Colors.accentLight}
               />
             </TouchableOpacity>
 
@@ -420,10 +413,13 @@ export default function RegisterScreen({
                         }
                         size={14}
                         color={
-                          index <=
-                          step
-                            ? Colors.primary
-                            : "rgba(255,255,255,0.35)"
+                          item.key ===
+                          "security"
+                            ? Colors.black
+                            : index <=
+                                step
+                              ? Colors.primary
+                              : "rgba(255,255,255,0.35)"
                         }
                       />
                     )}
@@ -827,7 +823,8 @@ export default function RegisterScreen({
                 handleGoogleRegister
               }
               disabled={
-                googleLoading
+                googleLoading ||
+                !googleReady
               }
             >
               <Ionicons
@@ -850,9 +847,10 @@ export default function RegisterScreen({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={
-                styles.btnSecondary
-              }
+              style={[
+                styles.btnSecondary,
+                { marginTop: 14 },
+              ]}
               activeOpacity={0.7}
               onPress={() =>
                 navigation.navigate(

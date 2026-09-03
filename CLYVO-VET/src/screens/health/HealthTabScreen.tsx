@@ -57,24 +57,6 @@ export default function HealthTabScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View
-          style={
-            styles.titleContainer
-          }
-        >
-          <Ionicons
-            name="heart"
-            size={20}
-            color={
-              Colors.accentRed
-            }
-          />
-
-          <Text style={styles.title}>
-            Saúde
-          </Text>
-        </View>
-
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.addButton}

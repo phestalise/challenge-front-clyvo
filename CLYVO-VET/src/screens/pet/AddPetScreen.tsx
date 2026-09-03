@@ -17,6 +17,8 @@ import {
   RouteProp,
 } from "@react-navigation/native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
@@ -39,6 +41,7 @@ type Route = RouteProp<RootStackParamList, "AddPet">;
 export default function AddPetScreen() {
   const navigation = useNavigation<any>();
   const route = useRoute<Route>();
+  const insets = useSafeAreaInsets();
 
   const petId = route.params?.petId;
   const isEditing = !!petId;
@@ -118,7 +121,12 @@ export default function AddPetScreen() {
   if (isEditing && loading) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            { paddingTop: insets.top + 16 },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.back}
@@ -142,7 +150,12 @@ export default function AddPetScreen() {
   if (isEditing && !loading && !pet) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            { paddingTop: insets.top + 16 },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.back}

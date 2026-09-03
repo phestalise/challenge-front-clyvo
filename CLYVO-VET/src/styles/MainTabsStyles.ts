@@ -4,7 +4,6 @@ import { Colors } from "./colors";
 
 export const styles = StyleSheet.create({
   header: {
-    paddingTop: 60,
     paddingBottom: 22,
     paddingHorizontal: 20,
 

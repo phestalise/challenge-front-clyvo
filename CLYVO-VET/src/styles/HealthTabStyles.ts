@@ -19,20 +19,7 @@ export const styles =
 
       flexDirection: "row",
       alignItems: "center",
-      justifyContent:
-        "space-between",
-    },
-
-    titleContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-    },
-
-    title: {
-      fontSize: 28,
-      fontWeight: "800",
-      color: Colors.white,
+      justifyContent: "flex-end",
     },
 
     addButton: {

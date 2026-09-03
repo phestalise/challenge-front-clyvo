@@ -27,6 +27,7 @@ import { RootStackParamList } from "../../types";
 import { Colors } from "../../styles/colors";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
 import { validarCampoObrigatorio, validarEmail } from "../../utils/validators";
 
@@ -44,7 +45,13 @@ type Props = {
 export default function LoginScreen({
   navigation,
 }: Props) {
-  const { login, loginWithGoogle, resetPassword } = useAuth();
+  const { login, resetPassword } = useAuth();
+
+  const {
+    promptGoogleSignIn,
+    isReady: googleReady,
+    loading: googleLoading,
+  } = useGoogleAuth();
 
   const [email, setEmail] =
     useState("");
@@ -53,9 +60,6 @@ export default function LoginScreen({
     useState("");
 
   const [loading, setLoading] =
-    useState(false);
-
-  const [googleLoading, setGoogleLoading] =
     useState(false);
 
   const [resetLoading, setResetLoading] =
@@ -173,21 +177,10 @@ export default function LoginScreen({
   };
 
   const handleGoogleLogin = async () => {
-    setGoogleLoading(true);
-
     try {
-      await loginWithGoogle();
+      await promptGoogleSignIn();
     } catch (error: any) {
-      if (
-        error?.code === "auth/popup-closed-by-user" ||
-        error?.code === "auth/cancelled-popup-request"
-      ) {
-        return;
-      }
-
       showAlert("Erro", mapFirebaseAuthError(error?.code));
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -502,7 +495,8 @@ export default function LoginScreen({
                 handleGoogleLogin
               }
               disabled={
-                googleLoading
+                googleLoading ||
+                !googleReady
               }
               activeOpacity={0.7}
             >

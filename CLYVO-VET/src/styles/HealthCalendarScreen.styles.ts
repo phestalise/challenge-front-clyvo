@@ -1,5 +1,3 @@
-
-
 import {
   StyleSheet,
 } from "react-native";
@@ -16,7 +14,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: Colors.secondary,
@@ -42,99 +39,141 @@ export const styles = StyleSheet.create({
     width: 40,
   },
 
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 120,
+    gap: 16,
+  },
+
+  calendarCard: {
+    backgroundColor: Colors.secondary,
+    borderRadius: 24,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
+  },
+
   monthRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    marginBottom: 16,
+  },
+
+  monthNavBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 
   monthText: {
     color: Colors.white,
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
     textTransform: "capitalize",
   },
 
   weekRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 6,
+  },
+
+  weekTextWrapper: {
+    width: "14.2857%",
+    alignItems: "center",
   },
 
   weekText: {
-    width: "14.2%",
     textAlign: "center",
     color: Colors.textLight,
+    fontSize: 12,
     fontWeight: "600",
   },
 
   calendarGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingHorizontal: 10,
   },
 
-  dayCard: {
-    width: "14.2%",
-    minHeight: 90,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-    padding: 4,
+  dayCellWrapper: {
+    width: "14.2857%",
+    aspectRatio: 1,
+    padding: 2,
   },
 
-  emptyDayCard: {
-    backgroundColor: "transparent",
+  dayCell: {
+    flex: 1,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+
+  dayCellToday: {
+    borderWidth: 1.5,
+    borderColor: Colors.accentLight,
+  },
+
+  dayCellSelected: {
+    backgroundColor: Colors.accentLight,
   },
 
   dayNumber: {
     color: Colors.white,
-    fontSize: 14,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-
-  eventList: {
-    gap: 4,
-  },
-
-  eventBadge: {
-    borderRadius: 8,
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-  },
-
-  eventBadgeText: {
-    color: Colors.white,
-    fontSize: 9,
+    fontSize: 13,
     fontWeight: "600",
   },
 
-  moreText: {
-    color: Colors.textLight,
-    fontSize: 10,
-    marginTop: 2,
+  dayNumberSelected: {
+    color: Colors.primary,
+    fontWeight: "800",
+  },
+
+  dotsRow: {
+    flexDirection: "row",
+    gap: 3,
+    height: 6,
+    alignItems: "center",
+  },
+
+  dot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
   },
 
   legend: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 20,
-    marginTop: 24,
+    flexWrap: "wrap",
+    gap: 18,
+    marginTop: 18,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.06)",
   },
 
   legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 7,
   },
 
   legendDot: {
-    width: 10,
-    height: 10,
+    width: 9,
+    height: 9,
     borderRadius: 5,
+  },
+
+  legendRing: {
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    borderWidth: 1.5,
+    borderColor: Colors.accentLight,
   },
 
   legendText: {
@@ -142,10 +181,24 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  pendingContainer: {
+  dayDetailCard: {
+    backgroundColor: Colors.secondary,
+    borderRadius: 24,
     padding: 16,
     gap: 12,
-    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
+  },
+
+  dayDetailTitle: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: "700",
+    textTransform: "capitalize",
+  },
+
+  pendingContainer: {
+    gap: 12,
   },
 
   pendingTitle: {
@@ -192,7 +245,6 @@ export const styles = StyleSheet.create({
   emptyText: {
     color: Colors.textLight,
     textAlign: "center",
-    marginTop: 20,
   },
 
   flexOne: {

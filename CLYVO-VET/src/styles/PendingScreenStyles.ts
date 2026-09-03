@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
       "space-between",
 
     paddingHorizontal: 20,
-    paddingTop: 60,
     paddingBottom: 16,
 
     backgroundColor:

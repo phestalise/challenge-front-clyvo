@@ -17,6 +17,8 @@ import { showAlert } from "../../utils/showAlert";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
@@ -27,6 +29,7 @@ import { useMedications } from "../../hooks/useMedications";
 
 export default function MedicationsScreen() {
   const navigation = useNavigation<any>();
+  const insets = useSafeAreaInsets();
 
   const {
     pets,
@@ -150,7 +153,12 @@ export default function MedicationsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 16 },
+        ]}
+      >
         <TouchableOpacity
           onPress={() =>
             navigation.goBack()

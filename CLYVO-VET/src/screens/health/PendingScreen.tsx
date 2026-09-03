@@ -13,6 +13,8 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
@@ -22,6 +24,7 @@ import { styles } from "../../styles/PendingScreenStyles";
 
 export default function PendingScreen() {
   const navigation = useNavigation<any>();
+  const insets = useSafeAreaInsets();
 
   const { pets, loading, error, reload } = usePets();
   const [refreshing, setRefreshing] =
@@ -47,7 +50,12 @@ export default function PendingScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 16 },
+        ]}
+      >
         <TouchableOpacity
           onPress={() =>
             navigation.goBack()

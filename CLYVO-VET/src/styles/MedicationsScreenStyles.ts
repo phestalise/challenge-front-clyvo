@@ -20,7 +20,6 @@ export const styles =
         "space-between",
 
       paddingHorizontal: 20,
-      paddingTop: 60,
       paddingBottom: 16,
 
       backgroundColor:

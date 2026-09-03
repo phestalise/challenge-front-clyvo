@@ -11,6 +11,8 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
@@ -22,6 +24,7 @@ import { styles } from "../../styles/PetsScreenStyles";
 
 export default function PetsScreen() {
   const navigation = useNavigation<any>();
+  const insets = useSafeAreaInsets();
 
   const { pets, loading, error, reload } = usePets();
 
@@ -52,7 +55,12 @@ export default function PetsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 16 },
+        ]}
+      >
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.addBtn}

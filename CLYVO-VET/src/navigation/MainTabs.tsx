@@ -14,6 +14,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import DashboardScreen from "../screens/dashboard/DashboardScreen";
 import PetsScreen from "../screens/pet/PetsScreen";
 import HealthTabScreen from "../screens/health/HealthTabScreen";
@@ -29,6 +31,7 @@ const Tab = createBottomTabNavigator();
 
 function CustomHeader({ route }: any) {
   const navigation: any = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const [menuVisible, setMenuVisible] =
     useState(false);
@@ -54,7 +57,12 @@ function CustomHeader({ route }: any) {
 
   return (
     <>
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 16 },
+        ]}
+      >
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() =>

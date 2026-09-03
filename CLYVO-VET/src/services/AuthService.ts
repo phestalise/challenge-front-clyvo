@@ -6,8 +6,8 @@ import {
   reload,
   sendEmailVerification,
   sendPasswordResetEmail,
+  signInWithCredential,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut,
   updateEmail,
   updateProfile,
@@ -52,10 +52,11 @@ class AuthService {
     return credential.user;
   }
 
-  async loginWithGoogle(): Promise<FirebaseUser> {
-    const credential = await signInWithPopup(auth, new GoogleAuthProvider());
+  async loginWithGoogle(idToken: string): Promise<FirebaseUser> {
+    const credential = GoogleAuthProvider.credential(idToken);
+    const result = await signInWithCredential(auth, credential);
 
-    return credential.user;
+    return result.user;
   }
 
   async resetPassword(email: string): Promise<void> {

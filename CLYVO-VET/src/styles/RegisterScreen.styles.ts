@@ -101,7 +101,7 @@ export const styles =
 
       fontWeight: "800",
 
-      color: Colors.white,
+      color: Colors.accentLight,
 
       letterSpacing: 1,
     },

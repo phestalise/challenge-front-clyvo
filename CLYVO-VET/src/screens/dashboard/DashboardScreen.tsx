@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useRef,
   useState,
 } from "react";
 
@@ -10,8 +9,15 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Animated,
 } from "react-native";
+
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 import {
   useFocusEffect,
@@ -31,35 +37,23 @@ export default function DashboardScreen() {
   const [refreshing, setRefreshing] =
     useState(false);
 
-  const bounceAnim = useRef(
-    new Animated.Value(1)
-  ).current;
+  const bounceScale = useSharedValue(1);
 
   useFocusEffect(
     useCallback(() => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(
-            bounceAnim,
-            {
-              toValue: 1.1,
-              duration: 700,
-              useNativeDriver: true,
-            }
-          ),
-
-          Animated.timing(
-            bounceAnim,
-            {
-              toValue: 1,
-              duration: 700,
-              useNativeDriver: true,
-            }
-          ),
-        ])
-      ).start();
+      bounceScale.value = withRepeat(
+        withSequence(
+          withTiming(1.1, { duration: 700 }),
+          withTiming(1, { duration: 700 })
+        ),
+        -1
+      );
     }, [])
   );
+
+  const bounceStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: bounceScale.value }],
+  }));
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -123,7 +117,10 @@ export default function DashboardScreen() {
               />
             </View>
 
-            <Text style={styles.bannerText}>
+            <Text
+              style={styles.bannerText}
+              numberOfLines={2}
+            >
               {pets.length === 0
                 ? "Cadastre seu primeiro pet"
                 : `${pets.length} pet${pets.length > 1 ? "s" : ""} cadastrado${pets.length > 1 ? "s" : ""}`}
@@ -159,14 +156,7 @@ export default function DashboardScreen() {
                 style={[
                   styles.iconBox,
                   styles.iconBlue,
-                  {
-                    transform: [
-                      {
-                        scale:
-                          bounceAnim,
-                      },
-                    ],
-                  },
+                  bounceStyle,
                 ]}
               >
                 <Ionicons
