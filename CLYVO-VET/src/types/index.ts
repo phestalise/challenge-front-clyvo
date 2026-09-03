@@ -52,5 +52,6 @@ export type MainTabParamList = {
   Dashboard: undefined;
   Pets: undefined;
   Health: undefined;
+  Calendar: undefined;
   Profile: undefined;
 };
