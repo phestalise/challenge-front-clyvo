@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import * as Google from "expo-auth-session/providers/google";
 
-import { GOOGLE_WEB_CLIENT_ID } from "../config/googleAuth";
+import {
+  GOOGLE_WEB_CLIENT_ID,
+  isGoogleAuthConfigured,
+} from "../config/googleAuth";
 import { useAuth } from "./useAuth";
 
 export function useGoogleAuth() {
@@ -34,7 +37,17 @@ export function useGoogleAuth() {
     });
   }, [response]);
 
-  const promptGoogleSignIn = () => promptAsync();
+  const promptGoogleSignIn = () => {
+    if (!isGoogleAuthConfigured) {
+      return Promise.reject(
+        new Error(
+          "Login com Google ainda não configurado: defina GOOGLE_WEB_CLIENT_ID em src/config/googleAuth.ts.",
+        ),
+      );
+    }
+
+    return promptAsync();
+  };
 
   return {
     promptGoogleSignIn,

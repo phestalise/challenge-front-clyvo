@@ -142,7 +142,12 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       await promptGoogleSignIn();
     } catch (error: any) {
-      showAlert("Erro", mapFirebaseAuthError(error?.code));
+      showAlert(
+        "Erro",
+        error?.code
+          ? mapFirebaseAuthError(error.code)
+          : (error?.message ?? mapFirebaseAuthError(undefined)),
+      );
     }
   };
 

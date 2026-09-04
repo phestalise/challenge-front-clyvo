@@ -176,7 +176,12 @@ export default function RegisterScreen({ navigation }: Props) {
     try {
       await promptGoogleSignIn();
     } catch (error: any) {
-      showAlert("Erro", mapFirebaseAuthError(error?.code));
+      showAlert(
+        "Erro",
+        error?.code
+          ? mapFirebaseAuthError(error.code)
+          : (error?.message ?? mapFirebaseAuthError(undefined)),
+      );
     }
   };
 
