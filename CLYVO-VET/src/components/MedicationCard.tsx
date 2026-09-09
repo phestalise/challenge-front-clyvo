@@ -23,7 +23,7 @@ export default function MedicationCard({ medication, petName }: Props) {
         <Text style={styles.name}>{medication.name}</Text>
 
         <Text style={styles.sub}>
-          Pet: {petName} · {medication.dosage}
+          Pet: {petName} · {medication.dose}
         </Text>
 
         <Text style={styles.sub}>

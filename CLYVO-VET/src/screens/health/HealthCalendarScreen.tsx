@@ -73,27 +73,27 @@ export default function HealthCalendarScreen() {
 
     pets.forEach((pet) => {
       (pet.vaccines ?? []).forEach((v) => {
-        if (v.date) {
+        if (v.startDate) {
           allEvents.push({
             id: `vac-${v.id}`,
             petName: pet.name,
             petId: pet.id,
             type: "vaccine",
             name: v.name,
-            date: v.date,
+            date: v.startDate,
             done: v.done,
             color: Colors.accentGreen,
           });
         }
 
-        if (v.nextDue) {
+        if (v.endDate) {
           allEvents.push({
             id: `vac-next-${v.id}`,
             petName: pet.name,
             petId: pet.id,
             type: "vaccine",
             name: `${v.name} - Próxima dose`,
-            date: v.nextDue,
+            date: v.endDate,
             done: false,
             color: Colors.accentOrange,
           });

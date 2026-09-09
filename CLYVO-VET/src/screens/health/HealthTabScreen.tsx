@@ -165,7 +165,7 @@ export default function HealthTabScreen() {
 
                       <Text style={styles.petMeta}>
                         {pet.species} • {pet.breed} •{" "}
-                        {calcularIdadeTexto(pet.age)}
+                        {calcularIdadeTexto(pet.birthDate)}
                       </Text>
                     </View>
 

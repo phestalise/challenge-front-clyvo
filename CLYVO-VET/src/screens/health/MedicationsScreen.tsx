@@ -81,7 +81,7 @@ export default function MedicationsScreen() {
 
     const ok = await addMedication(selectedPetId, {
       name: medName.trim(),
-      dosage,
+      dose: dosage,
       frequency,
       endDate,
     });
@@ -207,7 +207,7 @@ export default function MedicationsScreen() {
                     <Text style={styles.medName}>{m.name}</Text>
 
                     <Text style={styles.medSub}>
-                      Pet: {pet.name} · {m.dosage}
+                      Pet: {pet.name} · {m.dose}
                     </Text>
 
                     <Text style={styles.medSub}>

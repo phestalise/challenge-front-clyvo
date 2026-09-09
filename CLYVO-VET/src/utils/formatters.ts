@@ -46,11 +46,33 @@ export const obterTextoStatus = (status: string): string => {
   }
 };
 
-export const calcularIdadeTexto = (anos: string): string => {
-  const n = parseFloat(anos);
-  if (isNaN(n)) return anos;
-  if (n < 1) return `${Math.round(n * 12)} meses`;
-  return `${n} ${n === 1 ? "ano" : "anos"}`;
+// Recebe a data de nascimento no formato DD/MM/AAAA (mesmo padrão usado nos
+// campos de data de vacina/medicamento) e calcula a idade — o banco guarda
+// DATA_NASC, não idade pronta, então isso substitui o campo "age" antigo.
+export const calcularIdadeTexto = (dataNascimento: string): string => {
+  if (!dataNascimento) return "—";
+
+  const partes = dataNascimento.split("/");
+  if (partes.length !== 3) return dataNascimento;
+
+  const [dia, mes, ano] = partes.map(Number);
+  const nascimento = new Date(ano, mes - 1, dia);
+  if (isNaN(nascimento.getTime())) return dataNascimento;
+
+  const hoje = new Date();
+  let anos = hoje.getFullYear() - nascimento.getFullYear();
+  let meses = hoje.getMonth() - nascimento.getMonth();
+
+  if (hoje.getDate() < nascimento.getDate()) meses -= 1;
+  if (meses < 0) {
+    anos -= 1;
+    meses += 12;
+  }
+
+  if (anos < 1) {
+    return meses <= 0 ? "Recém-nascido" : `${meses} ${meses === 1 ? "mês" : "meses"}`;
+  }
+  return `${anos} ${anos === 1 ? "ano" : "anos"}`;
 };
 
 export const primeiroNome = (nome: string): string =>

@@ -45,7 +45,7 @@ export default function AddPetScreen() {
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");
   const [breed, setBreed] = useState("");
-  const [age, setAge] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [weight, setWeight] = useState("");
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,7 +56,7 @@ export default function AddPetScreen() {
     setName(pet.name ?? "");
     setSpecies(pet.species ?? "");
     setBreed(pet.breed ?? "");
-    setAge(String(pet.age ?? ""));
+    setBirthDate(pet.birthDate ?? "");
     setWeight(String(pet.weight ?? ""));
   }, [pet]);
 
@@ -67,7 +67,7 @@ export default function AddPetScreen() {
       name,
       species,
       breed: breedEffective,
-      age,
+      birthDate,
       weight,
     });
 
@@ -87,12 +87,11 @@ export default function AddPetScreen() {
         name: name.trim(),
         species,
         breed: breedEffective,
-        age: parseFloat(age) || 0,
+        birthDate: birthDate.trim(),
         weight: parseFloat(weight) || 0,
         vaccines: pet?.vaccines ?? [],
         medications: pet?.medications ?? [],
         nextCheckup: pet?.nextCheckup ?? "",
-        createdAt: pet?.createdAt ?? new Date().toISOString(),
       };
 
       const ok = await save(updatedPet as any);
@@ -259,21 +258,20 @@ export default function AddPetScreen() {
 
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>Idade (anos)</Text>
+            <Text style={styles.label}>Data de nascimento</Text>
 
             <TextInput
-              style={[styles.input, errors.age && styles.inputError]}
-              placeholder="Ex: 3"
+              style={[styles.input, errors.birthDate && styles.inputError]}
+              placeholder="DD/MM/AAAA"
               placeholderTextColor={Colors.textLight}
-              value={age}
+              value={birthDate}
               onChangeText={(v) => {
-                setAge(v);
-                setErrors((prev) => ({ ...prev, age: "" }));
+                setBirthDate(v);
+                setErrors((prev) => ({ ...prev, birthDate: "" }));
               }}
-              keyboardType="decimal-pad"
             />
-            {errors.age ? (
-              <Text style={styles.errorText}>{errors.age}</Text>
+            {errors.birthDate ? (
+              <Text style={styles.errorText}>{errors.birthDate}</Text>
             ) : null}
           </View>
 

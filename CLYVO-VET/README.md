@@ -15,6 +15,32 @@ saúde e um assistente de chat.
   medicamentos) — **temporário**: a troca para a API real via TanStack Query
   será feita em uma etapa separada.
 
+## Configuração do ambiente (Firebase)
+
+As credenciais do Firebase ficam em variáveis de ambiente, não no código-fonte.
+Antes de rodar o projeto:
+
+1. Copie o arquivo de exemplo:
+   ```bash
+   cp .env.example .env
+   ```
+2. Preencha o `.env` com as credenciais do projeto Firebase (Console do
+   Firebase → Configurações do projeto → Seus apps → SDK setup and
+   configuration):
+   ```
+   EXPO_PUBLIC_FIREBASE_API_KEY=
+   EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
+   EXPO_PUBLIC_FIREBASE_PROJECT_ID=
+   EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
+   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+   EXPO_PUBLIC_FIREBASE_APP_ID=
+   EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=
+   ```
+
+O prefixo `EXPO_PUBLIC_` é exigido pelo Expo para expor a variável ao código
+do app (`src/services/firebase.ts`). O arquivo `.env` está no `.gitignore` e
+não é versionado — cada pessoa que rodar o projeto precisa criar o seu.
+
 ## Scripts
 
 ```bash

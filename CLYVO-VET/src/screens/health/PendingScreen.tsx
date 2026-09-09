@@ -130,9 +130,9 @@ export default function PendingScreen() {
                     Pet: {item.petName} · {item.type}
                   </Text>
 
-                  {item.nextDue ? (
+                  {item.endDate ? (
                     <Text style={styles.itemDate}>
-                      Prevista: {item.nextDue}
+                      Prevista: {item.endDate}
                     </Text>
                   ) : null}
                 </View>

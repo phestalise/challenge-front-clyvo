@@ -50,7 +50,9 @@ export default function PetCard({ pet, onPress }: Props) {
 
           <View style={styles.tags}>
             <View style={styles.tag}>
-              <Text style={styles.tagText}>{calcularIdadeTexto(pet.age)}</Text>
+              <Text style={styles.tagText}>
+                {calcularIdadeTexto(pet.birthDate)}
+              </Text>
             </View>
 
             <View style={styles.tag}>

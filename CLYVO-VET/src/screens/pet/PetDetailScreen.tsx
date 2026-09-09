@@ -185,15 +185,11 @@ export default function PetDetailScreen() {
             {[
               {
                 icon: "calendar-outline",
-                text: calcularIdadeTexto(pet.age),
+                text: calcularIdadeTexto(pet.birthDate),
               },
               {
                 icon: "fitness-outline",
                 text: `${pet.weight} kg`,
-              },
-              {
-                icon: "color-palette-outline",
-                text: pet.color,
               },
             ].map((c, i) => (
               <View key={i} style={styles.chip}>
@@ -287,14 +283,9 @@ export default function PetDetailScreen() {
               ["Nome", pet.name],
               ["Espécie", pet.species],
               ["Raça", pet.breed],
-              ["Idade", calcularIdadeTexto(pet.age)],
+              ["Idade", calcularIdadeTexto(pet.birthDate)],
               ["Peso", `${pet.weight} kg`],
-              ["Cor", pet.color],
               ["Próximo retorno", pet.nextCheckup || "Não agendado"],
-              [
-                "Cadastrado",
-                new Date(pet.createdAt).toLocaleDateString("pt-BR"),
-              ],
             ].map(([k, v], i, arr) => (
               <View
                 key={i}

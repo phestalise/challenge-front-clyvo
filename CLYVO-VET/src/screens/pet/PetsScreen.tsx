@@ -169,7 +169,7 @@ export default function PetsScreen() {
                       <View style={styles.tags}>
                         <View style={styles.tag}>
                           <Text style={styles.tagText}>
-                            {calcularIdadeTexto(pet.age)}
+                            {calcularIdadeTexto(pet.birthDate)}
                           </Text>
                         </View>
 

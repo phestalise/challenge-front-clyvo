@@ -7,8 +7,8 @@ import { useAuth } from "./useAuth";
 
 type NewVaccine = {
   name: string;
-  date: string;
-  nextDue: string;
+  startDate: string;
+  endDate: string;
 };
 
 export function useVaccines() {
@@ -59,10 +59,11 @@ export function useVaccines() {
 
         vaccines.push({
           id: Date.now().toString(),
+          type: "vaccine",
           name: vaccine.name,
-          date: vaccine.date,
-          nextDue: vaccine.nextDue,
-          done: !!vaccine.date,
+          startDate: vaccine.startDate,
+          endDate: vaccine.endDate,
+          done: !!vaccine.startDate,
         });
 
         await petService.save({ ...pet, vaccines });

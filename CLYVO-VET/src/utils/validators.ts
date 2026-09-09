@@ -33,11 +33,14 @@ export const validarFormularioUsuario = (form: {
   return erros;
 };
 
+export const validarDataBr = (data: string): boolean =>
+  /^\d{2}\/\d{2}\/\d{4}$/.test(data);
+
 export const validarFormularioPet = (form: {
   name: string;
   species: string;
   breed: string;
-  age: string;
+  birthDate: string;
   weight: string;
 }): ErrosFormulario => {
   const erros: ErrosFormulario = {};
@@ -45,7 +48,11 @@ export const validarFormularioPet = (form: {
   if (!validarCampoObrigatorio(form.species))
     erros.species = "Espécie obrigatória";
   if (!validarCampoObrigatorio(form.breed)) erros.breed = "Raça obrigatória";
-  if (!validarCampoObrigatorio(form.age)) erros.age = "Idade obrigatória";
+  if (!validarCampoObrigatorio(form.birthDate)) {
+    erros.birthDate = "Data de nascimento obrigatória";
+  } else if (!validarDataBr(form.birthDate)) {
+    erros.birthDate = "Use o formato DD/MM/AAAA";
+  }
   if (!validarCampoObrigatorio(form.weight)) erros.weight = "Peso obrigatório";
   return erros;
 };

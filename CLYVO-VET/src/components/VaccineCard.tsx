@@ -39,9 +39,9 @@ export default function VaccineCard({ vaccine, petName }: Props) {
         <Text style={styles.sub}>Pet: {petName}</Text>
 
         <View style={styles.dates}>
-          <Text style={styles.date}>Aplicada: {vaccine.date || "—"}</Text>
+          <Text style={styles.date}>Aplicada: {vaccine.startDate || "—"}</Text>
 
-          <Text style={styles.date}>Próxima: {vaccine.nextDue || "—"}</Text>
+          <Text style={styles.date}>Próxima: {vaccine.endDate || "—"}</Text>
         </View>
       </View>
 

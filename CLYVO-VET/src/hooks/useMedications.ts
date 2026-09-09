@@ -7,7 +7,7 @@ import { useAuth } from "./useAuth";
 
 type NewMedication = {
   name: string;
-  dosage: string;
+  dose: string;
   frequency: string;
   endDate: string;
 };
@@ -60,8 +60,9 @@ export function useMedications() {
 
         medications.push({
           id: Date.now().toString(),
+          type: "medication",
           name: medication.name,
-          dosage: medication.dosage,
+          dose: medication.dose,
           frequency: medication.frequency,
           startDate: "",
           endDate: medication.endDate,

@@ -78,8 +78,8 @@ export default function VaccinesScreen() {
 
     const ok = await addVaccine(selectedPetId, {
       name: vaccineName.trim(),
-      date: vaccineDate,
-      nextDue: vaccineNextDue,
+      startDate: vaccineDate,
+      endDate: vaccineNextDue,
     });
 
     if (!ok) {
@@ -209,12 +209,14 @@ export default function VaccinesScreen() {
 
                     <Text style={styles.vacSub}>Pet: {pet.name}</Text>
 
-                    {v.date ? (
-                      <Text style={styles.vacDate}>Aplicada: {v.date}</Text>
+                    {v.startDate ? (
+                      <Text style={styles.vacDate}>
+                        Aplicada: {v.startDate}
+                      </Text>
                     ) : null}
 
-                    {v.nextDue ? (
-                      <Text style={styles.vacDate}>Próxima: {v.nextDue}</Text>
+                    {v.endDate ? (
+                      <Text style={styles.vacDate}>Próxima: {v.endDate}</Text>
                     ) : null}
                   </View>
 
