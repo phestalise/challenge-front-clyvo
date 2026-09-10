@@ -6,7 +6,7 @@ import { Pet } from "../types";
 import { Colors } from "../styles/colors";
 import { calcularIdadeTexto } from "../utils/formatters";
 import { petService } from "../services/PetService";
-import { styles } from "../styles/PetCardStyles";
+import { styles } from "../styles/PetCard.styles";
 
 type Props = {
   pet: Pet;

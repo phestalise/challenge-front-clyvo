@@ -19,7 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
-import { styles } from "../../styles/HealthTabStyles";
+import { styles } from "../../styles/HealthTabScreen.styles";
 
 import { petService } from "../../services/PetService";
 import { usePets } from "../../hooks/usePets";

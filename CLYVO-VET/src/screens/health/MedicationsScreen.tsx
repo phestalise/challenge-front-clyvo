@@ -25,7 +25,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
-import { styles } from "../../styles/MedicationsScreenStyles";
+import { styles } from "../../styles/MedicationsScreen.styles";
 
 import { useMedications } from "../../hooks/useMedications";
 

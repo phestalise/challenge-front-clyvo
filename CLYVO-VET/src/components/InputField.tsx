@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Colors } from "../styles/colors";
-import { styles } from "../styles/InputFieldStyles";
+import { styles } from "../styles/InputField.styles";
 
 type Props = TextInputProps & {
   label: string;

@@ -22,7 +22,7 @@ import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 import { usePets } from "../../hooks/usePets";
 
-import { styles } from "../../styles/PendingScreenStyles";
+import { styles } from "../../styles/PendingScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 

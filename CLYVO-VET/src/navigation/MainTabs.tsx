@@ -16,7 +16,7 @@ import MainHeader from "../components/MainHeader";
 import { Colors } from "../styles/colors";
 import { MainTabParamList } from "../types";
 
-import { styles } from "../styles/MainTabsStyles";
+import { styles } from "../styles/MainTabs.styles";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

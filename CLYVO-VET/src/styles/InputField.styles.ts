@@ -1,15 +1,23 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   wrapper: {
-    gap: 6,
-    marginBottom: 4,
+    gap: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
 
   label: {
-    fontSize: 13,
-    fontWeight: "700",
+    ...Typography.label,
     letterSpacing: 0.3,
   },
 
@@ -18,17 +26,17 @@ export const styles = StyleSheet.create({
   },
 
   labelDark: {
-    color: "rgba(255,255,255,0.8)",
+    color: alpha(Colors.white, 0.8),
   },
 
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
+    borderRadius: Radius.lg,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     borderWidth: 1,
-    gap: 10,
+    gap: Spacing.md,
   },
 
   inputBoxLight: {
@@ -37,8 +45,8 @@ export const styles = StyleSheet.create({
   },
 
   inputBoxDark: {
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: Colors.overlaySoft,
+    borderColor: Colors.overlaySoft,
   },
 
   inputBoxError: {
@@ -47,7 +55,7 @@ export const styles = StyleSheet.create({
 
   input: {
     flex: 1,
-    fontSize: 15,
+    ...Typography.body,
   },
 
   inputTextLight: {
@@ -66,12 +74,12 @@ export const styles = StyleSheet.create({
   iconRight: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 2,
+    padding: Spacing.xs,
   },
 
   errorText: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.accentRed,
-    marginTop: 2,
+    marginTop: Spacing.xs,
   },
 });

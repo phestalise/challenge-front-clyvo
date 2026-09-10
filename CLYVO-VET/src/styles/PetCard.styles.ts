@@ -1,83 +1,83 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.card,
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 14,
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-    gap: 12,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    marginBottom: Spacing.lg,
+    ...Shadows.sm,
+    gap: Spacing.md,
   },
 
   top: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
+    gap: Spacing.lg,
   },
 
   avatar: {
     width: 64,
     height: 64,
-    borderRadius: 18,
-    backgroundColor: Colors.accent + "15",
+    borderRadius: Radius.xl,
+    backgroundColor: alpha(Colors.accent, 0.08),
     justifyContent: "center",
     alignItems: "center",
   },
 
   info: {
     flex: 1,
-    gap: 3,
+    gap: Spacing.xs,
   },
 
   name: {
-    fontSize: 16,
-    fontWeight: "800",
+    ...Typography.body,
     color: Colors.text,
   },
 
   meta: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textSecondary,
   },
 
   tags: {
     flexDirection: "row",
-    gap: 6,
-    marginTop: 4,
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
   },
 
   tag: {
     backgroundColor: Colors.background,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.sm,
   },
 
   tagText: {
-    fontSize: 11,
+    ...Typography.caption,
     color: Colors.textSecondary,
-    fontWeight: "600",
   },
 
   healthRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: Spacing.sm,
   },
 
   healthLabel: {
-    fontSize: 11,
+    ...Typography.caption,
     color: Colors.textLight,
-    fontWeight: "600",
     width: 38,
   },
 
@@ -85,18 +85,17 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: 6,
     backgroundColor: Colors.background,
-    borderRadius: 3,
+    borderRadius: Radius.sm,
     overflow: "hidden",
   },
 
   barFill: {
     height: "100%",
-    borderRadius: 3,
+    borderRadius: Radius.sm,
   },
 
   healthPct: {
-    fontSize: 12,
-    fontWeight: "700",
+    ...Typography.caption,
     width: 36,
     textAlign: "right",
   },
@@ -104,17 +103,17 @@ export const styles = StyleSheet.create({
   statsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: Spacing.md,
   },
 
   stat: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: Spacing.xs,
   },
 
   statText: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textSecondary,
   },
 });

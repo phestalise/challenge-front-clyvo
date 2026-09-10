@@ -27,7 +27,9 @@ function apiPetToPet(apiPet: ApiPet, nextCheckup: string): Pet {
 // vazios como indício de que é uma vacina.
 function medicacaoToItem(
   m: ApiMedicacao,
-  meta: { type: "vaccine" | "medication"; done?: boolean; active?: boolean } | undefined,
+  meta:
+    | { type: "vaccine" | "medication"; done?: boolean; active?: boolean }
+    | undefined,
 ): Item {
   const semDoseOuFrequencia = !m.dose && !m.frequencia;
   const type = meta?.type ?? (semDoseOuFrequencia ? "vaccine" : "medication");
@@ -99,7 +101,9 @@ class PetService {
     const idPet = Number(id);
     if (!idPet) return null;
 
-    const apiPet = await notFoundToNull(apiClient.get<ApiPet>(`/api/pets/${idPet}`));
+    const apiPet = await notFoundToNull(
+      apiClient.get<ApiPet>(`/api/pets/${idPet}`),
+    );
     if (!apiPet || String(apiPet.idTutor) !== ownerId) return null;
 
     return this.hydrate(apiPet);
@@ -119,7 +123,9 @@ class PetService {
       pesoKg: pet.weight,
     };
 
-    const existing = await notFoundToNull(apiClient.get<ApiPet>(`/api/pets/${idPet}`));
+    const existing = await notFoundToNull(
+      apiClient.get<ApiPet>(`/api/pets/${idPet}`),
+    );
 
     if (existing) {
       await apiClient.put(`/api/pets/${idPet}`, payload);
@@ -128,7 +134,10 @@ class PetService {
     }
 
     await petMetadataStore.setPetMeta(pet.id, { nextCheckup: pet.nextCheckup });
-    await this.syncItems(idPet, [...(pet.vaccines ?? []), ...(pet.medications ?? [])]);
+    await this.syncItems(idPet, [
+      ...(pet.vaccines ?? []),
+      ...(pet.medications ?? []),
+    ]);
   }
 
   async remove(id: string, ownerId: string): Promise<void> {
@@ -141,7 +150,9 @@ class PetService {
       await petMetadataStore.deleteItemMeta(item.id);
     }
 
-    const consultas = await apiClient.get<ApiConsulta[]>(`/api/consultas/pet/${idPet}`);
+    const consultas = await apiClient.get<ApiConsulta[]>(
+      `/api/consultas/pet/${idPet}`,
+    );
     for (const consulta of consultas) {
       await apiClient.delete(`/api/consultas/${consulta.idConsulta}`);
     }
@@ -165,7 +176,9 @@ class PetService {
     const pet = apiPetToPet(apiPet, meta.nextCheckup ?? "");
 
     const itemMetas = await Promise.all(
-      medicacoes.map((m) => petMetadataStore.getItemMeta(String(m.idMedicacao))),
+      medicacoes.map((m) =>
+        petMetadataStore.getItemMeta(String(m.idMedicacao)),
+      ),
     );
 
     medicacoes.forEach((m, i) => {
@@ -181,7 +194,9 @@ class PetService {
   // existe na API: cria o que é novo, atualiza o que mudou e remove o que
   // não está mais na lista (ex: removeVaccine/removeMedication).
   private async syncItems(idPet: number, items: Item[]): Promise<void> {
-    const current = await apiClient.get<ApiMedicacao[]>(`/api/medicacoes/pet/${idPet}`);
+    const current = await apiClient.get<ApiMedicacao[]>(
+      `/api/medicacoes/pet/${idPet}`,
+    );
     const currentIds = new Set(current.map((m) => String(m.idMedicacao)));
     const incomingIds = new Set(items.map((i) => i.id));
 

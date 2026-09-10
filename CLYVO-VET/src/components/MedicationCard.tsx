@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Medication } from "../types";
 import { Colors } from "../styles/colors";
-import { styles } from "../styles/MedicationCardStyles";
+import { styles } from "../styles/MedicationCard.styles";
 
 type Props = {
   medication: Medication;

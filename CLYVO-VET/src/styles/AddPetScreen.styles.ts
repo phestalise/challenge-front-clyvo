@@ -1,5 +1,14 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,10 +20,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
     backgroundColor: Colors.secondary,
   },
 
@@ -22,86 +29,74 @@ export const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    backgroundColor: Colors.overlaySoft,
     alignItems: "center",
     justifyContent: "center",
   },
 
   title: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   content: {
-    padding: 20,
-    paddingBottom: 60,
+    padding: Spacing.xl,
+    paddingBottom: Spacing.huge,
   },
 
   avatarArea: {
     alignItems: "center",
-    marginBottom: 28,
-    gap: 10,
+    marginBottom: Spacing.xxxl,
+    gap: Spacing.md,
   },
 
   avatar: {
     width: 80,
     height: 80,
-    borderRadius: 24,
-
-    backgroundColor: Colors.accentLight + "20",
-
+    borderRadius: Radius.xxl,
+    backgroundColor: alpha(Colors.accentLight, 0.13),
     alignItems: "center",
     justifyContent: "center",
   },
 
   avatarHint: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   label: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textLight,
-
-    marginBottom: 8,
-    marginTop: 16,
+    marginBottom: Spacing.sm,
+    marginTop: Spacing.lg,
   },
 
   errorText: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.accentRed,
-    marginTop: 6,
+    marginTop: Spacing.sm,
   },
 
   center: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: Spacing.md,
   },
 
   loadingText: {
+    ...Typography.label,
     color: Colors.textLight,
-    fontSize: 14,
   },
 
   input: {
     backgroundColor: Colors.secondary,
-
-    borderRadius: 12,
-
-    padding: 14,
-
+    borderRadius: Radius.md,
+    padding: Spacing.lg,
     color: Colors.white,
-    fontSize: 15,
-
+    ...Typography.body,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: Colors.overlaySoft,
   },
 
   inputError: {
@@ -115,32 +110,26 @@ export const styles = StyleSheet.create({
   chipRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: Spacing.sm,
   },
 
   chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-
-    borderRadius: 20,
-
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.xl,
     backgroundColor: Colors.secondary,
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: Colors.overlaySoft,
   },
 
   chipSelected: {
     backgroundColor: Colors.accentLight,
-
     borderColor: Colors.accentLight,
   },
 
   chipText: {
+    ...Typography.label,
     color: Colors.textLight,
-    fontSize: 14,
-    fontWeight: "600",
   },
 
   chipTextSelected: {
@@ -151,16 +140,11 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-
-    gap: 10,
-
+    gap: Spacing.md,
     backgroundColor: Colors.accentLight,
-
-    borderRadius: 14,
-
-    paddingVertical: 16,
-
-    marginTop: 32,
+    borderRadius: Radius.lg,
+    paddingVertical: Spacing.lg,
+    marginTop: Spacing.xxxl,
   },
 
   saveBtnDisabled: {
@@ -168,8 +152,7 @@ export const styles = StyleSheet.create({
   },
 
   saveBtnText: {
+    ...Typography.body,
     color: Colors.white,
-    fontSize: 16,
-    fontWeight: "700",
   },
 });

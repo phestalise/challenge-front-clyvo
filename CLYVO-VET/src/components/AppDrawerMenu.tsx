@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../styles/colors";
 import { MainTabParamList } from "../types";
 
-import { styles } from "../styles/MainTabsStyles";
+import { styles } from "../styles/AppDrawerMenu.styles";
 
 type MenuItem = {
   rota: keyof MainTabParamList;

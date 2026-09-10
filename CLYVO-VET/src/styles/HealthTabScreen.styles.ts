@@ -1,6 +1,18 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
+
+// Centralização vertical do estado vazio; não é um valor de ritmo de espaçamento.
+const EMPTY_STATE_OFFSET = 90;
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,9 +21,8 @@ export const styles = StyleSheet.create({
   },
 
   header: {
-    paddingHorizontal: 20,
-    marginBottom: 14,
-
+    paddingHorizontal: Spacing.xl,
+    marginBottom: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -20,95 +31,67 @@ export const styles = StyleSheet.create({
   addButton: {
     width: 52,
     height: 52,
-
-    borderRadius: 18,
-
+    borderRadius: Radius.xl,
     backgroundColor: Colors.accentRed,
-
     alignItems: "center",
     justifyContent: "center",
-
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-
-    elevation: 5,
+    ...Shadows.md,
   },
 
   scrollContent: {
-    paddingHorizontal: 18,
-    paddingBottom: 120,
-    gap: 14,
+    paddingHorizontal: Spacing.xl,
+    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingBottom: Spacing.huge * 3,
+    gap: Spacing.lg,
   },
 
   emptyContainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 90,
+    paddingTop: EMPTY_STATE_OFFSET,
   },
 
   emptyIcon: {
     width: 110,
     height: 110,
-
-    borderRadius: 30,
-
+    borderRadius: Radius.xxl,
     backgroundColor: Colors.secondary,
-
     alignItems: "center",
     justifyContent: "center",
-
-    marginBottom: 24,
+    marginBottom: Spacing.xxl,
   },
 
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: "800",
+    ...Typography.title,
     color: Colors.white,
   },
 
   emptyText: {
-    marginTop: 10,
-
-    fontSize: 14,
-    lineHeight: 22,
-
+    marginTop: Spacing.md,
+    ...Typography.label,
     textAlign: "center",
-
     color: Colors.textLight,
   },
 
   emptyButton: {
-    marginTop: 26,
-
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-
-    borderRadius: 18,
-
+    marginTop: Spacing.xxl,
+    paddingHorizontal: Spacing.xxxl,
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.xl,
     backgroundColor: Colors.accentRed,
   },
 
   emptyButtonText: {
-    fontSize: 15,
-    fontWeight: "700",
+    ...Typography.body,
     color: Colors.white,
   },
 
   card: {
-    padding: 16,
-
-    borderRadius: 24,
-
+    padding: Spacing.lg,
+    borderRadius: Radius.xxl,
     backgroundColor: Colors.secondary,
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.05)",
+    borderColor: Colors.overlaySubtle,
   },
 
   cardHeader: {
@@ -119,15 +102,11 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 60,
     height: 60,
-
-    borderRadius: 18,
-
-    backgroundColor: Colors.accentLight + "18",
-
+    borderRadius: Radius.xl,
+    backgroundColor: alpha(Colors.accentLight, 0.09),
     alignItems: "center",
     justifyContent: "center",
-
-    marginRight: 14,
+    marginRight: Spacing.lg,
   },
 
   cardInfo: {
@@ -135,108 +114,89 @@ export const styles = StyleSheet.create({
   },
 
   petName: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   petMeta: {
-    marginTop: 2,
-
-    fontSize: 13,
+    marginTop: Spacing.xs,
+    ...Typography.label,
     color: Colors.textLight,
   },
 
   pendingBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-
-    borderRadius: 999,
-
-    marginRight: 10,
-
-    backgroundColor: Colors.accentRed + "20",
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    marginRight: Spacing.md,
+    backgroundColor: alpha(Colors.accentRed, 0.13),
   },
 
   pendingText: {
-    fontSize: 11,
-    fontWeight: "700",
-
+    ...Typography.caption,
     color: Colors.accentRed,
   },
 
   healthContainer: {
     flexDirection: "row",
     alignItems: "center",
-
-    marginTop: 18,
+    marginTop: Spacing.xl,
   },
 
   healthLabel: {
     width: 50,
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 
   progressBackground: {
     flex: 1,
     height: 7,
-
-    borderRadius: 999,
-
+    borderRadius: Radius.pill,
     overflow: "hidden",
-
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
   },
 
   progressFill: {
     height: "100%",
-    borderRadius: 999,
+    borderRadius: Radius.pill,
   },
 
   healthValue: {
     width: 45,
-
-    fontSize: 12,
-    fontWeight: "700",
-
+    ...Typography.caption,
     textAlign: "right",
   },
 
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-
-    marginTop: 18,
+    marginTop: Spacing.xl,
   },
 
   stat: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   statText: {
-    fontSize: 11,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 
   checkupContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-
-    marginTop: 18,
-
-    paddingTop: 14,
-
+    gap: Spacing.sm,
+    marginTop: Spacing.xl,
+    paddingTop: Spacing.lg,
     borderTopWidth: 1,
-
-    borderTopColor: "rgba(255,255,255,0.06)",
+    borderTopColor: Colors.overlaySubtle,
   },
 
   checkupText: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 });

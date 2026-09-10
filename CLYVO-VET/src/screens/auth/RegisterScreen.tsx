@@ -174,7 +174,13 @@ export default function RegisterScreen({ navigation }: Props) {
     setLoading(true);
 
     try {
-      await register(form.name, form.email, form.phone, form.cpf, form.password);
+      await register(
+        form.name,
+        form.email,
+        form.phone,
+        form.cpf,
+        form.password,
+      );
     } catch (error) {
       showAlert("Erro", getErrorMessage(error));
     } finally {

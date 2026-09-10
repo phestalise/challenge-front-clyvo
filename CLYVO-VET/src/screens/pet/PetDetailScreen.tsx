@@ -28,7 +28,7 @@ import MedicationCard from "../../components/MedicationCard";
 
 import { calcularIdadeTexto } from "../../utils/formatters";
 
-import { styles } from "../../styles/PetDetailScreenStyles";
+import { styles } from "../../styles/PetDetailScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 

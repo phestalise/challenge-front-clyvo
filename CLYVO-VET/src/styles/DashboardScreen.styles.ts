@@ -1,5 +1,15 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,21 +18,22 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    paddingBottom: 120,
+    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingBottom: Spacing.huge * 3,
   },
 
   topHeader: {
-    height: 10,
+    height: Spacing.md,
   },
 
   banner: {
-    marginHorizontal: 16,
-    marginTop: 10,
-    borderRadius: 20,
-    padding: 18,
-    backgroundColor: Colors.accentLight + "15",
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.md,
+    borderRadius: Radius.xl,
+    padding: Spacing.xl,
+    backgroundColor: alpha(Colors.accentLight, 0.08),
     borderWidth: 1,
-    borderColor: Colors.accentLight + "30",
+    borderColor: alpha(Colors.accentLight, 0.19),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -32,96 +43,86 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: Spacing.md,
   },
 
   bannerIcon: {
     width: 46,
     height: 46,
-    borderRadius: 14,
-    backgroundColor: Colors.accentLight + "20",
+    borderRadius: Radius.lg,
+    backgroundColor: alpha(Colors.accentLight, 0.13),
     alignItems: "center",
     justifyContent: "center",
   },
 
   bannerText: {
     flex: 1,
+    ...Typography.label,
     color: Colors.white,
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "600",
   },
 
   chatButton: {
     width: 50,
     height: 50,
-    borderRadius: 16,
-    marginLeft: 14,
+    borderRadius: Radius.lg,
+    marginLeft: Spacing.lg,
     backgroundColor: Colors.accentLight,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    elevation: 5,
+    ...Shadows.md,
   },
 
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    marginTop: 16,
-    gap: 10,
+    paddingHorizontal: Spacing.lg,
+    marginTop: Spacing.lg,
+    gap: Spacing.md,
   },
 
   card: {
     width: "48%",
     backgroundColor: Colors.secondary,
-    borderRadius: 20,
-    padding: 16,
+    borderRadius: Radius.xl,
+    padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
+    borderColor: Colors.overlaySubtle,
   },
 
   cardTop: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: Spacing.md,
   },
 
   iconBox: {
     width: 46,
     height: 46,
-    borderRadius: 16,
+    borderRadius: Radius.lg,
     alignItems: "center",
     justifyContent: "center",
   },
 
   iconBlue: {
-    backgroundColor: Colors.accentLight + "20",
+    backgroundColor: alpha(Colors.accentLight, 0.13),
   },
 
   iconGreen: {
-    backgroundColor: Colors.accentGreen + "20",
+    backgroundColor: alpha(Colors.accentGreen, 0.13),
   },
 
   iconOrange: {
-    backgroundColor: Colors.accentOrange + "20",
+    backgroundColor: alpha(Colors.accentOrange, 0.13),
   },
 
   iconRed: {
-    backgroundColor: Colors.accentRed + "20",
+    backgroundColor: alpha(Colors.accentRed, 0.13),
   },
 
   cardValue: {
-    fontSize: 26,
-    fontWeight: "800",
+    ...Typography.display,
   },
 
   blueText: {
@@ -141,8 +142,7 @@ export const styles = StyleSheet.create({
   },
 
   cardLabel: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textLight,
-    fontWeight: "600",
   },
 });

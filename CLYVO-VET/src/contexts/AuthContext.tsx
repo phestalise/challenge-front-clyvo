@@ -1,4 +1,10 @@
-import React, { ReactNode, createContext, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { User as FirebaseUser } from "firebase/auth";
 
 import { authService } from "../services/AuthService";
@@ -42,7 +48,10 @@ type AuthContextValue = {
 
 const SESSION_KEY = "@clyvo:session";
 
-function mapTutorToUser(tutor: ApiTutor, provider: AuthUser["provider"]): AuthUser {
+function mapTutorToUser(
+  tutor: ApiTutor,
+  provider: AuthUser["provider"],
+): AuthUser {
   return {
     id: String(tutor.idTutor),
     name: tutor.nome,
@@ -66,7 +75,9 @@ async function readSession(): Promise<AuthUser | null> {
 // Resolve o Tutor correspondente a uma conta Google: usa o cache local se
 // já existir, senão procura por e-mail na API e, se ainda não existir,
 // cria um Tutor novo com CPF/senha sintéticos (o Google não coleta isso).
-async function resolveGoogleTutor(firebaseUser: FirebaseUser): Promise<AuthUser> {
+async function resolveGoogleTutor(
+  firebaseUser: FirebaseUser,
+): Promise<AuthUser> {
   const cachedId = await tutorService.getCachedGoogleTutorId(firebaseUser.uid);
   if (cachedId) {
     const tutor = await tutorService.getById(cachedId);

@@ -12,7 +12,7 @@ import { MainTabParamList } from "../types";
 
 import AppDrawerMenu from "./AppDrawerMenu";
 
-import { styles } from "../styles/MainTabsStyles";
+import { styles } from "../styles/MainHeader.styles";
 
 const TAB_TITLES: Record<keyof MainTabParamList, string> = {
   Dashboard: "Início",

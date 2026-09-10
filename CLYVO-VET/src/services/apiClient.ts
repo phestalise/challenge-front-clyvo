@@ -34,7 +34,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       },
     });
   } catch {
-    throw new ApiError("Não foi possível conectar à API. Verifique sua internet.", 0);
+    throw new ApiError(
+      "Não foi possível conectar à API. Verifique sua internet.",
+      0,
+    );
   }
 
   if (response.status === 204) return undefined as T;

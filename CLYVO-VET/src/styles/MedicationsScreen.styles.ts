@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,67 +20,53 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
     backgroundColor: Colors.secondary,
   },
 
   back: {
     width: 36,
     height: 36,
-
     borderRadius: 18,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    backgroundColor: Colors.overlaySoft,
     alignItems: "center",
     justifyContent: "center",
   },
 
   title: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   addBtn: {
     width: 36,
     height: 36,
-
     borderRadius: 18,
-
-    backgroundColor: Colors.accentOrange + "30",
-
+    backgroundColor: alpha(Colors.accentOrange, 0.19),
     alignItems: "center",
     justifyContent: "center",
   },
 
   scrollContent: {
-    padding: 16,
-    gap: 12,
-    paddingBottom: 40,
+    padding: Spacing.lg,
+    gap: Spacing.md,
+    paddingBottom: Spacing.huge,
   },
 
   card: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-
+    gap: Spacing.md,
     backgroundColor: Colors.secondary,
-
-    borderRadius: 14,
-
-    padding: 14,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
   },
 
   iconBox: {
     width: 42,
     height: 42,
-
-    borderRadius: 12,
-
+    borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -82,62 +76,53 @@ export const styles = StyleSheet.create({
   },
 
   medName: {
-    fontSize: 15,
-    fontWeight: "600",
+    ...Typography.body,
     color: Colors.white,
   },
 
   medSub: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textLight,
-
-    marginTop: 2,
+    marginTop: Spacing.xs,
   },
 
   actions: {
     alignItems: "center",
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   actionBtn: {
-    padding: 4,
+    padding: Spacing.xs,
   },
 
   badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-
-    borderRadius: 20,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.xl,
   },
 
   badgeText: {
+    ...Typography.caption,
     color: Colors.white,
-    fontSize: 11,
-    fontWeight: "700",
   },
 
   empty: {
     alignItems: "center",
-    paddingTop: 80,
-    gap: 12,
+    paddingTop: Spacing.huge * 2,
+    gap: Spacing.md,
   },
 
   emptyText: {
+    ...Typography.body,
     color: Colors.textLight,
-
-    fontSize: 15,
-    fontWeight: "600",
   },
 
   emptyBtn: {
-    marginTop: 4,
-
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing.xxl,
+    paddingVertical: Spacing.md,
     backgroundColor: Colors.accentOrange,
-
-    borderRadius: 12,
+    borderRadius: Radius.md,
   },
 
   emptyBtnText: {
@@ -147,92 +132,68 @@ export const styles = StyleSheet.create({
 
   modalOverlay: {
     flex: 1,
-
-    backgroundColor: "rgba(0,0,0,0.6)",
-
+    backgroundColor: alpha(Colors.black, 0.6),
     justifyContent: "flex-end",
   },
 
   modalBox: {
     backgroundColor: Colors.secondary,
-
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-
-    padding: 24,
-    paddingBottom: 40,
+    borderTopLeftRadius: Radius.xxl,
+    borderTopRightRadius: Radius.xxl,
+    padding: Spacing.xxl,
+    paddingBottom: Spacing.huge,
   },
 
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-
+    ...Typography.subtitle,
     color: Colors.white,
-
-    marginBottom: 16,
+    marginBottom: Spacing.lg,
   },
 
   inputLabel: {
-    fontSize: 12,
-
+    ...Typography.caption,
     color: Colors.textLight,
-
-    marginBottom: 6,
-    marginTop: 4,
+    marginBottom: Spacing.sm,
+    marginTop: Spacing.xs,
   },
 
   input: {
     backgroundColor: Colors.primary,
-
-    borderRadius: 12,
-
-    padding: 14,
-
+    borderRadius: Radius.md,
+    padding: Spacing.lg,
     color: Colors.white,
-
-    fontSize: 15,
-
-    marginBottom: 4,
-
+    ...Typography.body,
+    marginBottom: Spacing.xs,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: Colors.overlaySoft,
   },
 
   petScroll: {
-    marginBottom: 12,
+    marginBottom: Spacing.md,
   },
 
   petScrollRow: {
     flexDirection: "row",
-    gap: 8,
+    gap: Spacing.sm,
   },
 
   petChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-
-    borderRadius: 20,
-
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.xl,
     backgroundColor: Colors.primary,
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: Colors.overlaySoft,
   },
 
   petChipSelected: {
     backgroundColor: Colors.accentOrange,
-
     borderColor: Colors.accentOrange,
   },
 
   petChipText: {
+    ...Typography.label,
     color: Colors.textLight,
-
-    fontWeight: "600",
-
-    fontSize: 13,
   },
 
   petChipTextSelected: {
@@ -241,38 +202,28 @@ export const styles = StyleSheet.create({
 
   modalBtns: {
     flexDirection: "row",
-    gap: 12,
-
-    marginTop: 16,
+    gap: Spacing.md,
+    marginTop: Spacing.lg,
   },
 
   cancelBtn: {
     flex: 1,
-
-    padding: 14,
-
-    borderRadius: 12,
-
+    padding: Spacing.lg,
+    borderRadius: Radius.md,
     backgroundColor: Colors.primary,
-
     alignItems: "center",
   },
 
   cancelBtnText: {
     color: Colors.textLight,
-
     fontWeight: "600",
   },
 
   saveBtn: {
     flex: 1,
-
-    padding: 14,
-
-    borderRadius: 12,
-
+    padding: Spacing.lg,
+    borderRadius: Radius.md,
     backgroundColor: Colors.accentOrange,
-
     alignItems: "center",
   },
 

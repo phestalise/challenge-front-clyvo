@@ -70,7 +70,9 @@ export const calcularIdadeTexto = (dataNascimento: string): string => {
   }
 
   if (anos < 1) {
-    return meses <= 0 ? "Recém-nascido" : `${meses} ${meses === 1 ? "mês" : "meses"}`;
+    return meses <= 0
+      ? "Recém-nascido"
+      : `${meses} ${meses === 1 ? "mês" : "meses"}`;
   }
   return `${anos} ${anos === 1 ? "ano" : "anos"}`;
 };

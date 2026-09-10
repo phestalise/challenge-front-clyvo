@@ -6,7 +6,7 @@ import { Vaccine } from "../types";
 import { Colors } from "../styles/colors";
 import { obterCorStatus, obterTextoStatus } from "../utils/formatters";
 
-import { styles } from "../styles/VaccineCardStyles";
+import { styles } from "../styles/VaccineCard.styles";
 
 type Props = {
   vaccine: Vaccine;

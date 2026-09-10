@@ -17,7 +17,7 @@ import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
 import { getErrorMessage } from "../../utils/errorMessage";
 
-import { styles } from "../../styles/ProfileScreenStyles";
+import { styles } from "../../styles/ProfileScreen.styles";
 
 const FAQ_DATA = [
   {
@@ -104,9 +104,7 @@ export default function ProfileScreen() {
       >
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {initials(user?.name ?? "")}
-            </Text>
+            <Text style={styles.avatarText}>{initials(user?.name ?? "")}</Text>
           </View>
 
           <Text style={styles.name}>{user?.name ?? "Usuário"}</Text>

@@ -1,8 +1,18 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
 
-const { width } = Dimensions.get("window");
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
+
+// Círculos decorativos de fundo — fora da escala de radius (raio = metade do tamanho).
+const ORB_TOP_SIZE = 240;
+const ORB_BOTTOM_SIZE = 220;
 
 export const styles = StyleSheet.create({
   flex: {
@@ -20,77 +30,56 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    paddingBottom: 40,
+    paddingBottom: Spacing.huge,
   },
 
   orb: {
     position: "absolute",
-
     top: -120,
     right: -80,
-
-    width: 240,
-    height: 240,
-
-    borderRadius: 120,
-
-    backgroundColor: Colors.primary + "20",
+    width: ORB_TOP_SIZE,
+    height: ORB_TOP_SIZE,
+    borderRadius: ORB_TOP_SIZE / 2,
+    backgroundColor: alpha(Colors.primary, 0.13),
   },
 
   orbBottom: {
     position: "absolute",
-
     bottom: -100,
     left: -80,
-
-    width: 220,
-    height: 220,
-
-    borderRadius: 110,
-
-    backgroundColor: Colors.primary + "12",
+    width: ORB_BOTTOM_SIZE,
+    height: ORB_BOTTOM_SIZE,
+    borderRadius: ORB_BOTTOM_SIZE / 2,
+    backgroundColor: alpha(Colors.primary, 0.07),
   },
 
   header: {
-    paddingTop: 24,
-    paddingHorizontal: 24,
-    paddingBottom: 20,
-
+    paddingTop: Spacing.xxl,
+    paddingHorizontal: Spacing.xxl,
+    paddingBottom: Spacing.xl,
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "space-between",
   },
 
   back: {
     width: 44,
     height: 44,
-
-    borderRadius: 14,
-
+    borderRadius: Radius.lg,
     backgroundColor: Colors.card,
-
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   logoRow: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 8,
+    gap: Spacing.sm,
   },
 
   logo: {
-    fontSize: 14,
-
-    fontWeight: "800",
-
+    ...Typography.label,
     color: Colors.accentLight,
-
     letterSpacing: 1,
   },
 
@@ -100,297 +89,204 @@ export const styles = StyleSheet.create({
 
   badgeRow: {
     alignItems: "center",
-
-    marginTop: 12,
+    marginTop: Spacing.md,
   },
 
   badge: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 8,
-
-    paddingHorizontal: 14,
-
-    paddingVertical: 8,
-
-    borderRadius: 999,
-
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.pill,
     backgroundColor: Colors.card,
   },
 
   badgeDot: {
     width: 8,
     height: 8,
-
-    borderRadius: 999,
-
-    backgroundColor: "#007BFF",
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.accent,
   },
 
   badgeText: {
     color: Colors.textSecondary,
-
-    fontSize: 11,
-
-    fontWeight: "700",
-
+    ...Typography.caption,
     letterSpacing: 1,
   },
 
   title: {
-    marginTop: 26,
-
+    marginTop: Spacing.xxl,
     textAlign: "center",
-
-    color: "#007BFF",
-
-    fontSize: 34,
-
-    fontWeight: "800",
-
-    lineHeight: 40,
+    color: Colors.accent,
+    ...Typography.display,
   },
 
   sub: {
-    marginTop: 14,
-
+    marginTop: Spacing.lg,
     textAlign: "center",
-
     color: Colors.textSecondary,
-
-    fontSize: 15,
-
-    lineHeight: 24,
-
-    paddingHorizontal: 30,
+    ...Typography.body,
+    paddingHorizontal: Spacing.xxxl,
   },
 
   stepIndicator: {
     flexDirection: "row",
-
     justifyContent: "center",
-
     alignItems: "center",
-
-    marginTop: 34,
-
-    marginBottom: 26,
-
-    paddingHorizontal: 20,
+    marginTop: Spacing.xxxl,
+    marginBottom: Spacing.xxl,
+    paddingHorizontal: Spacing.xl,
   },
 
   stepItem: {
     flexDirection: "row",
-
     alignItems: "center",
   },
 
   stepDot: {
     width: 38,
     height: 38,
-
     borderRadius: 19,
-
     backgroundColor: Colors.card,
-
     justifyContent: "center",
-
     alignItems: "center",
-
     borderWidth: 1.5,
-
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: Colors.overlaySoft,
   },
 
   stepDotActive: {
-    backgroundColor: "#007BFF",
+    backgroundColor: Colors.accent,
   },
 
   stepDotDone: {
-    backgroundColor: "#007BFF",
+    backgroundColor: Colors.accent,
   },
 
   stepLabel: {
-    marginLeft: 8,
-
+    marginLeft: Spacing.sm,
     color: Colors.textSecondary,
-
-    fontSize: 12,
-
-    fontWeight: "600",
+    ...Typography.caption,
   },
 
   stepLabelActive: {
-    color: "#007BFF",
+    color: Colors.accent,
   },
 
   stepLine: {
     width: 40,
     height: 2,
-
-    backgroundColor: "rgba(255,255,255,0.1)",
-
-    marginHorizontal: 10,
+    backgroundColor: Colors.overlaySoft,
+    marginHorizontal: Spacing.md,
   },
 
   stepLineDone: {
-    backgroundColor: "#007BFF",
+    backgroundColor: Colors.accent,
   },
 
   formCard: {
-    marginHorizontal: 20,
-
-    padding: 22,
-
-    borderRadius: 28,
-
+    marginHorizontal: Spacing.xl,
+    padding: Spacing.xxl,
+    borderRadius: Radius.xxl,
     backgroundColor: Colors.card,
   },
 
   sectionTitle: {
-    color: "#007BFF",
-
-    fontSize: 18,
-
-    fontWeight: "800",
-
-    marginBottom: 20,
+    color: Colors.accent,
+    ...Typography.subtitle,
+    marginBottom: Spacing.xl,
   },
 
   dividerField: {
-    height: 14,
+    height: Spacing.lg,
   },
 
   passwordHint: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 8,
-
-    marginTop: 16,
+    gap: Spacing.sm,
+    marginTop: Spacing.lg,
   },
 
   passwordHintText: {
     color: Colors.textSecondary,
-
-    fontSize: 12,
-
+    ...Typography.caption,
     flex: 1,
   },
 
   actions: {
-    marginTop: 28,
-
-    paddingHorizontal: 20,
+    marginTop: Spacing.xxxl,
+    paddingHorizontal: Spacing.xl,
   },
 
   btnPrimary: {
     height: 58,
-
-    borderRadius: 20,
-
+    borderRadius: Radius.xl,
     backgroundColor: Colors.primary,
-
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "center",
   },
 
   btnPrimaryText: {
-    color: "#007BFF",
-
-    fontSize: 16,
-
-    fontWeight: "800",
+    color: Colors.accent,
+    ...Typography.body,
   },
 
   btnArrow: {
     position: "absolute",
-
-    right: 18,
-
+    right: Spacing.xl,
     width: 32,
     height: 32,
-
     borderRadius: 16,
-
-    backgroundColor: "rgba(255,255,255,0.12)",
-
+    backgroundColor: Colors.overlaySoft,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   dividerRow: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    marginVertical: 24,
+    marginVertical: Spacing.xxl,
   },
 
   divider: {
     flex: 1,
-
     height: 1,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
   },
 
   dividerText: {
-    marginHorizontal: 14,
-
+    marginHorizontal: Spacing.lg,
     color: Colors.textSecondary,
-
-    fontSize: 12,
-
-    fontWeight: "600",
+    ...Typography.caption,
   },
 
   btnSecondary: {
     height: 56,
-
-    borderRadius: 18,
-
+    borderRadius: Radius.xl,
     borderWidth: 1.5,
-
-    borderColor: "#007BFF",
-
+    borderColor: Colors.accent,
     justifyContent: "center",
-
     alignItems: "center",
-
     backgroundColor: Colors.card,
   },
 
   btnSecondaryText: {
-    color: "#007BFF",
-
-    fontSize: 15,
-
-    fontWeight: "700",
+    color: Colors.accent,
+    ...Typography.body,
   },
 
   legalRow: {
-    marginTop: 22,
-
+    marginTop: Spacing.xxl,
     flexDirection: "row",
-
     justifyContent: "center",
-
     alignItems: "center",
-
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   legalText: {
     color: Colors.textSecondary,
-
-    fontSize: 11,
+    ...Typography.caption,
   },
 });

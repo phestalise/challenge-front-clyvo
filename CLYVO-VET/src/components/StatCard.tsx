@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../styles/colors";
-import { styles } from "../styles/StatCardStyles";
+import { styles } from "../styles/StatCard.styles";
 
 type Props = {
   label: string;

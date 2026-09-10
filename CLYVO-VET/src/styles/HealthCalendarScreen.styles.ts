@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,8 +20,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    paddingBottom: Spacing.xl,
+    paddingHorizontal: Spacing.xl,
     backgroundColor: Colors.secondary,
   },
 
@@ -21,15 +29,14 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
     alignItems: "center",
     justifyContent: "center",
   },
 
   title: {
     color: Colors.white,
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
   },
 
   headerSpace: {
@@ -37,24 +44,25 @@ export const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    padding: 16,
-    paddingBottom: 120,
-    gap: 16,
+    padding: Spacing.lg,
+    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingBottom: Spacing.huge * 3,
+    gap: Spacing.lg,
   },
 
   calendarCard: {
     backgroundColor: Colors.secondary,
-    borderRadius: 24,
-    padding: 16,
+    borderRadius: Radius.xxl,
+    padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
+    borderColor: Colors.overlaySubtle,
   },
 
   monthRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: Spacing.lg,
   },
 
   monthNavBtn: {
@@ -63,19 +71,18 @@ export const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: Colors.overlaySubtle,
   },
 
   monthText: {
     color: Colors.white,
-    fontSize: 17,
-    fontWeight: "700",
+    ...Typography.subtitle,
     textTransform: "capitalize",
   },
 
   weekRow: {
     flexDirection: "row",
-    marginBottom: 6,
+    marginBottom: Spacing.sm,
   },
 
   weekTextWrapper: {
@@ -86,8 +93,7 @@ export const styles = StyleSheet.create({
   weekText: {
     textAlign: "center",
     color: Colors.textLight,
-    fontSize: 12,
-    fontWeight: "600",
+    ...Typography.caption,
   },
 
   calendarGrid: {
@@ -98,15 +104,15 @@ export const styles = StyleSheet.create({
   dayCellWrapper: {
     width: "14.2857%",
     aspectRatio: 1,
-    padding: 2,
+    padding: Spacing.xs,
   },
 
   dayCell: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
+    gap: Spacing.xs,
   },
 
   dayCellToday: {
@@ -120,8 +126,7 @@ export const styles = StyleSheet.create({
 
   dayNumber: {
     color: Colors.white,
-    fontSize: 13,
-    fontWeight: "600",
+    ...Typography.label,
   },
 
   dayNumberSelected: {
@@ -131,7 +136,7 @@ export const styles = StyleSheet.create({
 
   dotsRow: {
     flexDirection: "row",
-    gap: 3,
+    gap: Spacing.xs,
     height: 6,
     alignItems: "center",
   },
@@ -146,17 +151,17 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     flexWrap: "wrap",
-    gap: 18,
-    marginTop: 18,
-    paddingTop: 16,
+    gap: Spacing.xl,
+    marginTop: Spacing.xl,
+    paddingTop: Spacing.lg,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.06)",
+    borderTopColor: Colors.overlaySubtle,
   },
 
   legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: Spacing.sm,
   },
 
   legendDot: {
@@ -175,68 +180,65 @@ export const styles = StyleSheet.create({
 
   legendText: {
     color: Colors.textLight,
-    fontSize: 12,
+    ...Typography.caption,
   },
 
   dayDetailCard: {
     backgroundColor: Colors.secondary,
-    borderRadius: 24,
-    padding: 16,
-    gap: 12,
+    borderRadius: Radius.xxl,
+    padding: Spacing.lg,
+    gap: Spacing.md,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
+    borderColor: Colors.overlaySubtle,
   },
 
   dayDetailTitle: {
     color: Colors.white,
-    fontSize: 16,
-    fontWeight: "700",
+    ...Typography.body,
     textTransform: "capitalize",
   },
 
   pendingContainer: {
-    gap: 12,
+    gap: Spacing.md,
   },
 
   pendingTitle: {
     color: Colors.white,
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
   },
 
   pendingCard: {
     backgroundColor: Colors.secondary,
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: Spacing.md,
   },
 
   pendingIcon: {
     width: 42,
     height: 42,
-    borderRadius: 12,
+    borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
 
   pendingName: {
     color: Colors.white,
-    fontSize: 14,
-    fontWeight: "600",
+    ...Typography.label,
   },
 
   pendingPet: {
     color: Colors.textLight,
-    fontSize: 12,
-    marginTop: 2,
+    ...Typography.caption,
+    marginTop: Spacing.xs,
   },
 
   pendingDate: {
-    color: "rgba(255,255,255,0.5)",
-    fontSize: 11,
-    marginTop: 2,
+    color: alpha(Colors.white, 0.5),
+    ...Typography.caption,
+    marginTop: Spacing.xs,
   },
 
   emptyText: {

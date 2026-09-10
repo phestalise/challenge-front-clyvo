@@ -1,5 +1,19 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
+
+// Espaço para o dropdown do menu abrir logo abaixo do header.
+const HEADER_CLEARANCE = 110;
+// Centralização vertical do estado vazio; não é um valor de ritmo de espaçamento.
+const EMPTY_STATE_OFFSET = 90;
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,16 +25,16 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 18,
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.xl,
     backgroundColor: Colors.secondary,
   },
 
   menuButton: {
     width: 42,
     height: 42,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.overlaySoft,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -33,42 +47,40 @@ export const styles = StyleSheet.create({
   logoRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   logoIcon: {
     width: 18,
     height: 18,
-    borderRadius: 999,
-    backgroundColor: Colors.white + "10",
+    borderRadius: Radius.pill,
+    backgroundColor: alpha(Colors.white, 0.06),
     alignItems: "center",
     justifyContent: "center",
   },
 
   logo: {
     color: Colors.white,
-    fontSize: 12,
-    fontWeight: "800",
+    ...Typography.caption,
     letterSpacing: 1.5,
   },
 
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
-    marginTop: 4,
+    gap: Spacing.xs,
+    marginTop: Spacing.xs,
   },
 
   title: {
     color: Colors.white,
-    fontSize: 15,
-    fontWeight: "700",
+    ...Typography.body,
   },
 
   addBtn: {
     width: 42,
     height: 42,
-    borderRadius: 14,
+    borderRadius: Radius.lg,
     backgroundColor: Colors.accentLight,
     alignItems: "center",
     justifyContent: "center",
@@ -76,90 +88,87 @@ export const styles = StyleSheet.create({
 
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: alpha(Colors.black, 0.5),
   },
 
   menuContainer: {
     width: 240,
     backgroundColor: Colors.secondary,
-    marginTop: 110,
-    marginLeft: 18,
-    borderRadius: 18,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    marginTop: HEADER_CLEARANCE,
+    marginLeft: Spacing.xl,
+    borderRadius: Radius.xl,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
   },
 
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderRadius: 12,
+    gap: Spacing.md,
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
   },
 
   menuText: {
     color: Colors.white,
-    fontSize: 14,
-    fontWeight: "600",
+    ...Typography.label,
   },
 
   list: {
-    padding: 18,
-    paddingBottom: 120,
-    gap: 14,
+    padding: Spacing.xl,
+    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingBottom: Spacing.huge * 3,
+    gap: Spacing.lg,
   },
 
   empty: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 90,
+    paddingTop: EMPTY_STATE_OFFSET,
   },
 
   emptyIcon: {
     width: 110,
     height: 110,
-    borderRadius: 30,
+    borderRadius: Radius.xxl,
     backgroundColor: Colors.secondary,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 24,
+    marginBottom: Spacing.xxl,
   },
 
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: "800",
+    ...Typography.title,
     color: Colors.white,
   },
 
   emptyText: {
-    marginTop: 10,
-    fontSize: 14,
-    lineHeight: 22,
+    marginTop: Spacing.md,
+    ...Typography.label,
     textAlign: "center",
     color: Colors.textLight,
   },
 
   emptyBtn: {
-    marginTop: 26,
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 18,
+    marginTop: Spacing.xxl,
+    paddingHorizontal: Spacing.xxxl,
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.xl,
     backgroundColor: Colors.accentLight,
   },
 
   emptyBtnText: {
-    fontSize: 15,
-    fontWeight: "700",
+    ...Typography.body,
     color: Colors.white,
   },
 
   card: {
-    padding: 16,
-    borderRadius: 24,
+    padding: Spacing.lg,
+    borderRadius: Radius.xxl,
     backgroundColor: Colors.secondary,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
+    borderColor: Colors.overlaySubtle,
   },
 
   cardTop: {
@@ -170,89 +179,87 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 60,
     height: 60,
-    borderRadius: 18,
-    backgroundColor: Colors.accentLight + "18",
+    borderRadius: Radius.xl,
+    backgroundColor: alpha(Colors.accentLight, 0.09),
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 14,
+    marginRight: Spacing.lg,
   },
 
   petName: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   petMeta: {
-    marginTop: 2,
-    fontSize: 13,
+    marginTop: Spacing.xs,
+    ...Typography.label,
     color: Colors.textLight,
   },
 
   tags: {
     flexDirection: "row",
-    marginTop: 10,
-    gap: 8,
+    marginTop: Spacing.md,
+    gap: Spacing.sm,
   },
 
   tag: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.overlaySoft,
   },
 
   tagText: {
-    fontSize: 11,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 
   healthRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 18,
+    marginTop: Spacing.xl,
   },
 
   healthLabel: {
     width: 52,
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 
   barBg: {
     flex: 1,
     height: 7,
-    borderRadius: 999,
+    borderRadius: Radius.pill,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
   },
 
   barFill: {
     height: "100%",
-    borderRadius: 999,
+    borderRadius: Radius.pill,
   },
 
   healthPct: {
     width: 45,
     textAlign: "right",
-    fontSize: 12,
-    fontWeight: "700",
+    ...Typography.caption,
   },
 
   statsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 18,
+    marginTop: Spacing.xl,
   },
 
   stat: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   statText: {
-    fontSize: 11,
+    ...Typography.caption,
     color: Colors.textLight,
   },
 });

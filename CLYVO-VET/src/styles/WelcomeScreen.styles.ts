@@ -1,6 +1,15 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
 
 const { width, height } = Dimensions.get("window");
 
@@ -12,291 +21,181 @@ export const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-
     backgroundColor: Colors.primary,
-
-    paddingHorizontal: 24,
-
+    paddingHorizontal: Spacing.xxl,
+    // Respiro vertical proporcional à altura do aparelho (tela de splash).
     paddingTop: height * 0.06,
-
     paddingBottom: height * 0.04,
-
     justifyContent: "space-between",
-
     overflow: "hidden",
   },
 
+  // Círculos decorativos proporcionais à largura da tela — fora da escala de radius.
   orb1: {
     position: "absolute",
-
     width: width * 0.85,
     height: width * 0.85,
-
-    borderRadius: width * 0.425,
-
+    borderRadius: (width * 0.85) / 2,
     backgroundColor: Colors.secondary,
-
     top: -width * 0.35,
     right: -width * 0.25,
-
     opacity: 0.55,
   },
 
   orb2: {
     position: "absolute",
-
     width: width * 0.5,
     height: width * 0.5,
-
-    borderRadius: width * 0.25,
-
+    borderRadius: (width * 0.5) / 2,
     backgroundColor: Colors.accentLight,
-
     bottom: height * 0.18,
-
     left: -width * 0.2,
-
     opacity: 0.08,
   },
 
   orb3: {
     position: "absolute",
-
     width: width * 0.3,
     height: width * 0.3,
-
-    borderRadius: width * 0.15,
-
+    borderRadius: (width * 0.3) / 2,
     backgroundColor: Colors.accent,
-
     bottom: -width * 0.1,
     right: -width * 0.05,
-
     opacity: 0.12,
   },
 
   content: {
     flex: 1,
-
     justifyContent: "center",
-
     alignItems: "center",
-
-    gap: 20,
+    gap: Spacing.xl,
   },
 
   logoWrap: {
     alignItems: "center",
-
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
 
   logoRing: {
     width: 88,
     height: 88,
-
-    borderRadius: 26,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    borderRadius: Radius.xxl,
+    backgroundColor: Colors.overlaySoft,
     borderWidth: 1.5,
-
-    borderColor: "rgba(255,255,255,0.18)",
-
+    borderColor: Colors.overlayMedium,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   logoBox: {
     width: 64,
     height: 64,
-
-    borderRadius: 18,
-
+    borderRadius: Radius.xl,
     backgroundColor: Colors.accentLight,
-
     justifyContent: "center",
-
     alignItems: "center",
-
+    ...Shadows.lg,
     shadowColor: Colors.accentLight,
-
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-
-    shadowOpacity: 0.45,
-
-    shadowRadius: 16,
-
-    elevation: 12,
   },
 
   brand: {
-    fontSize: Math.min(width * 0.13, 52),
-
-    fontWeight: "900",
-
+    ...Typography.display,
     color: Colors.white,
-
     letterSpacing: 4,
-
     textAlign: "center",
-
-    marginBottom: 6,
+    marginBottom: Spacing.sm,
   },
 
   brandAccent: {
     color: Colors.accentLight,
-
     fontWeight: "300",
   },
 
   tagline: {
-    fontSize: Math.min(width * 0.056, 22),
-
-    fontWeight: "600",
-
-    color: "rgba(255,255,255,0.75)",
-
+    ...Typography.title,
+    color: alpha(Colors.white, 0.75),
     textAlign: "center",
-
-    lineHeight: Math.min(width * 0.082, 33),
   },
 
   taglineHL: {
     color: Colors.white,
-
     fontWeight: "800",
   },
 
   pillsRow: {
     flexDirection: "row",
-
-    gap: 8,
-
+    gap: Spacing.sm,
     flexWrap: "wrap",
-
     justifyContent: "center",
-
-    marginTop: 4,
-
-    paddingHorizontal: 8,
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
   },
 
   pill: {
-    backgroundColor: "rgba(255,255,255,0.07)",
-
-    paddingHorizontal: 14,
-
-    paddingVertical: 8,
-
-    borderRadius: 24,
-
+    backgroundColor: Colors.overlaySubtle,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.xxl,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.12)",
+    borderColor: Colors.overlaySoft,
   },
 
   pillText: {
-    color: "rgba(255,255,255,0.7)",
-
-    fontSize: 12,
-
-    fontWeight: "500",
-
+    color: alpha(Colors.white, 0.7),
+    ...Typography.caption,
     letterSpacing: 0.3,
   },
 
   actions: {
-    gap: 10,
-
-    paddingTop: 8,
+    gap: Spacing.md,
+    paddingTop: Spacing.sm,
   },
 
   btnPrimary: {
     backgroundColor: Colors.accentLight,
-
-    paddingVertical: Math.min(height * 0.022, 17),
-
-    borderRadius: 16,
-
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.lg,
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "center",
-
-    gap: 10,
-
+    gap: Spacing.md,
+    ...Shadows.lg,
     shadowColor: Colors.accentLight,
-
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-
-    shadowOpacity: 0.35,
-
-    shadowRadius: 12,
-
-    elevation: 8,
   },
 
   btnPrimaryText: {
+    ...Typography.body,
     color: Colors.primary,
-
-    fontSize: 16,
-
-    fontWeight: "800",
-
     letterSpacing: 0.3,
   },
 
   btnArrow: {
     width: 28,
     height: 28,
-
-    borderRadius: 8,
-
-    backgroundColor: "rgba(255,255,255,0.25)",
-
+    borderRadius: Radius.sm,
+    backgroundColor: Colors.overlayStrong,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   btnSecondary: {
-    paddingVertical: Math.min(height * 0.02, 15),
-
-    borderRadius: 16,
-
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.lg,
     alignItems: "center",
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.18)",
-
-    backgroundColor: "rgba(255,255,255,0.05)",
+    borderColor: Colors.overlayMedium,
+    backgroundColor: Colors.overlaySubtle,
   },
 
   btnSecondaryText: {
-    color: "rgba(255,255,255,0.75)",
-
-    fontSize: 15,
-
-    fontWeight: "600",
+    color: alpha(Colors.white, 0.75),
+    ...Typography.body,
   },
 
   legal: {
     textAlign: "center",
-
-    fontSize: 11,
-
-    color: "rgba(255,255,255,0.3)",
-
-    marginTop: 2,
+    ...Typography.caption,
+    color: alpha(Colors.white, 0.3),
+    marginTop: Spacing.xs,
   },
 });

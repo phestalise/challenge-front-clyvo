@@ -25,7 +25,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { validarFormularioPet } from "../../utils/validators";
 import { gerarIdNumerico } from "../../utils/id";
 
-import { styles } from "../../styles/AddPetScreenStyles";
+import { styles } from "../../styles/AddPetScreen.styles";
 
 const SPECIES = ["Cachorro", "Gato", "Pássaro", "Coelho", "Outro"];
 

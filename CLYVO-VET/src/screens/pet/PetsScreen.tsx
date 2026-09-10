@@ -22,7 +22,7 @@ import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
 import { usePets } from "../../hooks/usePets";
 
-import { styles } from "../../styles/PetsScreenStyles";
+import { styles } from "../../styles/PetsScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 

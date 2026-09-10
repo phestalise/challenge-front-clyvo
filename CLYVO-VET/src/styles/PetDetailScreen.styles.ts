@@ -1,6 +1,17 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
+
+// Compensa a ausência de SafeAreaView neste header (substitui o inset da status bar).
+const STATUS_BAR_OFFSET = 56;
 
 export const styles = StyleSheet.create({
   container: {
@@ -16,15 +27,15 @@ export const styles = StyleSheet.create({
   },
 
   loadingText: {
+    ...Typography.body,
     color: Colors.textSecondary,
-    fontSize: 15,
   },
 
   header: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 24,
-    paddingTop: 56,
-    paddingBottom: 18,
+    paddingHorizontal: Spacing.xxl,
+    paddingTop: STATUS_BAR_OFFSET,
+    paddingBottom: Spacing.xl,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -33,28 +44,27 @@ export const styles = StyleSheet.create({
   back: {
     width: 42,
     height: 42,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: Radius.md,
+    backgroundColor: Colors.overlaySoft,
     justifyContent: "center",
     alignItems: "center",
   },
 
   headerTitle: {
-    fontSize: 19,
-    fontWeight: "800",
+    ...Typography.title,
     color: Colors.white,
   },
 
   headerActions: {
     flexDirection: "row",
-    gap: 10,
+    gap: Spacing.md,
   },
 
   editBtn: {
     width: 42,
     height: 42,
-    borderRadius: 12,
-    backgroundColor: Colors.accentLight + "20",
+    borderRadius: Radius.md,
+    backgroundColor: alpha(Colors.accentLight, 0.13),
     justifyContent: "center",
     alignItems: "center",
   },
@@ -62,43 +72,42 @@ export const styles = StyleSheet.create({
   deleteBtn: {
     width: 42,
     height: 42,
-    borderRadius: 12,
-    backgroundColor: Colors.accentRed + "20",
+    borderRadius: Radius.md,
+    backgroundColor: alpha(Colors.accentRed, 0.13),
     justifyContent: "center",
     alignItems: "center",
   },
 
   scroll: {
-    padding: 20,
-    gap: 14,
-    paddingBottom: 40,
+    padding: Spacing.xl,
+    gap: Spacing.lg,
+    paddingBottom: Spacing.huge,
   },
 
   profileCard: {
     backgroundColor: Colors.card,
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: Radius.xl,
+    padding: Spacing.xl,
     alignItems: "center",
-    gap: 8,
+    gap: Spacing.sm,
   },
 
   avatar: {
     width: 76,
     height: 76,
-    borderRadius: 22,
-    backgroundColor: Colors.accentLight + "15",
+    borderRadius: Radius.xl,
+    backgroundColor: alpha(Colors.accentLight, 0.08),
     justifyContent: "center",
     alignItems: "center",
   },
 
   petName: {
-    fontSize: 22,
-    fontWeight: "800",
+    ...Typography.title,
     color: Colors.text,
   },
 
   petMeta: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textSecondary,
   },
 
@@ -109,23 +118,21 @@ export const styles = StyleSheet.create({
     borderWidth: 6,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 6,
+    marginVertical: Spacing.sm,
   },
 
   ringNum: {
-    fontSize: 18,
-    fontWeight: "900",
+    ...Typography.subtitle,
   },
 
   ringLabel: {
-    fontSize: 9,
+    ...Typography.caption,
     color: Colors.textSecondary,
-    fontWeight: "600",
   },
 
   chips: {
     flexDirection: "row",
-    gap: 8,
+    gap: Spacing.sm,
     flexWrap: "wrap",
     justifyContent: "center",
   },
@@ -133,22 +140,22 @@ export const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: Spacing.xs,
     backgroundColor: Colors.background,
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-    borderRadius: 9,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.sm,
   },
 
   chipText: {
-    fontSize: 12,
+    ...Typography.caption,
     color: Colors.textSecondary,
   },
 
   statsRow: {
     backgroundColor: Colors.card,
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -156,39 +163,37 @@ export const styles = StyleSheet.create({
 
   stat: {
     alignItems: "center",
-    gap: 4,
+    gap: Spacing.xs,
   },
 
   statVal: {
-    fontSize: 16,
-    fontWeight: "900",
+    ...Typography.body,
   },
 
   statLabel: {
-    fontSize: 10,
+    ...Typography.caption,
     color: Colors.textSecondary,
-    fontWeight: "600",
     textTransform: "uppercase",
   },
 
   statDiv: {
     width: 1,
-    height: 28,
+    height: Spacing.xxxl,
     backgroundColor: Colors.border,
   },
 
   tabsRow: {
     flexDirection: "row",
     backgroundColor: Colors.card,
-    borderRadius: 13,
-    padding: 4,
-    gap: 4,
+    borderRadius: Radius.md,
+    padding: Spacing.xs,
+    gap: Spacing.xs,
   },
 
   tabBtn: {
     flex: 1,
-    paddingVertical: 9,
-    borderRadius: 10,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
     alignItems: "center",
   },
 
@@ -197,9 +202,8 @@ export const styles = StyleSheet.create({
   },
 
   tabBtnText: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textSecondary,
-    fontWeight: "600",
   },
 
   tabBtnTextActive: {
@@ -208,7 +212,7 @@ export const styles = StyleSheet.create({
 
   infoBlock: {
     backgroundColor: Colors.card,
-    borderRadius: 14,
+    borderRadius: Radius.lg,
     overflow: "hidden",
   },
 
@@ -216,26 +220,25 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 13,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
 
   infoKey: {
-    fontSize: 13,
+    ...Typography.label,
     color: Colors.textSecondary,
   },
 
   infoVal: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...Typography.label,
     color: Colors.text,
   },
 
   noData: {
     textAlign: "center",
     color: Colors.textSecondary,
-    paddingTop: 30,
+    paddingTop: Spacing.xxxl,
   },
 });

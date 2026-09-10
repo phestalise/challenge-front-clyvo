@@ -21,7 +21,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
-import { styles } from "../../styles/DashboardScreenStyles";
+import { styles } from "../../styles/DashboardScreen.styles";
 import { usePets } from "../../hooks/usePets";
 
 export default function DashboardScreen() {

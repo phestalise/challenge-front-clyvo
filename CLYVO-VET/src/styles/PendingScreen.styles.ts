@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,29 +20,22 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
     backgroundColor: Colors.secondary,
   },
 
   back: {
     width: 36,
     height: 36,
-
     borderRadius: 18,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    backgroundColor: Colors.overlaySoft,
     alignItems: "center",
     justifyContent: "center",
   },
 
   title: {
-    fontSize: 18,
-    fontWeight: "700",
-
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
@@ -43,28 +44,24 @@ export const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    padding: 16,
-    gap: 12,
-    paddingBottom: 40,
+    padding: Spacing.lg,
+    gap: Spacing.md,
+    paddingBottom: Spacing.huge,
   },
 
   card: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-
+    gap: Spacing.md,
     backgroundColor: Colors.secondary,
-
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
   },
 
   iconBox: {
     width: 42,
     height: 42,
-
-    borderRadius: 12,
-
+    borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -74,79 +71,60 @@ export const styles = StyleSheet.create({
   },
 
   itemName: {
-    fontSize: 15,
-    fontWeight: "600",
-
+    ...Typography.body,
     color: Colors.white,
   },
 
   itemSub: {
-    fontSize: 12,
-
+    ...Typography.caption,
     color: Colors.textLight,
-
-    marginTop: 2,
+    marginTop: Spacing.xs,
   },
 
   itemDate: {
-    fontSize: 12,
-
-    color: Colors.accentRed + "cc",
-
-    marginTop: 2,
+    ...Typography.caption,
+    color: alpha(Colors.accentRed, 0.8),
+    marginTop: Spacing.xs,
   },
 
   resolveBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-
-    borderRadius: 10,
-
-    backgroundColor: Colors.accentRed + "20",
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
+    backgroundColor: alpha(Colors.accentRed, 0.13),
   },
 
   resolveBtnText: {
     color: Colors.accentRed,
-
-    fontSize: 12,
-    fontWeight: "700",
+    ...Typography.caption,
   },
 
   empty: {
     alignItems: "center",
-
-    paddingTop: 100,
-
-    gap: 12,
+    paddingTop: Spacing.huge * 2 + Spacing.xl,
+    gap: Spacing.md,
   },
 
   emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-
+    ...Typography.title,
     color: Colors.white,
   },
 
   emptyText: {
     color: Colors.textLight,
-
-    fontSize: 14,
+    ...Typography.label,
   },
 
   emptyBtn: {
-    marginTop: 8,
-
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.xxl,
+    paddingVertical: Spacing.md,
     backgroundColor: Colors.accentGreen,
-
-    borderRadius: 12,
+    borderRadius: Radius.md,
   },
 
   emptyBtnText: {
     color: Colors.white,
-
     fontWeight: "700",
   },
 });

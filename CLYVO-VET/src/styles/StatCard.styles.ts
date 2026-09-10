@@ -1,43 +1,43 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+} = theme;
 
 export const styles = StyleSheet.create({
   card: {
     flex: 1,
     minWidth: "42%",
     backgroundColor: Colors.card,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
     alignItems: "center",
-    gap: 6,
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    gap: Spacing.sm,
+    ...Shadows.sm,
   },
 
   iconBox: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: Radius.md,
     justifyContent: "center",
     alignItems: "center",
   },
 
   value: {
-    fontSize: 26,
-    fontWeight: "900",
+    ...Typography.display,
     color: Colors.text,
   },
 
   label: {
-    fontSize: 10,
+    ...Typography.caption,
     color: Colors.textSecondary,
-    fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },

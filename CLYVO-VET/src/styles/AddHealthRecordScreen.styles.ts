@@ -1,46 +1,41 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: Colors.primary,
   },
 
   header: {
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "space-between",
-
-    paddingHorizontal: 20,
-
-    paddingBottom: 16,
-
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
     backgroundColor: Colors.secondary,
   },
 
   back: {
     width: 36,
     height: 36,
-
     borderRadius: 18,
-
     alignItems: "center",
-
     justifyContent: "center",
-
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
   },
 
   title: {
-    fontSize: 18,
-
-    fontWeight: "700",
-
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
@@ -49,106 +44,75 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    padding: 20,
-
-    paddingBottom: 60,
+    padding: Spacing.xl,
+    paddingBottom: Spacing.huge,
   },
 
   label: {
-    fontSize: 13,
-
+    ...Typography.label,
     color: Colors.textLight,
-
-    marginBottom: 12,
-
+    marginBottom: Spacing.md,
     letterSpacing: 0.4,
   },
 
   petLabel: {
-    marginTop: 28,
+    marginTop: Spacing.xxxl,
   },
 
   typeRow: {
     flexDirection: "row",
-
-    gap: 12,
+    gap: Spacing.md,
   },
 
   typeCard: {
     flex: 1,
-
     backgroundColor: Colors.secondary,
-
-    borderRadius: 14,
-
-    padding: 16,
-
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
     borderWidth: 1.5,
-
-    borderColor: "rgba(255,255,255,0.08)",
-
-    gap: 8,
+    borderColor: Colors.overlaySoft,
+    gap: Spacing.sm,
   },
 
   typeIcon: {
     width: 44,
     height: 44,
-
-    borderRadius: 12,
-
+    borderRadius: Radius.md,
     alignItems: "center",
-
     justifyContent: "center",
   },
 
   typeLabel: {
-    fontSize: 15,
-
-    fontWeight: "700",
-
+    ...Typography.body,
     color: Colors.white,
   },
 
   typeDesc: {
-    fontSize: 12,
-
+    ...Typography.caption,
     color: Colors.textLight,
-
-    lineHeight: 16,
   },
 
   petList: {
-    gap: 10,
+    gap: Spacing.md,
   },
 
   petRow: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 12,
-
+    gap: Spacing.md,
     backgroundColor: Colors.secondary,
-
-    borderRadius: 12,
-
-    padding: 14,
-
+    borderRadius: Radius.md,
+    padding: Spacing.lg,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: Colors.overlaySoft,
   },
 
   petAvatar: {
     width: 40,
     height: 40,
-
     borderRadius: 20,
-
-    backgroundColor: Colors.accentLight + "20",
-
+    backgroundColor: alpha(Colors.accentLight, 0.13),
     alignItems: "center",
-
     justifyContent: "center",
   },
 
@@ -157,40 +121,29 @@ export const styles = StyleSheet.create({
   },
 
   petName: {
-    fontSize: 15,
-
-    fontWeight: "600",
-
+    ...Typography.body,
     color: Colors.white,
   },
 
   petMeta: {
-    fontSize: 12,
-
+    ...Typography.caption,
     color: Colors.textLight,
-
     marginTop: 2,
   },
 
   emptyPets: {
     alignItems: "center",
-
-    paddingVertical: 32,
-
-    gap: 10,
+    paddingVertical: Spacing.xxxl,
+    gap: Spacing.md,
   },
 
   emptyText: {
+    ...Typography.label,
     color: Colors.textLight,
-
-    fontSize: 14,
   },
 
   linkText: {
-    color: Colors.accentLight,
-
-    fontSize: 14,
-
-    fontWeight: "600",
+    ...Typography.label,
+    color: Colors.accentOnDark,
   },
 });

@@ -1,5 +1,14 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "./colors";
+
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  alpha,
+} = theme;
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,66 +17,53 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    padding: 16,
-    paddingBottom: 140,
+    padding: Spacing.lg,
+    // Clareia a tab bar flutuante (altura 82 + offset 18) mais respiro extra.
+    paddingBottom: Spacing.huge * 3 + Spacing.xl,
   },
 
   profileCard: {
     backgroundColor: Colors.secondary,
-
-    borderRadius: 22,
-
-    padding: 24,
-
+    borderRadius: Radius.xl,
+    padding: Spacing.xxl,
     alignItems: "center",
-
-    marginBottom: 20,
+    marginBottom: Spacing.xl,
   },
 
   avatar: {
     width: 90,
     height: 90,
-
     borderRadius: 45,
-
-    backgroundColor: Colors.accentLight + "25",
-
+    backgroundColor: alpha(Colors.accentLight, 0.15),
     alignItems: "center",
     justifyContent: "center",
-
-    marginBottom: 14,
+    marginBottom: Spacing.lg,
   },
 
   avatarText: {
-    fontSize: 30,
-    fontWeight: "800",
+    ...Typography.display,
     color: Colors.accentLight,
   },
 
   name: {
-    fontSize: 22,
-    fontWeight: "800",
+    ...Typography.title,
     color: Colors.white,
   },
 
   email: {
-    fontSize: 14,
-    marginTop: 4,
+    ...Typography.label,
+    marginTop: Spacing.xs,
     color: Colors.textLight,
   },
 
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-
-    marginTop: 18,
-
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-
-    borderRadius: 14,
-
+    gap: Spacing.sm,
+    marginTop: Spacing.xl,
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.lg,
     backgroundColor: Colors.accentLight,
   },
 
@@ -77,28 +73,21 @@ export const styles = StyleSheet.create({
   },
 
   section: {
-    marginBottom: 20,
+    marginBottom: Spacing.xl,
   },
 
   sectionTitle: {
-    fontSize: 13,
-    fontWeight: "700",
-
-    color: "rgba(255,255,255,0.45)",
-
-    marginBottom: 12,
-
+    ...Typography.label,
+    color: alpha(Colors.white, 0.45),
+    marginBottom: Spacing.md,
     textTransform: "uppercase",
   },
 
   faqItem: {
     backgroundColor: Colors.secondary,
-
-    borderRadius: 16,
-
-    padding: 16,
-
-    marginBottom: 10,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    marginBottom: Spacing.md,
   },
 
   faqRow: {
@@ -109,118 +98,83 @@ export const styles = StyleSheet.create({
 
   faqQ: {
     flex: 1,
-
-    fontSize: 14,
-    fontWeight: "600",
-
+    ...Typography.label,
     color: Colors.white,
-
-    marginRight: 10,
+    marginRight: Spacing.md,
   },
 
   faqA: {
-    marginTop: 12,
-
-    fontSize: 13,
-
-    lineHeight: 20,
-
+    marginTop: Spacing.md,
+    ...Typography.label,
     color: Colors.textLight,
   },
 
   logoutBtn: {
     height: 58,
-
-    borderRadius: 16,
-
-    backgroundColor: "rgba(255,107,107,0.12)",
-
+    borderRadius: Radius.lg,
+    backgroundColor: alpha(Colors.dangerOnDark, 0.12),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-
-    gap: 10,
-
-    marginBottom: 40,
+    gap: Spacing.md,
+    marginBottom: Spacing.huge,
   },
 
   logoutText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#FF6B6B",
+    ...Typography.body,
+    color: Colors.dangerOnDark,
   },
 
   modalOverlay: {
     flex: 1,
-
     justifyContent: "flex-end",
-
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: alpha(Colors.black, 0.5),
   },
 
   modalBox: {
     backgroundColor: Colors.secondary,
-
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-
-    padding: 24,
-    paddingBottom: 40,
+    borderTopLeftRadius: Radius.xxl,
+    borderTopRightRadius: Radius.xxl,
+    padding: Spacing.xxl,
+    paddingBottom: Spacing.huge,
   },
 
   modalTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-
+    ...Typography.title,
     color: Colors.white,
-
-    marginBottom: 18,
+    marginBottom: Spacing.xl,
   },
 
   input: {
     height: 54,
-
-    borderRadius: 14,
-
-    paddingHorizontal: 16,
-
-    marginBottom: 14,
-
+    borderRadius: Radius.lg,
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.lg,
     color: Colors.white,
-
     backgroundColor: Colors.primary,
   },
 
   modalBtns: {
     flexDirection: "row",
-    gap: 12,
-
-    marginTop: 8,
+    gap: Spacing.md,
+    marginTop: Spacing.sm,
   },
 
   cancelBtn: {
     flex: 1,
-
     height: 52,
-
-    borderRadius: 14,
-
+    borderRadius: Radius.lg,
     alignItems: "center",
     justifyContent: "center",
-
     backgroundColor: Colors.primary,
   },
 
   saveBtn: {
     flex: 1,
-
     height: 52,
-
-    borderRadius: 14,
-
+    borderRadius: Radius.lg,
     alignItems: "center",
     justifyContent: "center",
-
     backgroundColor: Colors.accentLight,
   },
 

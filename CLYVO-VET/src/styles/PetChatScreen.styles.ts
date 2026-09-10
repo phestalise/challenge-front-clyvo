@@ -1,10 +1,20 @@
-// PetChatScreenStyles.ts
-
 import { StyleSheet, Dimensions } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
+
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
 
 const { width } = Dimensions.get("window");
+
+// Compensa a ausência de SafeAreaView neste header (substitui o inset da status bar).
+const STATUS_BAR_OFFSET = 56;
 
 export const styles = StyleSheet.create({
   safe: {
@@ -14,27 +24,20 @@ export const styles = StyleSheet.create({
 
   header: {
     backgroundColor: Colors.primary,
-
-    paddingHorizontal: 20,
-    paddingTop: 56,
-    paddingBottom: 16,
-
+    paddingHorizontal: Spacing.xl,
+    paddingTop: STATUS_BAR_OFFSET,
+    paddingBottom: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
-
-    gap: 12,
+    gap: Spacing.md,
   },
 
   backBtn: {
     width: 40,
     height: 40,
-
-    borderRadius: 12,
-
-    backgroundColor: "rgba(255,255,255,0.1)",
-
+    borderRadius: Radius.md,
+    backgroundColor: Colors.overlaySoft,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
@@ -43,65 +46,50 @@ export const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 17,
-    fontWeight: "800",
-
+    ...Typography.subtitle,
     color: Colors.white,
   },
 
   headerSub: {
-    fontSize: 12,
-
-    color: "rgba(255,255,255,0.5)",
-
-    marginTop: 1,
+    ...Typography.caption,
+    color: alpha(Colors.white, 0.5),
+    marginTop: Spacing.xs,
   },
 
   avatar: {
     width: 40,
     height: 40,
-
-    borderRadius: 12,
-
-    backgroundColor: "rgba(255,255,255,0.15)",
-
+    borderRadius: Radius.md,
+    backgroundColor: Colors.overlayMedium,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   messagesList: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    paddingBottom: 30,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
+    paddingBottom: Spacing.xxxl,
   },
 
   welcome: {
     alignItems: "center",
-
-    marginTop: 80,
-
-    gap: 12,
+    marginTop: Spacing.huge * 2,
+    gap: Spacing.md,
   },
 
   welcomeTitle: {
     color: Colors.white,
-
-    fontSize: 22,
-
-    fontWeight: "700",
+    ...Typography.title,
   },
 
   welcomeText: {
     color: Colors.textSecondary,
-
-    fontSize: 14,
-
+    ...Typography.label,
     textAlign: "center",
   },
 
   msgRow: {
-    marginBottom: 14,
+    marginBottom: Spacing.lg,
   },
 
   msgRowUser: {
@@ -114,142 +102,84 @@ export const styles = StyleSheet.create({
 
   msgBubbleUser: {
     backgroundColor: Colors.primary,
-
-    borderRadius: 18,
-
-    borderBottomRightRadius: 5,
-
-    paddingHorizontal: 16,
-    paddingVertical: 11,
-
+    borderRadius: Radius.xl,
+    borderBottomRightRadius: Radius.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     maxWidth: width * 0.75,
   },
 
   msgBubbleAi: {
     backgroundColor: Colors.card,
-
-    borderRadius: 18,
-
-    borderBottomLeftRadius: 5,
-
-    paddingHorizontal: 16,
-    paddingVertical: 11,
-
+    borderRadius: Radius.xl,
+    borderBottomLeftRadius: Radius.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     maxWidth: width * 0.78,
-
-    shadowColor: "#000",
-
-    shadowOpacity: 0.05,
-
-    shadowRadius: 6,
-
-    elevation: 1,
+    ...Shadows.sm,
   },
 
   msgTextUser: {
     color: Colors.white,
-
-    fontSize: 14,
-
-    lineHeight: 20,
+    ...Typography.label,
   },
 
   msgTextAi: {
     color: Colors.text,
-
-    fontSize: 14,
-
-    lineHeight: 22,
+    ...Typography.label,
   },
 
   typingBubble: {
     backgroundColor: Colors.card,
-
-    borderRadius: 18,
-
-    borderBottomLeftRadius: 5,
-
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-
+    borderRadius: Radius.xl,
+    borderBottomLeftRadius: Radius.sm,
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.lg,
     flexDirection: "row",
-
     alignItems: "center",
-
     alignSelf: "flex-start",
-
-    marginBottom: 14,
+    marginBottom: Spacing.lg,
   },
 
   inputBar: {
     flexDirection: "row",
-
     alignItems: "flex-end",
-
-    gap: 10,
-
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     backgroundColor: Colors.card,
-
     borderTopWidth: 1,
-
     borderTopColor: Colors.background,
   },
 
   inputWrap: {
     flex: 1,
-
     backgroundColor: Colors.background,
-
-    borderRadius: 22,
-
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-
+    borderRadius: Radius.xl,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
     maxHeight: 100,
   },
 
   input: {
-    fontSize: 14,
-
+    ...Typography.label,
     color: Colors.text,
-
-    lineHeight: 20,
   },
 
   sendBtn: {
     width: 44,
     height: 44,
-
     borderRadius: 22,
-
     backgroundColor: Colors.primary,
-
     justifyContent: "center",
-
     alignItems: "center",
-
+    ...Shadows.md,
     shadowColor: Colors.primary,
-
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-
-    shadowOpacity: 0.3,
-
-    shadowRadius: 8,
-
-    elevation: 4,
   },
 
   sendBtnDisabled: {
     backgroundColor: Colors.background,
-
     shadowOpacity: 0,
-
     elevation: 0,
   },
 });

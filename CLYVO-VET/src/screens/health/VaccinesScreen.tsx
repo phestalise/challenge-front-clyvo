@@ -26,7 +26,7 @@ import { RootStackParamList } from "../../types";
 import { obterCorStatus } from "../../utils/formatters";
 import { useVaccines } from "../../hooks/useVaccines";
 
-import { styles } from "../../styles/VaccinesScreenStyles";
+import { styles } from "../../styles/VaccinesScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 

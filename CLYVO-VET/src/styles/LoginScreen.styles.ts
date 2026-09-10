@@ -1,8 +1,17 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-import { Colors } from "./colors";
+import { theme } from "../theme";
 
-const { width, height } = Dimensions.get("window");
+const {
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  shadows: Shadows,
+  alpha,
+} = theme;
+
+const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   safe: {
@@ -20,80 +29,62 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 48,
+    paddingHorizontal: Spacing.xxl,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.huge,
   },
 
+  // Círculos decorativos proporcionais à largura da tela — fora da escala de radius.
   orb: {
     position: "absolute",
-
     width: width * 0.75,
     height: width * 0.75,
-
-    borderRadius: width * 0.375,
-
+    borderRadius: (width * 0.75) / 2,
     backgroundColor: Colors.secondary,
-
     top: -width * 0.28,
     right: -width * 0.22,
-
     opacity: 0.5,
   },
 
   orbBottom: {
     position: "absolute",
-
     width: width * 0.45,
     height: width * 0.45,
-
-    borderRadius: width * 0.225,
-
+    borderRadius: (width * 0.45) / 2,
     backgroundColor: Colors.accentLight,
-
     bottom: -width * 0.15,
     left: -width * 0.15,
-
     opacity: 0.06,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-
     justifyContent: "space-between",
-
-    marginBottom: 36,
-    paddingTop: 8,
+    marginBottom: Spacing.huge,
+    paddingTop: Spacing.sm,
   },
 
   back: {
     width: 44,
     height: 44,
-
-    borderRadius: 14,
-
-    backgroundColor: "rgba(255,255,255,0.1)",
-
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.overlaySoft,
     justifyContent: "center",
-
     alignItems: "center",
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: Colors.overlaySoft,
   },
 
   logoRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   logo: {
     color: Colors.white,
-    fontSize: 13,
-    fontWeight: "800",
+    ...Typography.label,
     letterSpacing: 2,
   },
 
@@ -102,246 +93,159 @@ export const styles = StyleSheet.create({
   },
 
   badgeRow: {
-    marginBottom: 14,
+    marginBottom: Spacing.lg,
   },
 
   badge: {
     alignSelf: "flex-start",
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    backgroundColor: Colors.overlaySoft,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.14)",
-
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-
-    borderRadius: 20,
-
+    borderColor: Colors.overlayMedium,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.xl,
     flexDirection: "row",
     alignItems: "center",
-
-    gap: 6,
+    gap: Spacing.sm,
   },
 
   badgeDot: {
     width: 6,
     height: 6,
-
     borderRadius: 3,
-
     backgroundColor: Colors.accentLight,
   },
 
   badgeText: {
     color: Colors.accentLight,
-
-    fontSize: 11,
-
-    fontWeight: "700",
-
+    ...Typography.caption,
     letterSpacing: 1.5,
   },
 
   title: {
-    fontSize: Math.min(width * 0.1, 40),
-
-    fontWeight: "800",
-
+    ...Typography.display,
     color: Colors.white,
-
-    lineHeight: Math.min(width * 0.125, 50),
-
-    marginBottom: 10,
-
+    marginBottom: Spacing.md,
     letterSpacing: -0.5,
   },
 
   sub: {
-    fontSize: 15,
-
-    color: "rgba(255,255,255,0.45)",
-
-    marginBottom: 32,
-
-    lineHeight: 22,
+    ...Typography.body,
+    color: alpha(Colors.white, 0.45),
+    marginBottom: Spacing.xxxl,
   },
 
   formCard: {
-    backgroundColor: "rgba(255,255,255,0.05)",
-
-    borderRadius: 24,
-
-    padding: 22,
-
+    backgroundColor: Colors.overlaySubtle,
+    borderRadius: Radius.xxl,
+    padding: Spacing.xxl,
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.09)",
-
-    marginBottom: 20,
-
-    gap: 6,
+    borderColor: Colors.overlaySoft,
+    marginBottom: Spacing.xl,
+    gap: Spacing.sm,
   },
 
   dividerField: {
     height: 1,
-
-    backgroundColor: "rgba(255,255,255,0.07)",
-
-    marginVertical: 4,
+    backgroundColor: Colors.overlaySubtle,
+    marginVertical: Spacing.xs,
   },
 
   forgotRow: {
     flexDirection: "row",
-
     justifyContent: "flex-end",
-
-    marginTop: 6,
+    marginTop: Spacing.sm,
   },
 
   forgotBtn: {
-    paddingVertical: 4,
-    paddingHorizontal: 2,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.xs,
   },
 
   forgotText: {
     color: Colors.accentLight,
-
-    fontSize: 13,
-
-    fontWeight: "600",
+    ...Typography.label,
   },
 
   actions: {
-    gap: 12,
+    gap: Spacing.md,
   },
 
   btnPrimary: {
     backgroundColor: Colors.accentLight,
-
-    paddingVertical: Math.min(height * 0.022, 18),
-
-    borderRadius: 16,
-
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.lg,
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "center",
-
-    gap: 10,
-
+    gap: Spacing.md,
+    ...Shadows.lg,
     shadowColor: Colors.accentLight,
-
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-
-    shadowOpacity: 0.35,
-
-    shadowRadius: 16,
-
-    elevation: 8,
   },
 
   btnPrimaryText: {
+    ...Typography.body,
     color: Colors.primary,
-
-    fontSize: 16,
-
-    fontWeight: "800",
-
     letterSpacing: 0.2,
   },
 
   btnArrow: {
     width: 28,
     height: 28,
-
-    borderRadius: 8,
-
-    backgroundColor: "rgba(255,255,255,0.25)",
-
+    borderRadius: Radius.sm,
+    backgroundColor: Colors.overlayStrong,
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   dividerRow: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 12,
-
-    marginVertical: 2,
+    gap: Spacing.md,
+    marginVertical: Spacing.xs,
   },
 
   divider: {
     flex: 1,
-
     height: 1,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: Colors.overlaySoft,
   },
 
   dividerText: {
-    color: "rgba(255,255,255,0.25)",
-
-    fontSize: 13,
-
-    fontWeight: "500",
+    color: alpha(Colors.white, 0.25),
+    ...Typography.label,
   },
 
   btnSecondary: {
-    paddingVertical: Math.min(height * 0.02, 16),
-
-    borderRadius: 16,
-
+    paddingVertical: Spacing.lg,
+    borderRadius: Radius.lg,
     alignItems: "center",
-
     borderWidth: 1,
-
-    borderColor: "rgba(255,255,255,0.15)",
-
-    backgroundColor: "rgba(255,255,255,0.04)",
+    borderColor: Colors.overlayMedium,
+    backgroundColor: Colors.overlaySubtle,
   },
 
   btnSecondaryText: {
-    color: "rgba(255,255,255,0.7)",
-
-    fontSize: 15,
-
-    fontWeight: "600",
+    color: alpha(Colors.white, 0.7),
+    ...Typography.body,
   },
 
   trustRow: {
     flexDirection: "row",
-
     alignItems: "center",
-
     justifyContent: "center",
-
-    gap: 16,
-
-    marginTop: 8,
+    gap: Spacing.lg,
+    marginTop: Spacing.sm,
   },
 
   trustItem: {
     flexDirection: "row",
-
     alignItems: "center",
-
-    gap: 5,
+    gap: Spacing.xs,
   },
 
   trustText: {
-    color: "rgba(255,255,255,0.3)",
-
-    fontSize: 11,
-
-    fontWeight: "500",
+    color: alpha(Colors.white, 0.3),
+    ...Typography.caption,
   },
 });
