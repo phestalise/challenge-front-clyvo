@@ -23,6 +23,7 @@ import { RootStackParamList } from "../../types";
 import { styles } from "../../styles/HealthCalendarScreen.styles";
 
 import { usePets } from "../../hooks/usePets";
+import { parseBrDate } from "../../utils/dateConversion";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -34,26 +35,63 @@ type CalendarEvent = {
   name: string;
   date: string;
   done: boolean;
-  color: string;
 };
+
+type EventState = "done" | "pending" | "overdue";
+
+type ViewMode = "dia" | "mes" | "ano";
 
 const DAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
+const MONTH_ABBR = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
+
+const VIEW_MODES: { key: ViewMode; label: string }[] = [
+  { key: "dia", label: "Dia" },
+  { key: "mes", label: "Mês" },
+  { key: "ano", label: "Ano" },
+];
+
 const MAX_DOTS_PER_DAY = 3;
+
+const TYPE_ICONS: Record<
+  CalendarEvent["type"],
+  keyof typeof Ionicons.glyphMap
+> = {
+  vaccine: "shield-checkmark-outline",
+  medication: "medical-outline",
+};
 
 export default function HealthCalendarScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute();
   const insets = useSafeAreaInsets();
 
-  // Esta tela é usada tanto como aba (rota "Calendar", que já tem
-  // o header global do MainTabs) quanto empilhada a partir do Dashboard
-  // (rota "HealthCalendar", sem header nativo) — só renderiza header
-  // próprio nesse segundo caso, evitando o título/faixa duplicados.
-  const showOwnHeader = route.name !== "Calendar";
+  // Esta tela é usada tanto como aba (rota "Calendar") quanto empilhada a
+  // partir do Dashboard (rota "HealthCalendar") — só mostra o chevron de
+  // voltar nesse segundo caso, já que como aba não há "voltar" para lugar
+  // nenhum.
+  const showBackButton = route.name !== "Calendar";
 
   const { pets, loading, error, reload } = usePets();
   const [refreshing, setRefreshing] = useState(false);
+
+  // Alterna só o destaque visual do cabeçalho (Dia/Mês/Ano), inspirado na
+  // referência de design — a navegação do calendário em si continua sendo
+  // sempre por mês, que é a única visão implementada hoje.
+  const [viewMode, setViewMode] = useState<ViewMode>("mes");
 
   const today = new Date();
 
@@ -67,6 +105,22 @@ export default function HealthCalendarScreen() {
 
   const isCurrentMonth =
     selectedMonth === today.getMonth() && selectedYear === today.getFullYear();
+
+  const startOfToday = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+
+  const getEventState = (event: CalendarEvent): EventState => {
+    if (event.done) return "done";
+
+    const eventDate = parseBrDate(event.date);
+
+    if (eventDate && eventDate < startOfToday) return "overdue";
+
+    return "pending";
+  };
 
   const events = useMemo<CalendarEvent[]>(() => {
     const allEvents: CalendarEvent[] = [];
@@ -82,7 +136,6 @@ export default function HealthCalendarScreen() {
             name: v.name,
             date: v.startDate,
             done: v.done,
-            color: Colors.accentGreen,
           });
         }
 
@@ -95,7 +148,6 @@ export default function HealthCalendarScreen() {
             name: `${v.name} - Próxima dose`,
             date: v.endDate,
             done: false,
-            color: Colors.accentOrange,
           });
         }
       });
@@ -110,7 +162,6 @@ export default function HealthCalendarScreen() {
             name: m.name,
             date: m.startDate,
             done: !m.active,
-            color: Colors.accentLight,
           });
         }
       });
@@ -127,26 +178,45 @@ export default function HealthCalendarScreen() {
     setRefreshing(false);
   };
 
-  const goToPreviousMonth = () => {
-    setSelectedDay(null);
+  const selectDayForMonth = (month: number, year: number) => {
+    const isTargetCurrentMonth =
+      month === today.getMonth() && year === today.getFullYear();
 
-    if (selectedMonth === 0) {
-      setSelectedMonth(11);
-      setSelectedYear(selectedYear - 1);
-    } else {
-      setSelectedMonth(selectedMonth - 1);
+    setSelectedDay(isTargetCurrentMonth ? today.getDate() : 1);
+  };
+
+  const goToPreviousMonth = () => {
+    let newMonth = selectedMonth - 1;
+    let newYear = selectedYear;
+
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear = selectedYear - 1;
     }
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
+    selectDayForMonth(newMonth, newYear);
   };
 
   const goToNextMonth = () => {
-    setSelectedDay(null);
+    let newMonth = selectedMonth + 1;
+    let newYear = selectedYear;
 
-    if (selectedMonth === 11) {
-      setSelectedMonth(0);
-      setSelectedYear(selectedYear + 1);
-    } else {
-      setSelectedMonth(selectedMonth + 1);
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear = selectedYear + 1;
     }
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
+    selectDayForMonth(newMonth, newYear);
+  };
+
+  const goToToday = () => {
+    setSelectedMonth(today.getMonth());
+    setSelectedYear(today.getFullYear());
+    setSelectedDay(today.getDate());
   };
 
   const getDaysInMonth = (month: number, year: number) => {
@@ -157,23 +227,30 @@ export default function HealthCalendarScreen() {
     return new Date(year, month, 1).getDay();
   };
 
-  const getEventsByDay = (day: number) => {
-    return events.filter((event) => {
-      const parts = event.date.split("/");
+  const eventsByDay = useMemo(() => {
+    const map = new Map<number, CalendarEvent[]>();
 
-      if (parts.length !== 3) return false;
+    events.forEach((event) => {
+      const eventDate = parseBrDate(event.date);
 
-      const eventDay = parseInt(parts[0]);
-      const eventMonth = parseInt(parts[1]) - 1;
-      const eventYear = parseInt(parts[2]);
+      if (!eventDate) return;
 
-      return (
-        eventDay === day &&
-        eventMonth === selectedMonth &&
-        eventYear === selectedYear
-      );
+      if (
+        eventDate.getMonth() !== selectedMonth ||
+        eventDate.getFullYear() !== selectedYear
+      ) {
+        return;
+      }
+
+      const day = eventDate.getDate();
+      const dayEvents = map.get(day) ?? [];
+
+      dayEvents.push(event);
+      map.set(day, dayEvents);
     });
-  };
+
+    return map;
+  }, [events, selectedMonth, selectedYear]);
 
   const monthName = new Date(selectedYear, selectedMonth).toLocaleDateString(
     "pt-BR",
@@ -197,7 +274,29 @@ export default function HealthCalendarScreen() {
     calendarDays.push(i);
   }
 
-  const selectedDayEvents = selectedDay ? getEventsByDay(selectedDay) : [];
+  const selectedDayEvents = selectedDay
+    ? (eventsByDay.get(selectedDay) ?? [])
+    : [];
+
+  const monthPendingEvents = useMemo(() => {
+    const pending: CalendarEvent[] = [];
+
+    eventsByDay.forEach((dayEvents) => {
+      dayEvents.forEach((event) => {
+        if (!event.done) pending.push(event);
+      });
+    });
+
+    return pending;
+  }, [eventsByDay]);
+
+  const monthOnlyName = new Date(
+    selectedYear,
+    selectedMonth,
+  ).toLocaleDateString("pt-BR", { month: "long" });
+
+  const monthOnlyNameCapitalized =
+    monthOnlyName.charAt(0).toUpperCase() + monthOnlyName.slice(1);
 
   const selectedDayLabel = selectedDay
     ? new Date(selectedYear, selectedMonth, selectedDay).toLocaleDateString(
@@ -210,22 +309,117 @@ export default function HealthCalendarScreen() {
       )
     : "";
 
+  // Bloco de data + nome/pet + ícone do tipo, usado tanto na lista do dia
+  // selecionado quanto na lista de pendências do mês — mesma lógica de
+  // estado (getEventState) de antes, só reaproveitada aqui para colorir o
+  // bloco de data (vermelho discreto só quando o evento está atrasado).
+  const renderReminderCard = (event: CalendarEvent) => {
+    const state = getEventState(event);
+    const eventDate = parseBrDate(event.date);
+
+    const blockColor =
+      state === "overdue"
+        ? Colors.accentRed
+        : event.type === "vaccine"
+          ? Colors.accentLight
+          : Colors.primary;
+
+    return (
+      <TouchableOpacity
+        key={event.id}
+        style={styles.reminderCard}
+        onPress={() => navigation.navigate("PetDetail", { petId: event.petId })}
+      >
+        <View
+          style={[styles.reminderDateBlock, { backgroundColor: blockColor }]}
+        >
+          <Text style={styles.reminderDateDay}>
+            {eventDate ? eventDate.getDate() : "-"}
+          </Text>
+
+          <Text style={styles.reminderDateMonth}>
+            {eventDate ? MONTH_ABBR[eventDate.getMonth()] : ""}
+          </Text>
+        </View>
+
+        <View style={styles.flexOne}>
+          <Text style={styles.reminderName}>{event.name}</Text>
+
+          <Text style={styles.reminderSub}>🐾 {event.petName}</Text>
+        </View>
+
+        <Ionicons
+          name={TYPE_ICONS[event.type]}
+          size={20}
+          color={Colors.accent}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      {showOwnHeader && (
-        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={22} color={Colors.white} />
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <View style={styles.headerSide}>
+          {showBackButton && (
+            <TouchableOpacity
+              style={styles.headerIconBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="chevron-back" size={22} color={Colors.white} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <Text style={styles.title}>Calendário</Text>
+
+        <View style={[styles.headerSide, styles.headerSideRight]}>
+          <TouchableOpacity style={styles.headerIconBtn}>
+            <Ionicons
+              name="notifications-outline"
+              size={20}
+              color={Colors.white}
+            />
+
+            {monthPendingEvents.length > 0 && (
+              <View style={styles.headerBadge} />
+            )}
           </TouchableOpacity>
 
-          <Text style={styles.title}>Calendário</Text>
-
-          <View style={styles.headerSpace} />
+          <TouchableOpacity
+            style={styles.headerIconBtn}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Ionicons
+              name="person-circle-outline"
+              size={22}
+              color={Colors.white}
+            />
+          </TouchableOpacity>
         </View>
-      )}
+      </View>
+
+      <View style={styles.viewTabs}>
+        {VIEW_MODES.map((mode) => (
+          <TouchableOpacity
+            key={mode.key}
+            style={[
+              styles.viewTab,
+              viewMode === mode.key && styles.viewTabActive,
+            ]}
+            onPress={() => setViewMode(mode.key)}
+          >
+            <Text
+              style={[
+                styles.viewTabText,
+                viewMode === mode.key && styles.viewTabTextActive,
+              ]}
+            >
+              {mode.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       {loading && pets.length === 0 ? (
         <View
@@ -235,7 +429,7 @@ export default function HealthCalendarScreen() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator size="large" color={Colors.accentLight} />
+          <ActivityIndicator size="large" color={Colors.white} />
         </View>
       ) : (
         <ScrollView
@@ -244,7 +438,7 @@ export default function HealthCalendarScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor={Colors.accentLight}
+              tintColor={Colors.white}
             />
           }
           showsVerticalScrollIndicator={false}
@@ -257,21 +451,33 @@ export default function HealthCalendarScreen() {
                 style={styles.monthNavBtn}
                 onPress={goToPreviousMonth}
               >
-                <Ionicons name="chevron-back" size={20} color={Colors.white} />
+                <Ionicons
+                  name="chevron-back"
+                  size={20}
+                  color={Colors.primary}
+                />
               </TouchableOpacity>
 
               <Text style={styles.monthText}>{monthName}</Text>
 
-              <TouchableOpacity
-                style={styles.monthNavBtn}
-                onPress={goToNextMonth}
-              >
-                <Ionicons
-                  name="chevron-forward"
-                  size={20}
-                  color={Colors.white}
-                />
-              </TouchableOpacity>
+              <View style={styles.monthNavRight}>
+                {!isCurrentMonth && (
+                  <TouchableOpacity style={styles.todayBtn} onPress={goToToday}>
+                    <Text style={styles.todayBtnText}>Hoje</Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles.monthNavBtn}
+                  onPress={goToNextMonth}
+                >
+                  <Ionicons
+                    name="chevron-forward"
+                    size={20}
+                    color={Colors.primary}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.weekRow}>
@@ -284,7 +490,7 @@ export default function HealthCalendarScreen() {
 
             <View style={styles.calendarGrid}>
               {calendarDays.map((day, index) => {
-                const dayEvents = day ? getEventsByDay(day) : [];
+                const dayEvents = day ? (eventsByDay.get(day) ?? []) : [];
 
                 const isToday = isCurrentMonth && day === today.getDate();
 
@@ -313,23 +519,54 @@ export default function HealthCalendarScreen() {
 
                         {dayEvents.length > 0 && (
                           <View style={styles.dotsRow}>
-                            {dayEvents
-                              .slice(0, MAX_DOTS_PER_DAY)
-                              .map((event) => (
+                            {dayEvents.length > MAX_DOTS_PER_DAY ? (
+                              <>
+                                {dayEvents.slice(0, 2).map((event) => (
+                                  <View
+                                    key={event.id}
+                                    style={[
+                                      styles.dot,
+                                      {
+                                        backgroundColor: isSelected
+                                          ? Colors.white
+                                          : getEventState(event) === "overdue"
+                                            ? Colors.accentRed
+                                            : Colors.accentLight,
+                                      },
+                                    ]}
+                                  />
+                                ))}
+
+                                <Text
+                                  style={[
+                                    styles.dotOverflowText,
+                                    {
+                                      color: isSelected
+                                        ? Colors.white
+                                        : Colors.textSecondary,
+                                    },
+                                  ]}
+                                >
+                                  +{dayEvents.length - 2}
+                                </Text>
+                              </>
+                            ) : (
+                              dayEvents.map((event) => (
                                 <View
                                   key={event.id}
                                   style={[
                                     styles.dot,
                                     {
                                       backgroundColor: isSelected
-                                        ? Colors.primary
-                                        : event.done
-                                          ? Colors.accentGreen
-                                          : Colors.accentOrange,
+                                        ? Colors.white
+                                        : getEventState(event) === "overdue"
+                                          ? Colors.accentRed
+                                          : Colors.accentLight,
                                     },
                                   ]}
                                 />
-                              ))}
+                              ))
+                            )}
                           </View>
                         )}
                       </TouchableOpacity>
@@ -350,127 +587,51 @@ export default function HealthCalendarScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: Colors.accentGreen },
+                    { backgroundColor: Colors.accentLight },
                   ]}
                 />
 
-                <Text style={styles.legendText}>Concluído</Text>
+                <Text style={styles.legendText}>Lembrete</Text>
               </View>
 
               <View style={styles.legendRow}>
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: Colors.accentOrange },
+                    { backgroundColor: Colors.accentRed },
                   ]}
                 />
 
-                <Text style={styles.legendText}>Pendente</Text>
+                <Text style={styles.legendText}>Atrasado</Text>
               </View>
             </View>
           </View>
 
-          {selectedDay && (
-            <View style={styles.dayDetailCard}>
-              <Text style={styles.dayDetailTitle}>{selectedDayLabel}</Text>
+          <View style={styles.dayDetailCard}>
+            <Text style={styles.dayDetailTitle}>
+              {selectedDay ? selectedDayLabel : "Selecione um dia"}
+            </Text>
 
-              {selectedDayEvents.length === 0 ? (
-                <Text style={styles.emptyText}>
-                  Nenhum compromisso neste dia
-                </Text>
-              ) : (
-                selectedDayEvents.map((event) => (
-                  <TouchableOpacity
-                    key={event.id}
-                    style={styles.pendingCard}
-                    onPress={() =>
-                      navigation.navigate("PetDetail", { petId: event.petId })
-                    }
-                  >
-                    <View
-                      style={[
-                        styles.pendingIcon,
-                        {
-                          backgroundColor: event.color + "20",
-                        },
-                      ]}
-                    >
-                      <Ionicons
-                        name={
-                          event.type === "vaccine"
-                            ? "shield-checkmark"
-                            : "medical"
-                        }
-                        size={18}
-                        color={event.color}
-                      />
-                    </View>
-
-                    <View style={styles.flexOne}>
-                      <Text style={styles.pendingName}>{event.name}</Text>
-
-                      <Text style={styles.pendingPet}>🐾 {event.petName}</Text>
-                    </View>
-
-                    <Ionicons
-                      name={event.done ? "checkmark-circle" : "time-outline"}
-                      size={18}
-                      color={
-                        event.done ? Colors.accentGreen : Colors.accentOrange
-                      }
-                    />
-                  </TouchableOpacity>
-                ))
-              )}
-            </View>
-          )}
+            {selectedDayEvents.length === 0 ? (
+              <Text style={styles.emptyTextCard}>
+                {selectedDay
+                  ? "Nenhum compromisso neste dia"
+                  : "Toque em um dia para ver os detalhes"}
+              </Text>
+            ) : (
+              selectedDayEvents.map(renderReminderCard)
+            )}
+          </View>
 
           <View style={styles.pendingContainer}>
-            <Text style={styles.pendingTitle}>Pendências cadastradas</Text>
+            <Text style={styles.pendingTitle}>
+              Pendências de {monthOnlyNameCapitalized}
+            </Text>
 
-            {events.filter((e) => !e.done).length === 0 ? (
+            {monthPendingEvents.length === 0 ? (
               <Text style={styles.emptyText}>Nenhuma pendência encontrada</Text>
             ) : (
-              events
-                .filter((e) => !e.done)
-                .map((event) => (
-                  <TouchableOpacity
-                    key={event.id}
-                    style={styles.pendingCard}
-                    onPress={() =>
-                      navigation.navigate("PetDetail", {
-                        petId: event.petId,
-                      })
-                    }
-                  >
-                    <View
-                      style={[
-                        styles.pendingIcon,
-                        {
-                          backgroundColor: event.color + "20",
-                        },
-                      ]}
-                    >
-                      <Ionicons
-                        name={
-                          event.type === "vaccine"
-                            ? "shield-checkmark"
-                            : "medical"
-                        }
-                        size={18}
-                        color={event.color}
-                      />
-                    </View>
-
-                    <View style={styles.flexOne}>
-                      <Text style={styles.pendingName}>{event.name}</Text>
-
-                      <Text style={styles.pendingPet}>🐾 {event.petName}</Text>
-
-                      <Text style={styles.pendingDate}>{event.date}</Text>
-                    </View>
-                  </TouchableOpacity>
-                ))
+              monthPendingEvents.map(renderReminderCard)
             )}
           </View>
         </ScrollView>

@@ -7,6 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 
 import { AuthProvider } from "./src/contexts/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
+import { navigationRef } from "./src/navigation/navigationRef";
 
 // Necessário para o fluxo de login com Google (expo-auth-session) fechar
 // corretamente a aba/janela de autenticação ao redirecionar de volta ao app.
@@ -18,7 +19,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <StatusBar style="light" />
           <RootNavigator />
         </NavigationContainer>

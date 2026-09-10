@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { theme } from "../theme";
+import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
   colors: Colors,
@@ -46,7 +47,7 @@ export const styles = StyleSheet.create({
   scrollContent: {
     padding: Spacing.lg,
     gap: Spacing.md,
-    paddingBottom: Spacing.huge,
+    paddingBottom: TAB_BAR_CLEARANCE,
   },
 
   card: {
@@ -56,14 +57,6 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-  },
-
-  iconBox: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.md,
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   info: {

@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { theme } from "../theme";
+import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
   colors: Colors,
@@ -45,7 +46,7 @@ export const styles = StyleSheet.create({
 
   content: {
     padding: Spacing.xl,
-    paddingBottom: Spacing.huge,
+    paddingBottom: TAB_BAR_CLEARANCE,
   },
 
   label: {

@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 
 import { theme } from "../theme";
+import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
   colors: Colors,
@@ -147,6 +148,7 @@ export const styles = StyleSheet.create({
     gap: Spacing.md,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
+    marginBottom: TAB_BAR_CLEARANCE,
     backgroundColor: Colors.card,
     borderTopWidth: 1,
     borderTopColor: Colors.background,

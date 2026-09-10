@@ -111,17 +111,21 @@ export default function PendingScreen() {
             </View>
           ) : (
             pending.map((item, i) => (
-              <View key={i} style={styles.card}>
-                <View
-                  style={[
-                    styles.iconBox,
-                    {
-                      backgroundColor: Colors.accentRed + "20",
-                    },
-                  ]}
-                >
-                  <Ionicons name="time" size={22} color={Colors.accentRed} />
-                </View>
+              <View
+                key={i}
+                style={[
+                  styles.card,
+                  {
+                    borderLeftWidth: 3,
+                    borderLeftColor: Colors.warningOnDark,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={20}
+                  color={Colors.accentLight}
+                />
 
                 <View style={styles.info}>
                   <Text style={styles.itemName}>{item.name}</Text>

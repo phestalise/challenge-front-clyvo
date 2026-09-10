@@ -23,7 +23,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
-import { obterCorStatus } from "../../utils/formatters";
 import { useVaccines } from "../../hooks/useVaccines";
 
 import { styles } from "../../styles/VaccinesScreen.styles";
@@ -181,24 +180,23 @@ export default function VaccinesScreen() {
 
           {pets.flatMap((pet) =>
             (pet.vaccines ?? []).map((v) => {
-              const cor = obterCorStatus(v.done ? "done" : "pendente");
+              const stateColor = v.done
+                ? Colors.successOnDark
+                : Colors.warningOnDark;
 
               return (
-                <View key={v.id} style={styles.card}>
-                  <View
-                    style={[
-                      styles.iconBox,
-                      {
-                        backgroundColor: cor + "20",
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name={v.done ? "checkmark-circle" : "time"}
-                      size={22}
-                      color={cor}
-                    />
-                  </View>
+                <View
+                  key={v.id}
+                  style={[
+                    styles.card,
+                    { borderLeftWidth: 3, borderLeftColor: stateColor },
+                  ]}
+                >
+                  <Ionicons
+                    name={v.done ? "checkmark-circle-outline" : "time-outline"}
+                    size={20}
+                    color={Colors.accentLight}
+                  />
 
                   <View
                     style={{

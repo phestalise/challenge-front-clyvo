@@ -113,15 +113,15 @@ export default function DashboardScreen() {
             onPress={() => navigation.navigate("Pets")}
           >
             <View style={styles.cardTop}>
-              <Animated.View
-                style={[styles.iconBox, styles.iconBlue, bounceStyle]}
-              >
-                <Ionicons name="paw" size={22} color={Colors.accentLight} />
+              <Animated.View style={bounceStyle}>
+                <Ionicons
+                  name="paw-outline"
+                  size={20}
+                  color={Colors.accentLight}
+                />
               </Animated.View>
 
-              <Text style={[styles.cardValue, styles.blueText]}>
-                {pets.length}
-              </Text>
+              <Text style={styles.cardValue}>{pets.length}</Text>
             </View>
 
             <Text style={styles.cardLabel}>Pets</Text>
@@ -132,17 +132,13 @@ export default function DashboardScreen() {
             onPress={() => navigation.navigate("Vaccines")}
           >
             <View style={styles.cardTop}>
-              <View style={[styles.iconBox, styles.iconGreen]}>
-                <Ionicons
-                  name="shield-checkmark"
-                  size={22}
-                  color={Colors.accentGreen}
-                />
-              </View>
+              <Ionicons
+                name="shield-checkmark-outline"
+                size={20}
+                color={Colors.accentLight}
+              />
 
-              <Text style={[styles.cardValue, styles.greenText]}>
-                {vaccinesDone}
-              </Text>
+              <Text style={styles.cardValue}>{vaccinesDone}</Text>
             </View>
 
             <Text style={styles.cardLabel}>Vacinas</Text>
@@ -153,17 +149,13 @@ export default function DashboardScreen() {
             onPress={() => navigation.navigate("Medications")}
           >
             <View style={styles.cardTop}>
-              <View style={[styles.iconBox, styles.iconOrange]}>
-                <Ionicons
-                  name="medical"
-                  size={22}
-                  color={Colors.accentOrange}
-                />
-              </View>
+              <Ionicons
+                name="medical-outline"
+                size={20}
+                color={Colors.accentLight}
+              />
 
-              <Text style={[styles.cardValue, styles.orangeText]}>
-                {activeMeds}
-              </Text>
+              <Text style={styles.cardValue}>{activeMeds}</Text>
             </View>
 
             <Text style={styles.cardLabel}>Medicamentos</Text>
@@ -174,17 +166,13 @@ export default function DashboardScreen() {
             onPress={() => navigation.navigate("HealthCalendar")}
           >
             <View style={styles.cardTop}>
-              <View style={[styles.iconBox, styles.iconRed]}>
-                <Ionicons
-                  name="alert-circle"
-                  size={22}
-                  color={Colors.accentRed}
-                />
-              </View>
+              <Ionicons
+                name="alert-circle-outline"
+                size={20}
+                color={Colors.accentLight}
+              />
 
-              <Text style={[styles.cardValue, styles.redText]}>
-                {pendingVaccines}
-              </Text>
+              <Text style={styles.cardValue}>{pendingVaccines}</Text>
             </View>
 
             <Text style={styles.cardLabel}>Pendências</Text>

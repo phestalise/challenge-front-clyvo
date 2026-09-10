@@ -18,3 +18,21 @@ export function isoDateToBr(data: string | null | undefined): string {
 
   return `${dia}/${mes}/${ano}`;
 }
+
+/** Converte uma data no formato DD/MM/AAAA em Date, ou null se inválida. */
+export function parseBrDate(data: string | null | undefined): Date | null {
+  if (!data) return null;
+
+  const parts = data.split("/");
+  if (parts.length !== 3) return null;
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[2], 10);
+
+  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) {
+    return null;
+  }
+
+  return new Date(year, month, day);
+}

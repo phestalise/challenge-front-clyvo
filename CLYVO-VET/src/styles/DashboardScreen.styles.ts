@@ -97,48 +97,9 @@ export const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
 
-  iconBox: {
-    width: 46,
-    height: 46,
-    borderRadius: Radius.lg,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  iconBlue: {
-    backgroundColor: alpha(Colors.accentLight, 0.13),
-  },
-
-  iconGreen: {
-    backgroundColor: alpha(Colors.accentGreen, 0.13),
-  },
-
-  iconOrange: {
-    backgroundColor: alpha(Colors.accentOrange, 0.13),
-  },
-
-  iconRed: {
-    backgroundColor: alpha(Colors.accentRed, 0.13),
-  },
-
   cardValue: {
     ...Typography.display,
-  },
-
-  blueText: {
-    color: Colors.accentLight,
-  },
-
-  greenText: {
-    color: Colors.accentGreen,
-  },
-
-  orangeText: {
-    color: Colors.accentOrange,
-  },
-
-  redText: {
-    color: Colors.accentRed,
+    color: Colors.white,
   },
 
   cardLabel: {

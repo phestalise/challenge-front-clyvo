@@ -7,40 +7,91 @@ const {
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
+  shadows: Shadows,
   alpha,
 } = theme;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
     paddingHorizontal: Spacing.xl,
-    backgroundColor: Colors.secondary,
   },
 
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.overlaySoft,
+  headerSide: {
+    width: 84,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+
+  headerSideRight: {
+    justifyContent: "flex-end",
+  },
+
+  headerIconBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: alpha(Colors.white, 0.15),
     alignItems: "center",
     justifyContent: "center",
   },
 
-  title: {
-    color: Colors.white,
-    ...Typography.subtitle,
+  headerBadge: {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.accentRed,
+    borderWidth: 1,
+    borderColor: Colors.accent,
   },
 
-  headerSpace: {
-    width: 40,
+  title: {
+    flex: 1,
+    textAlign: "center",
+    color: Colors.white,
+    ...Typography.title,
+  },
+
+  viewTabs: {
+    flexDirection: "row",
+    marginHorizontal: Spacing.xl,
+    marginBottom: Spacing.lg,
+    padding: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: alpha(Colors.white, 0.15),
+  },
+
+  viewTab: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.pill,
+  },
+
+  viewTabActive: {
+    backgroundColor: Colors.white,
+  },
+
+  viewTabText: {
+    ...Typography.label,
+    color: alpha(Colors.white, 0.85),
+  },
+
+  viewTabTextActive: {
+    color: Colors.primary,
   },
 
   scrollContent: {
@@ -51,11 +102,10 @@ export const styles = StyleSheet.create({
   },
 
   calendarCard: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.white,
     borderRadius: Radius.xxl,
     padding: Spacing.lg,
-    borderWidth: 1,
-    borderColor: Colors.overlaySubtle,
+    ...Shadows.md,
   },
 
   monthRow: {
@@ -71,13 +121,34 @@ export const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.overlaySubtle,
+    backgroundColor: Colors.background,
   },
 
   monthText: {
-    color: Colors.white,
+    color: Colors.primary,
     ...Typography.subtitle,
     textTransform: "capitalize",
+  },
+
+  monthNavRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+
+  todayBtn: {
+    paddingHorizontal: Spacing.sm,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: alpha(Colors.accentLight, 0.15),
+  },
+
+  todayBtnText: {
+    color: Colors.accent,
+    ...Typography.caption,
+    fontWeight: "700",
   },
 
   weekRow: {
@@ -92,8 +163,10 @@ export const styles = StyleSheet.create({
 
   weekText: {
     textAlign: "center",
-    color: Colors.textLight,
+    color: Colors.textSecondary,
     ...Typography.caption,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
 
   calendarGrid: {
@@ -109,7 +182,7 @@ export const styles = StyleSheet.create({
 
   dayCell: {
     flex: 1,
-    borderRadius: Radius.md,
+    borderRadius: Radius.pill,
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.xs,
@@ -121,23 +194,23 @@ export const styles = StyleSheet.create({
   },
 
   dayCellSelected: {
-    backgroundColor: Colors.accentLight,
+    backgroundColor: Colors.primary,
   },
 
   dayNumber: {
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.label,
   },
 
   dayNumberSelected: {
-    color: Colors.primary,
+    color: Colors.white,
     fontWeight: "800",
   },
 
   dotsRow: {
     flexDirection: "row",
     gap: Spacing.xs,
-    height: 6,
+    minHeight: 6,
     alignItems: "center",
   },
 
@@ -147,15 +220,20 @@ export const styles = StyleSheet.create({
     borderRadius: 3,
   },
 
+  dotOverflowText: {
+    ...Typography.caption,
+    fontWeight: "700",
+  },
+
   legend: {
     flexDirection: "row",
     justifyContent: "center",
     flexWrap: "wrap",
     gap: Spacing.xl,
-    marginTop: Spacing.xl,
-    paddingTop: Spacing.lg,
+    marginTop: Spacing.lg,
+    paddingTop: Spacing.md,
     borderTopWidth: 1,
-    borderTopColor: Colors.overlaySubtle,
+    borderTopColor: Colors.background,
   },
 
   legendRow: {
@@ -179,22 +257,22 @@ export const styles = StyleSheet.create({
   },
 
   legendText: {
-    color: Colors.textLight,
+    color: Colors.textSecondary,
     ...Typography.caption,
   },
 
   dayDetailCard: {
-    backgroundColor: Colors.secondary,
-    borderRadius: Radius.xxl,
+    backgroundColor: Colors.white,
+    borderRadius: Radius.xl,
     padding: Spacing.lg,
     gap: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.overlaySubtle,
+    ...Shadows.sm,
   },
 
   dayDetailTitle: {
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.body,
+    fontWeight: "700",
     textTransform: "capitalize",
   },
 
@@ -207,42 +285,54 @@ export const styles = StyleSheet.create({
     ...Typography.subtitle,
   },
 
-  pendingCard: {
-    backgroundColor: Colors.secondary,
+  reminderCard: {
+    backgroundColor: Colors.background,
     borderRadius: Radius.lg,
-    padding: Spacing.lg,
+    padding: Spacing.md,
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
   },
 
-  pendingIcon: {
-    width: 42,
-    height: 42,
+  reminderDateBlock: {
+    width: 52,
+    height: 52,
     borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  pendingName: {
+  reminderDateDay: {
     color: Colors.white,
+    ...Typography.subtitle,
+    fontWeight: "800",
+  },
+
+  reminderDateMonth: {
+    color: alpha(Colors.white, 0.85),
+    ...Typography.caption,
+    textTransform: "uppercase",
+    marginTop: 2,
+  },
+
+  reminderName: {
+    color: Colors.text,
     ...Typography.label,
   },
 
-  pendingPet: {
-    color: Colors.textLight,
-    ...Typography.caption,
-    marginTop: Spacing.xs,
-  },
-
-  pendingDate: {
-    color: alpha(Colors.white, 0.5),
+  reminderSub: {
+    color: Colors.textSecondary,
     ...Typography.caption,
     marginTop: Spacing.xs,
   },
 
   emptyText: {
-    color: Colors.textLight,
+    color: alpha(Colors.white, 0.85),
+    textAlign: "center",
+  },
+
+  emptyTextCard: {
+    color: Colors.textSecondary,
     textAlign: "center",
   },
 

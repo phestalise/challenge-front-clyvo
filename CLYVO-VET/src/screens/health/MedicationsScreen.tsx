@@ -22,7 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
 import { styles } from "../../styles/MedicationsScreen.styles";
@@ -184,24 +184,15 @@ export default function MedicationsScreen() {
 
           {pets.flatMap((pet) =>
             (pet.medications ?? []).map((m) => {
-              const color = m.active ? Colors.accentOrange : Colors.textLight;
+              const color = m.active ? Colors.successOnDark : Colors.textLight;
 
               return (
                 <View key={m.id} style={styles.card}>
-                  <View
-                    style={[
-                      styles.iconBox,
-                      {
-                        backgroundColor: Colors.accentOrange + "20",
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name="medical"
-                      size={22}
-                      color={Colors.accentOrange}
-                    />
-                  </View>
+                  <Ionicons
+                    name="medical-outline"
+                    size={20}
+                    color={Colors.accentLight}
+                  />
 
                   <View style={styles.flexOne}>
                     <Text style={styles.medName}>{m.name}</Text>
@@ -225,11 +216,11 @@ export default function MedicationsScreen() {
                         style={[
                           styles.badge,
                           {
-                            backgroundColor: color,
+                            backgroundColor: alpha(color, 0.15),
                           },
                         ]}
                       >
-                        <Text style={styles.badgeText}>
+                        <Text style={[styles.badgeText, { color }]}>
                           {m.active ? "Ativo" : "Fim"}
                         </Text>
                       </View>

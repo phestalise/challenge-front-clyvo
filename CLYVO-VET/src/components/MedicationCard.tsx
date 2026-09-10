@@ -15,9 +15,7 @@ export default function MedicationCard({ medication, petName }: Props) {
 
   return (
     <View style={styles.card}>
-      <View style={[styles.iconBox, { backgroundColor: Colors.accent + "15" }]}>
-        <Ionicons name="medical" size={22} color={Colors.accent} />
-      </View>
+      <Ionicons name="medical-outline" size={20} color={Colors.accent} />
 
       <View style={styles.info}>
         <Text style={styles.name}>{medication.name}</Text>

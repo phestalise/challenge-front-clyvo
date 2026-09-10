@@ -22,14 +22,6 @@ export const styles = StyleSheet.create({
     ...Shadows.sm,
   },
 
-  iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: Radius.md,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
   info: {
     flex: 1,
     gap: Spacing.xs,

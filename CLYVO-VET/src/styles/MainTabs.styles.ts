@@ -9,6 +9,10 @@ const {
   radius: Radius,
 } = theme;
 
+// Altura da barra flutuante (82) + distância até a borda da tela (Spacing.xl)
+// + folga extra para o conteúdo não colar nela.
+export const TAB_BAR_CLEARANCE = Spacing.huge * 3;
+
 export const styles = StyleSheet.create({
   tabBarStyle: {
     position: "absolute",
@@ -21,7 +25,18 @@ export const styles = StyleSheet.create({
     borderTopWidth: 0,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     elevation: 0,
+  },
+
+  tabBarItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.xs,
   },
 
   tabBarLabelStyle: {

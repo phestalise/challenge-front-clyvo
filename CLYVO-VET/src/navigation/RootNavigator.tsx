@@ -2,7 +2,10 @@ import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import MainTabs from "./MainTabs";
+import DashboardScreen from "../screens/dashboard/DashboardScreen";
+import PetsScreen from "../screens/pet/PetsScreen";
+import HealthTabScreen from "../screens/health/HealthTabScreen";
+import ProfileScreen from "../screens/profile/ProfileScreen";
 
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
@@ -19,9 +22,12 @@ import MedicationsScreen from "../screens/health/MedicationsScreen";
 import PendingScreen from "../screens/health/PendingScreen";
 import AddHealthRecordScreen from "../screens/health/AddHealthRecordScreen";
 
+import MainHeader from "../components/MainHeader";
+import BottomTabBar from "../components/BottomTabBar";
+
 import { useAuth } from "../hooks/useAuth";
 import { Colors } from "../styles/colors";
-import { RootStackParamList } from "../types";
+import { RootStackParamList, MainTabParamList } from "../types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -49,22 +55,62 @@ function VerifyStack() {
   );
 }
 
+const mainHeaderFor = (routeName: keyof MainTabParamList) => ({
+  headerShown: true,
+  header: () => <MainHeader route={{ name: routeName }} />,
+});
+
+// A barra de navegação inferior (BottomTabBar) fica fixa sobre TODO o
+// AppStack — inclusive telas empilhadas como PetDetail ou Vaccines — em vez
+// de existir só dentro de um Tab.Navigator, por isso é um irmão do
+// Stack.Navigator, não algo dentro dele.
 function AppStack() {
   return (
-    <Stack.Navigator
-      initialRouteName="Main"
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="Main" component={MainTabs} />
-      <Stack.Screen name="AddPet" component={AddPetScreen} />
-      <Stack.Screen name="PetDetail" component={PetDetailScreen} />
-      <Stack.Screen name="PetChat" component={PetChatScreen} />
-      <Stack.Screen name="HealthCalendar" component={HealthCalendarScreen} />
-      <Stack.Screen name="Vaccines" component={VaccinesScreen} />
-      <Stack.Screen name="Medications" component={MedicationsScreen} />
-      <Stack.Screen name="Pending" component={PendingScreen} />
-      <Stack.Screen name="AddHealthRecord" component={AddHealthRecordScreen} />
-    </Stack.Navigator>
+    <View style={{ flex: 1 }}>
+      <Stack.Navigator
+        initialRouteName="Dashboard"
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+          options={mainHeaderFor("Dashboard")}
+        />
+        <Stack.Screen
+          name="Pets"
+          component={PetsScreen}
+          options={mainHeaderFor("Pets")}
+        />
+        <Stack.Screen
+          name="Health"
+          component={HealthTabScreen}
+          options={mainHeaderFor("Health")}
+        />
+        {/* HealthCalendarScreen desenha seu próprio cabeçalho (fundo azul,
+        ícones de notificação/perfil) tanto aqui quanto na rota
+        "HealthCalendar" abaixo, por isso não usa o MainHeader. */}
+        <Stack.Screen name="Calendar" component={HealthCalendarScreen} />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={mainHeaderFor("Profile")}
+        />
+
+        <Stack.Screen name="AddPet" component={AddPetScreen} />
+        <Stack.Screen name="PetDetail" component={PetDetailScreen} />
+        <Stack.Screen name="PetChat" component={PetChatScreen} />
+        <Stack.Screen name="HealthCalendar" component={HealthCalendarScreen} />
+        <Stack.Screen name="Vaccines" component={VaccinesScreen} />
+        <Stack.Screen name="Medications" component={MedicationsScreen} />
+        <Stack.Screen name="Pending" component={PendingScreen} />
+        <Stack.Screen
+          name="AddHealthRecord"
+          component={AddHealthRecordScreen}
+        />
+      </Stack.Navigator>
+
+      <BottomTabBar />
+    </View>
   );
 }
 

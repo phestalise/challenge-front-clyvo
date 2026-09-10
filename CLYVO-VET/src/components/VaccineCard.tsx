@@ -17,21 +17,12 @@ export default function VaccineCard({ vaccine, petName }: Props) {
   const cor = obterCorStatus(vaccine.done ? "done" : "pendente");
 
   return (
-    <View style={styles.card}>
-      <View
-        style={[
-          styles.iconBox,
-          {
-            backgroundColor: cor + "20",
-          },
-        ]}
-      >
-        <Ionicons
-          name={vaccine.done ? "checkmark-circle" : "time"}
-          size={22}
-          color={cor}
-        />
-      </View>
+    <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: cor }]}>
+      <Ionicons
+        name={vaccine.done ? "checkmark-circle-outline" : "time-outline"}
+        size={20}
+        color={Colors.accent}
+      />
 
       <View style={styles.info}>
         <Text style={styles.name}>{vaccine.name}</Text>

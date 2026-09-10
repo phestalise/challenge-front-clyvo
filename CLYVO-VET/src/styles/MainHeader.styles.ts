@@ -6,7 +6,6 @@ const {
   colors: Colors,
   typography: Typography,
   spacing: Spacing,
-  radius: Radius,
   alpha,
 } = theme;
 
@@ -16,7 +15,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: Colors.primary,
   },
 
@@ -56,18 +54,5 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     ...Typography.title,
     color: Colors.white,
-  },
-
-  menuButton: {
-    width: 52,
-    height: 52,
-    borderRadius: Radius.xl,
-    backgroundColor: Colors.overlaySoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  rightSpacer: {
-    width: 52,
   },
 });

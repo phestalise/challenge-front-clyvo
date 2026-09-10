@@ -38,12 +38,22 @@ export interface Pet {
   nextCheckup: string;
 }
 
-export type RootStackParamList = {
+export type MainTabParamList = {
+  Dashboard: undefined;
+  Pets: undefined;
+  Health: undefined;
+  Calendar: undefined;
+  Profile: undefined;
+};
+
+// A barra de navegação inferior é fixa em todo o AppStack (não vive mais
+// num Tab.Navigator separado), então as 5 telas principais entram direto
+// no RootStackParamList junto com as telas empilhadas sobre elas.
+export type RootStackParamList = MainTabParamList & {
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
   VerifyEmail: undefined;
-  Main: undefined;
   AddPet: { petId?: string } | undefined;
   PetDetail: { petId: string };
   HealthCalendar: undefined;
@@ -52,12 +62,4 @@ export type RootStackParamList = {
   Medications: undefined;
   Pending: undefined;
   AddHealthRecord: undefined;
-};
-
-export type MainTabParamList = {
-  Dashboard: undefined;
-  Pets: undefined;
-  Health: undefined;
-  Calendar: undefined;
-  Profile: undefined;
 };
