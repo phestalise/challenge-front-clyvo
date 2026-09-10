@@ -9,37 +9,18 @@ saúde e um assistente de chat.
 - [Expo](https://expo.dev) / React Native 0.81 / React 19
 - TypeScript (`strict: true`)
 - [`@react-navigation`](https://reactnavigation.org) (native-stack + bottom-tabs)
-- Firebase Authentication (login, cadastro, verificação de e-mail, login com
-  Google, redefinição de senha)
-- AsyncStorage como persistência local dos dados de negócio (pets, vacinas,
-  medicamentos) — **temporário**: a troca para a API real via TanStack Query
-  será feita em uma etapa separada.
+- API real (ASP.NET Core + Oracle) em
+  `https://clyvovet-api-nnke.onrender.com` para pets, consultas e
+  medicamentos, e também para o cadastro/login "normal" (tabela `TUTOR`)
+- Firebase Authentication usado **apenas** para entrar/cadastrar com o
+  Google — o cadastro e login com e-mail/senha falam direto com a API,
+  seguindo o padrão do banco (nome, e-mail, telefone, CPF, senha)
 
-## Configuração do ambiente (Firebase)
+## Configuração do ambiente
 
-As credenciais do Firebase ficam em variáveis de ambiente, não no código-fonte.
-Antes de rodar o projeto:
-
-1. Copie o arquivo de exemplo:
-   ```bash
-   cp .env.example .env
-   ```
-2. Preencha o `.env` com as credenciais do projeto Firebase (Console do
-   Firebase → Configurações do projeto → Seus apps → SDK setup and
-   configuration):
-   ```
-   EXPO_PUBLIC_FIREBASE_API_KEY=
-   EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
-   EXPO_PUBLIC_FIREBASE_PROJECT_ID=
-   EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
-   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-   EXPO_PUBLIC_FIREBASE_APP_ID=
-   EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=
-   ```
-
-O prefixo `EXPO_PUBLIC_` é exigido pelo Expo para expor a variável ao código
-do app (`src/services/firebase.ts`). O arquivo `.env` está no `.gitignore` e
-não é versionado — cada pessoa que rodar o projeto precisa criar o seu.
+As credenciais do Firebase e a URL da API ficam direto no código-fonte
+(`src/services/firebase.ts` e `src/config/api.ts`) — não é preciso criar
+`.env`. Basta instalar as dependências e rodar.
 
 ## Scripts
 
@@ -75,10 +56,14 @@ src/
 │   ├── dashboard/         # DashboardScreen
 │   └── profile/           # ProfileScreen
 ├── services/
-│   ├── firebase.ts        # inicialização do Firebase App/Auth
-│   ├── AuthService.ts      # regras de autenticação (Firebase)
-│   ├── StorageService.ts   # persistência local (AsyncStorage) — dados de negócio
-│   └── PetService.ts       # regras de pet sobre o StorageService
+│   ├── firebase.ts        # inicialização do Firebase App/Auth (só login Google)
+│   ├── AuthService.ts      # login com Google via Firebase
+│   ├── TutorService.ts      # cadastro/login/CRUD de tutor na API real
+│   ├── apiClient.ts         # wrapper de fetch para a API (erros, JSON)
+│   ├── StorageService.ts    # persistência local (AsyncStorage) — chave/valor
+│   ├── PetMetadataStore.ts  # metadado só-front (tipo vacina/remédio, done/active,
+│   │                         próximo retorno) que a API ainda não tem coluna pra guardar
+│   └── PetService.ts        # pets/vacinas/medicamentos via API real (Pets/Medicacoes)
 ├── styles/              # StyleSheets por tela/componente (PascalCase, 1:1 com a tela)
 ├── types/               # Pet, Vaccine, Medication, RootStackParamList, MainTabParamList
 └── utils/
@@ -95,12 +80,17 @@ pertence.
 
 ## Funcionalidades
 
-### Autenticação (Firebase)
-- Cadastro, login, login com Google, verificação de e-mail obrigatória e
-  redefinição de senha.
+### Autenticação
+- **Cadastro/login normal** (e-mail e senha): fala direto com a API real,
+  seguindo o padrão da tabela `TUTOR` do Oracle (`POST /api/tutors`,
+  `POST /api/tutors/login`). Não depende do Firebase.
+- **Login/cadastro com Google**: usa Firebase só para autenticar com a conta
+  Google; por baixo dos panos, sincroniza (ou cria) um Tutor correspondente
+  na API, já que todo Pet/Consulta/Medicação exige um `idTutor` numérico. O
+  CPF e a senha desses tutores são gerados automaticamente (sintéticos, mas
+  com dígito verificador válido), pois o Google não coleta esses dados.
 - Rotas protegidas: sem sessão válida o usuário só acessa o fluxo de
-  autenticação; com sessão mas sem e-mail verificado, fica preso na tela de
-  verificação.
+  autenticação.
 
 ### Pets (CRUD completo)
 - **Create**: `AddPetScreen` (modo criação) cadastra um novo pet.
@@ -141,9 +131,9 @@ telas chamarem `storageService`/`petService` diretamente. Cada hook expõe:
   tela decidir como reagir (ex: `showAlert` com mensagem específica em caso de
   falha).
 
-Essa camada isola a UI da fonte de dados: quando o `StorageService` for
-substituído por chamadas à API real (TanStack Query), as telas não precisarão
-mudar — apenas a implementação interna dos hooks.
+Essa camada isola a UI da fonte de dados: o `PetService` já fala com a API
+real (`/api/pets`, `/api/medicacoes`) por baixo dos hooks, sem precisar mudar
+nenhuma tela.
 
 ## Validação de formulários
 
@@ -153,8 +143,23 @@ funções de `src/utils/validators.ts` (`validarCampoObrigatorio`, `validarEmail
 `validarFormularioUsuario`) e exibem mensagens de erro específicas por campo,
 em vez de apenas bloquear o envio silenciosamente.
 
-## Próximos passos (fora do escopo atual)
+## Integração com a API real
 
-- Substituir `StorageService`/`PetService` por chamadas à API real usando
-  TanStack Query, mantendo a mesma interface consumida pelos hooks
-  (`usePets`, `usePet`, `useVaccines`, `useMedications`).
+`PetService` conversa com `https://clyvovet-api-nnke.onrender.com`
+(`/api/pets`, `/api/consultas`, `/api/medicacoes`, `/api/tutors`). Alguns
+pontos importantes dessa integração:
+
+- A tabela `MEDICACAO` não distingue vacina de remédio nem guarda status
+  (`done`/`active`) — isso continua existindo só no front, salvo localmente
+  em `PetMetadataStore` e mesclado com os dados da API na leitura.
+- IDs de pet/consulta/medicação são gerados no front (`Date.now()`, como já
+  era feito para vacinas/medicamentos) porque a API exige um ID numérico
+  maior que zero enviado pelo cliente, sem auto-incremento.
+- `Pet.ownerId` agora é o `idTutor` (numérico, como string) em vez do uid do
+  Firebase.
+
+### Fora do escopo atual
+- Endpoint de redefinição de senha para contas de cadastro normal (hoje só
+  funciona para contas Google, via Firebase).
+- Migração de contas antigas criadas só no Firebase (e-mail/senha) para a
+  tabela `TUTOR` da API — o login normal agora é 100% API.

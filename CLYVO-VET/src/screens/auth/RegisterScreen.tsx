@@ -25,13 +25,16 @@ import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 import {
   validarFormularioUsuario,
   validarCampoObrigatorio,
   validarEmail,
   validarTelefone,
+  validarCPF,
 } from "../../utils/validators";
+import { formatarCPF } from "../../utils/cpf";
 
 import InputField from "../../components/InputField";
 
@@ -70,6 +73,7 @@ export default function RegisterScreen({ navigation }: Props) {
     name: "",
     email: "",
     phone: "",
+    cpf: "",
     address: "",
     password: "",
     confirmPassword: "",
@@ -142,6 +146,12 @@ export default function RegisterScreen({ navigation }: Props) {
       newErrors.phone = "Telefone inválido";
     }
 
+    if (!validarCampoObrigatorio(form.cpf)) {
+      newErrors.cpf = "CPF obrigatório";
+    } else if (!validarCPF(form.cpf)) {
+      newErrors.cpf = "CPF inválido";
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -164,9 +174,9 @@ export default function RegisterScreen({ navigation }: Props) {
     setLoading(true);
 
     try {
-      await register(form.name, form.email, form.password);
-    } catch (error: any) {
-      showAlert("Erro", mapFirebaseAuthError(error?.code));
+      await register(form.name, form.email, form.phone, form.cpf, form.password);
+    } catch (error) {
+      showAlert("Erro", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -383,6 +393,25 @@ export default function RegisterScreen({ navigation }: Props) {
                   icon={
                     <Ionicons
                       name="call-outline"
+                      size={18}
+                      color={Colors.textSecondary}
+                    />
+                  }
+                />
+
+                <View style={styles.dividerField} />
+
+                <InputField
+                  label="CPF"
+                  value={form.cpf}
+                  onChangeText={(v) => handleChange("cpf", formatarCPF(v))}
+                  error={errors.cpf}
+                  placeholder="000.000.000-00"
+                  keyboardType="numeric"
+                  maxLength={14}
+                  icon={
+                    <Ionicons
+                      name="card-outline"
                       size={18}
                       color={Colors.textSecondary}
                     />

@@ -25,6 +25,7 @@ import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
+import { getErrorMessage } from "../../utils/errorMessage";
 import { validarCampoObrigatorio, validarEmail } from "../../utils/validators";
 
 import InputField from "../../components/InputField";
@@ -106,8 +107,8 @@ export default function LoginScreen({ navigation }: Props) {
 
     try {
       await login(email, password);
-    } catch (error: any) {
-      showAlert("Erro", mapFirebaseAuthError(error?.code));
+    } catch (error) {
+      showAlert("Erro", getErrorMessage(error));
     } finally {
       setLoading(false);
     }

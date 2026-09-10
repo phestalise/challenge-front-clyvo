@@ -22,7 +22,7 @@ export function usePets() {
     setError(null);
 
     try {
-      const data = await petService.getAll(user.uid);
+      const data = await petService.getAll(user.id);
       setPets(data);
     } catch {
       setError("Não foi possível carregar os pets.");

@@ -32,7 +32,7 @@ export default function MainHeader({ route }: Props) {
 
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const firstName = (user?.displayName || "Usuário").split(" ")[0];
+  const firstName = (user?.name || "Usuário").split(" ")[0];
 
   const currentDate = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",

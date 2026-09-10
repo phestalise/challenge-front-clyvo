@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../../styles/colors";
 import { useAuth } from "../../hooks/useAuth";
-import { mapFirebaseAuthError } from "../../utils/authErrors";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 import { styles } from "../../styles/ProfileScreenStyles";
 
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const openEdit = () => {
-    setEditName(user?.displayName ?? "");
+    setEditName(user?.name ?? "");
 
     setEditEmail(user?.email ?? "");
 
@@ -59,7 +59,7 @@ export default function ProfileScreen() {
     setSaving(true);
 
     try {
-      if (editName.trim() && editName.trim() !== user?.displayName) {
+      if (editName.trim() && editName.trim() !== user?.name) {
         await updateName(editName.trim());
       }
 
@@ -70,8 +70,8 @@ export default function ProfileScreen() {
       setEditModal(false);
 
       showAlert("Sucesso", "Perfil atualizado.");
-    } catch (error: any) {
-      showAlert("Erro", mapFirebaseAuthError(error?.code));
+    } catch (error) {
+      showAlert("Erro", getErrorMessage(error));
     } finally {
       setSaving(false);
     }
@@ -105,11 +105,11 @@ export default function ProfileScreen() {
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
-              {initials(user?.displayName ?? "")}
+              {initials(user?.name ?? "")}
             </Text>
           </View>
 
-          <Text style={styles.name}>{user?.displayName ?? "Usuário"}</Text>
+          <Text style={styles.name}>{user?.name ?? "Usuário"}</Text>
 
           <Text style={styles.email}>{user?.email ?? ""}</Text>
 

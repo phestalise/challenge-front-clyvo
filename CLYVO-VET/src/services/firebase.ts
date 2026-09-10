@@ -7,14 +7,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // @ts-expect-error
 import { getReactNativePersistence } from "firebase/auth";
 
+// Credenciais do projeto Firebase (config pública de app cliente — não são
+// segredo, ficam protegidas pelas regras de segurança do Firebase, não por
+// estarem escondidas). Hardcoded direto aqui para não depender de .env na
+// entrega do projeto.
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyAR6HRJkZdaVhV64T4mUQKyK9JUskzrgEA",
+  authDomain: "clyvo-vet-a0a28.firebaseapp.com",
+  projectId: "clyvo-vet-a0a28",
+  storageBucket: "clyvo-vet-a0a28.firebasestorage.app",
+  messagingSenderId: "366192133380",
+  appId: "1:366192133380:web:36be2e4b142d7799a6fc51",
+  measurementId: "G-ZE4PHSHN6G",
 };
 
 export const firebaseApp: FirebaseApp = getApps().length

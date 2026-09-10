@@ -1,3 +1,7 @@
+import { validarCPF } from "./cpf";
+
+export { validarCPF };
+
 export const validarEmail = (email: string): boolean =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -17,6 +21,7 @@ export const validarFormularioUsuario = (form: {
   name: string;
   email: string;
   phone: string;
+  cpf: string;
   address: string;
   password: string;
   confirmPassword: string;
@@ -25,6 +30,7 @@ export const validarFormularioUsuario = (form: {
   if (!validarCampoObrigatorio(form.name)) erros.name = "Nome é obrigatório";
   if (!validarEmail(form.email)) erros.email = "E-mail inválido";
   if (!validarTelefone(form.phone)) erros.phone = "Telefone inválido";
+  if (!validarCPF(form.cpf)) erros.cpf = "CPF inválido";
   if (!validarCampoObrigatorio(form.address))
     erros.address = "Endereço obrigatório";
   if (!validarSenha(form.password)) erros.password = "Mínimo 6 caracteres";

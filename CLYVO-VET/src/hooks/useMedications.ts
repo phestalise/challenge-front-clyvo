@@ -3,6 +3,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { Pet } from "../types";
 import { petService } from "../services/PetService";
+import { gerarIdNumerico } from "../utils/id";
 import { useAuth } from "./useAuth";
 
 type NewMedication = {
@@ -30,7 +31,7 @@ export function useMedications() {
     setError(null);
 
     try {
-      const data = await petService.getAll(user.uid);
+      const data = await petService.getAll(user.id);
       setPets(data);
     } catch {
       setError("Não foi possível carregar os medicamentos.");
@@ -53,13 +54,13 @@ export function useMedications() {
       setError(null);
 
       try {
-        const pet = await petService.getById(petId, user.uid);
+        const pet = await petService.getById(petId, user.id);
         if (!pet) return false;
 
         const medications = pet.medications ?? [];
 
         medications.push({
-          id: Date.now().toString(),
+          id: gerarIdNumerico().toString(),
           type: "medication",
           name: medication.name,
           dose: medication.dose,
@@ -88,7 +89,7 @@ export function useMedications() {
       if (!user) return false;
 
       try {
-        const pet = await petService.getById(petId, user.uid);
+        const pet = await petService.getById(petId, user.id);
         if (!pet) return false;
 
         const medications = (pet.medications ?? []).map((m) =>
@@ -112,7 +113,7 @@ export function useMedications() {
       if (!user) return false;
 
       try {
-        const pet = await petService.getById(petId, user.uid);
+        const pet = await petService.getById(petId, user.id);
         if (!pet) return false;
 
         const medications = (pet.medications ?? []).filter(

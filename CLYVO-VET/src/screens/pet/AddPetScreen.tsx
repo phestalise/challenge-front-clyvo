@@ -23,6 +23,7 @@ import { RootStackParamList } from "../../types";
 import { usePet } from "../../hooks/usePet";
 import { useAuth } from "../../hooks/useAuth";
 import { validarFormularioPet } from "../../utils/validators";
+import { gerarIdNumerico } from "../../utils/id";
 
 import { styles } from "../../styles/AddPetScreenStyles";
 
@@ -82,8 +83,8 @@ export default function AddPetScreen() {
     try {
       const updatedPet = {
         ...(pet ?? {}),
-        id: pet?.id ?? Date.now().toString(),
-        ownerId: pet?.ownerId ?? user?.uid ?? "",
+        id: pet?.id ?? gerarIdNumerico().toString(),
+        ownerId: pet?.ownerId ?? user?.id ?? "",
         name: name.trim(),
         species,
         breed: breedEffective,

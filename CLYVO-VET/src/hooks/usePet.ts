@@ -22,7 +22,7 @@ export function usePet(petId?: string) {
     setError(null);
 
     try {
-      const data = await petService.getById(petId, user.uid);
+      const data = await petService.getById(petId, user.id);
       setPet(data);
     } catch {
       setError("Não foi possível carregar os dados do pet.");
@@ -51,7 +51,7 @@ export function usePet(petId?: string) {
     if (!petId || !user) return false;
 
     try {
-      await petService.remove(petId, user.uid);
+      await petService.remove(petId, user.id);
       return true;
     } catch {
       setError("Não foi possível remover o pet. Tente novamente.");
