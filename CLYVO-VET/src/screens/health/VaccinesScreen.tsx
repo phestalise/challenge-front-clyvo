@@ -149,6 +149,13 @@ export default function VaccinesScreen() {
     <View style={styles.container}>
       <View style={styles.orb} pointerEvents="none" />
 
+      <Ionicons
+        name="paw"
+        size={110}
+        color={alpha(Colors.white, 0.05)}
+        style={styles.pawWatermark}
+      />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity

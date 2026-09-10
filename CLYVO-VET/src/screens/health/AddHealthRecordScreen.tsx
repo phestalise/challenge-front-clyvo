@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
 import { usePets } from "../../hooks/usePets";
@@ -67,6 +67,13 @@ export default function AddHealthRecordScreen() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="paw"
+        size={110}
+        color={alpha(Colors.textLight, 0.06)}
+        style={styles.pawWatermark}
+      />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -84,9 +91,7 @@ export default function AddHealthRecordScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {date && (
-          <Text style={styles.label}>Novo registro para {date}</Text>
-        )}
+        {date && <Text style={styles.label}>Novo registro para {date}</Text>}
 
         <Text style={styles.label}>O que deseja registrar?</Text>
 

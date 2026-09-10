@@ -98,6 +98,13 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="paw"
+        size={70}
+        color={Colors.white}
+        style={styles.pawWatermark}
+      />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}

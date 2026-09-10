@@ -34,6 +34,13 @@ export const styles = StyleSheet.create({
     backgroundColor: alpha(Colors.white, 0.05),
   },
 
+  pawWatermark: {
+    position: "absolute",
+    bottom: 90,
+    left: -20,
+    transform: [{ rotate: "-18deg" }],
+  },
+
   header: {
     flexDirection: "row",
     alignItems: "center",

@@ -28,7 +28,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 
 import { petService } from "../../services/PetService";
 import { usePet } from "../../hooks/usePet";
@@ -220,6 +220,13 @@ export default function PetDetailScreen() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="paw"
+        size={120}
+        color={alpha(Colors.white, 0.05)}
+        style={styles.pawWatermark}
+      />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity

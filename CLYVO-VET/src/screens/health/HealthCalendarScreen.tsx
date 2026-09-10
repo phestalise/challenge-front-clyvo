@@ -303,6 +303,13 @@ export default function HealthCalendarScreen() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="paw"
+        size={70}
+        color={Colors.white}
+        style={styles.pawWatermark}
+      />
+
       {showBackButton && (
         <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <TouchableOpacity

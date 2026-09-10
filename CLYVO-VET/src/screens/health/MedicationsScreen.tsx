@@ -157,6 +157,13 @@ export default function MedicationsScreen() {
     <View style={styles.container}>
       <View style={styles.orb} pointerEvents="none" />
 
+      <Ionicons
+        name="paw"
+        size={110}
+        color={alpha(Colors.textLight, 0.07)}
+        style={styles.pawWatermark}
+      />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity

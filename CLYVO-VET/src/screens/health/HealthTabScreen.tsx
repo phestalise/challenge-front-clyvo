@@ -253,6 +253,13 @@ export default function HealthTabScreen() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="paw"
+        size={70}
+        color={Colors.white}
+        style={styles.pawWatermark}
+      />
+
       <View style={styles.header}>
         <View>
           <Text style={styles.headerEyebrow}>Central de cuidados</Text>

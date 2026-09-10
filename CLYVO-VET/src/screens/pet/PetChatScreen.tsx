@@ -18,7 +18,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 import { usePets } from "../../hooks/usePets";
 import { useChatHistory } from "../../hooks/useChatHistory";
@@ -90,6 +90,13 @@ export default function PetChatScreen() {
       style={styles.safe}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <Ionicons
+        name="paw"
+        size={120}
+        color={alpha(Colors.primary, 0.05)}
+        style={styles.pawWatermark}
+      />
+
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}

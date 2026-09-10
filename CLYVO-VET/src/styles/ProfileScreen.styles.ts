@@ -16,6 +16,13 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
 
+  pawWatermark: {
+    position: "absolute",
+    bottom: 120,
+    left: 16,
+    transform: [{ rotate: "-15deg" }],
+  },
+
   content: {
     padding: Spacing.lg,
     // Clareia a tab bar flutuante (altura 82 + offset 18) mais respiro extra.

@@ -20,6 +20,13 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
 
+  pawWatermark: {
+    position: "absolute",
+    bottom: 120,
+    left: 16,
+    transform: [{ rotate: "-15deg" }],
+  },
+
   header: {
     paddingHorizontal: Spacing.xl,
     marginBottom: Spacing.lg,
