@@ -1,9 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import { Vaccine } from "../types";
-import { Colors } from "../styles/colors";
 import { obterCorStatus, obterTextoStatus } from "../utils/formatters";
 
 import { styles } from "../styles/VaccineCard.styles";
@@ -18,12 +16,6 @@ export default function VaccineCard({ vaccine, petName }: Props) {
 
   return (
     <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: cor }]}>
-      <Ionicons
-        name={vaccine.done ? "checkmark-circle-outline" : "time-outline"}
-        size={20}
-        color={Colors.accent}
-      />
-
       <View style={styles.info}>
         <Text style={styles.name}>{vaccine.name}</Text>
 

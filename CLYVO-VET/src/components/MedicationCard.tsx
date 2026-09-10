@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { Medication } from "../types";
 import { Colors } from "../styles/colors";
 import { styles } from "../styles/MedicationCard.styles";
@@ -11,12 +10,10 @@ type Props = {
 };
 
 export default function MedicationCard({ medication, petName }: Props) {
-  const color = medication.active ? Colors.accentGreen : Colors.textLight;
+  const color = medication.active ? Colors.accentGreen : Colors.textSecondary;
 
   return (
     <View style={styles.card}>
-      <Ionicons name="medical-outline" size={20} color={Colors.accent} />
-
       <View style={styles.info}>
         <Text style={styles.name}>{medication.name}</Text>
 

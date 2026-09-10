@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Image,
 } from "react-native";
+
+import * as ImagePicker from "expo-image-picker";
 
 import { showAlert } from "../../utils/showAlert";
 
@@ -48,6 +51,7 @@ export default function AddPetScreen() {
   const [breed, setBreed] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [weight, setWeight] = useState("");
+  const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -59,7 +63,31 @@ export default function AddPetScreen() {
     setBreed(pet.breed ?? "");
     setBirthDate(pet.birthDate ?? "");
     setWeight(String(pet.weight ?? ""));
+    setPhotoUri(pet.photoUri);
   }, [pet]);
+
+  const handlePickPhoto = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      showAlert(
+        "Permissão necessária",
+        "Precisamos de acesso às suas fotos para escolher uma imagem do pet.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+    });
+
+    if (!result.canceled && result.assets?.[0]?.uri) {
+      setPhotoUri(result.assets[0].uri);
+    }
+  };
 
   const handleSave = async () => {
     const breedEffective = breed.trim() || species;
@@ -93,6 +121,7 @@ export default function AddPetScreen() {
         vaccines: pet?.vaccines ?? [],
         medications: pet?.medications ?? [],
         nextCheckup: pet?.nextCheckup ?? "",
+        photoUri,
       };
 
       const ok = await save(updatedPet as any);
@@ -164,7 +193,7 @@ export default function AddPetScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.back}
@@ -185,22 +214,42 @@ export default function AddPetScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.avatarArea}>
-          <View style={styles.avatar}>
-            <Ionicons
-              name={
-                species === "Gato"
-                  ? "happy"
-                  : species === "Pássaro"
-                    ? "sunny"
-                    : "paw"
-              }
-              size={40}
-              color={Colors.accentLight}
-            />
-          </View>
+          <TouchableOpacity
+            style={styles.avatarWrap}
+            activeOpacity={0.8}
+            onPress={handlePickPhoto}
+          >
+            <View style={styles.avatar}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.avatarImage} />
+              ) : (
+                <Ionicons
+                  name={
+                    species === "Gato"
+                      ? "happy"
+                      : species === "Pássaro"
+                        ? "sunny"
+                        : "paw"
+                  }
+                  size={40}
+                  color={Colors.textLight}
+                />
+              )}
+            </View>
+
+            <View style={styles.avatarCameraBadge}>
+              <Ionicons name="camera" size={14} color={Colors.white} />
+            </View>
+          </TouchableOpacity>
 
           <Text style={styles.avatarHint}>
             {name.trim() ? name : "Novo pet"}
+          </Text>
+
+          <Text style={styles.avatarHintSmall}>
+            {photoUri
+              ? "Toque para trocar a foto"
+              : "Toque para adicionar uma foto"}
           </Text>
         </View>
 

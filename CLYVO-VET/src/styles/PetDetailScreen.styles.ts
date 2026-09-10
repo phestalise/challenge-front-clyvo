@@ -8,213 +8,300 @@ const {
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
+  shadows: Shadows,
   alpha,
 } = theme;
 
-// Compensa a ausência de SafeAreaView neste header (substitui o inset da status bar).
-const STATUS_BAR_OFFSET = 56;
+const AVATAR_SIZE = 88;
+
+// Espaço inferior do conteúdo = altura da tab bar flutuante + folga, para
+// nada ficar escondido atrás dela (ver TAB_BAR_CLEARANCE) + respiro extra.
+const CONTENT_BOTTOM_PADDING = TAB_BAR_CLEARANCE + Spacing.xxl;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.primary,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.primary,
   },
 
   loadingText: {
     ...Typography.body,
-    color: Colors.textSecondary,
+    color: Colors.textLight,
   },
 
   header: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: Spacing.xxl,
-    paddingTop: STATUS_BAR_OFFSET,
-    paddingBottom: Spacing.xl,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
 
-  back: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.md,
+  headerBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: Colors.overlaySoft,
     justifyContent: "center",
     alignItems: "center",
   },
 
-  headerTitle: {
-    ...Typography.title,
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+  },
+
+  logo: {
+    ...Typography.label,
+    fontWeight: "800",
     color: Colors.white,
+    letterSpacing: 1,
   },
 
   headerActions: {
     flexDirection: "row",
-    gap: Spacing.md,
-  },
-
-  editBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.md,
-    backgroundColor: alpha(Colors.accentLight, 0.13),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  deleteBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.md,
-    backgroundColor: alpha(Colors.accentRed, 0.13),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  scroll: {
-    padding: Spacing.xl,
-    gap: Spacing.lg,
-    paddingBottom: TAB_BAR_CLEARANCE,
-  },
-
-  profileCard: {
-    backgroundColor: Colors.card,
-    borderRadius: Radius.xl,
-    padding: Spacing.xl,
     alignItems: "center",
     gap: Spacing.sm,
   },
 
-  avatar: {
-    width: 76,
-    height: 76,
-    borderRadius: Radius.xl,
-    backgroundColor: alpha(Colors.accentLight, 0.08),
-    justifyContent: "center",
+  pageBadge: {
+    maxWidth: 100,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: alpha(Colors.white, 0.12),
+  },
+
+  pageBadgeText: {
+    ...Typography.caption,
+    fontWeight: "700",
+    color: Colors.accentLight,
+  },
+
+  scroll: {
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: CONTENT_BOTTOM_PADDING,
+  },
+
+  avatarWrap: {
     alignItems: "center",
+    marginTop: Spacing.md,
+  },
+
+  avatar: {
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
+    backgroundColor: alpha(Colors.accentLight, 0.15),
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  avatarInitial: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: Colors.accentLight,
   },
 
   petName: {
-    ...Typography.title,
-    color: Colors.text,
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: "700",
+    color: Colors.white,
+    textAlign: "center",
+    marginTop: Spacing.md,
   },
 
   petMeta: {
     ...Typography.label,
-    color: Colors.textSecondary,
-  },
-
-  ring: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 6,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: Spacing.sm,
-  },
-
-  ringNum: {
-    ...Typography.subtitle,
-  },
-
-  ringLabel: {
-    ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textLight,
+    textAlign: "center",
+    marginTop: 2,
   },
 
   chips: {
     flexDirection: "row",
     gap: Spacing.sm,
-    flexWrap: "wrap",
     justifyContent: "center",
+    marginTop: Spacing.md,
   },
 
   chip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    backgroundColor: Colors.background,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.overlaySoft,
   },
 
   chipText: {
     ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textLight,
   },
 
-  statsRow: {
-    backgroundColor: Colors.card,
+  sectionLabel: {
+    ...Typography.caption,
+    fontWeight: "700",
+    color: Colors.textLight,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginTop: Spacing.xl,
+    marginBottom: Spacing.sm,
+  },
+
+  summaryCard: {
+    backgroundColor: Colors.white,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
+    ...Shadows.card,
+  },
+
+  summaryTop: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    gap: Spacing.lg,
   },
 
-  stat: {
+  ringWrap: {
     alignItems: "center",
-    gap: Spacing.xs,
+    justifyContent: "center",
   },
 
-  statVal: {
-    ...Typography.body,
+  ringCenter: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  statLabel: {
+  ringNum: {
+    ...Typography.label,
+    fontWeight: "700",
+  },
+
+  ringLabel: {
     ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textMuted,
     textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
 
-  statDiv: {
+  summaryDivider: {
     width: 1,
-    height: Spacing.xxxl,
+    alignSelf: "stretch",
     backgroundColor: Colors.border,
+  },
+
+  summaryStats: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  summaryStat: {
+    flex: 1,
+    alignItems: "center",
+    gap: 2,
+  },
+
+  summaryStatDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: Colors.border,
+  },
+
+  summaryValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+
+  checkupRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: Spacing.md,
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+
+  checkupLabel: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+
+  checkupValue: {
+    ...Typography.label,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+
+  summaryLabel: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+    textAlign: "center",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
 
   tabsRow: {
     flexDirection: "row",
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.secondary,
     borderRadius: Radius.md,
     padding: Spacing.xs,
     gap: Spacing.xs,
+    marginTop: Spacing.xl,
   },
 
   tabBtn: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
-    alignItems: "center",
   },
 
   tabBtnActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
+    ...Shadows.card,
   },
 
   tabBtnText: {
-    ...Typography.label,
-    color: Colors.textSecondary,
+    ...Typography.caption,
+    fontWeight: "600",
+    color: Colors.textLight,
   },
 
   tabBtnTextActive: {
-    color: Colors.white,
+    color: Colors.accentLight,
   },
 
   infoBlock: {
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.white,
     borderRadius: Radius.lg,
     overflow: "hidden",
+    marginTop: Spacing.lg,
   },
 
   infoRow: {
@@ -229,17 +316,79 @@ export const styles = StyleSheet.create({
 
   infoKey: {
     ...Typography.label,
-    color: Colors.textSecondary,
+    color: Colors.textMuted,
   },
 
   infoVal: {
     ...Typography.label,
+    fontWeight: "600",
     color: Colors.text,
   },
 
-  noData: {
-    textAlign: "center",
-    color: Colors.textSecondary,
-    paddingTop: Spacing.xxxl,
+  tabContent: {
+    marginTop: Spacing.lg,
+  },
+
+  tabEmpty: {
+    alignItems: "center",
+    marginTop: Spacing.xxxl,
+    paddingHorizontal: Spacing.xl,
+  },
+
+  tabEmptyText: {
+    ...Typography.body,
+    color: Colors.textMuted,
+    marginBottom: Spacing.lg,
+  },
+
+  secondaryBtn: {
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: Colors.accentLight,
+  },
+
+  secondaryBtnText: {
+    ...Typography.label,
+    fontWeight: "600",
+    color: Colors.accentLight,
+  },
+
+  menuBackdrop: {
+    flex: 1,
+    backgroundColor: alpha(Colors.black, 0.15),
+  },
+
+  menuCard: {
+    position: "absolute",
+    minWidth: 132,
+    backgroundColor: Colors.white,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.xs,
+    ...Shadows.card,
+  },
+
+  menuItem: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+
+  menuItemDivider: {
+    height: 1,
+    backgroundColor: Colors.border,
+    marginHorizontal: Spacing.sm,
+  },
+
+  menuItemText: {
+    ...Typography.label,
+    color: Colors.text,
+  },
+
+  menuItemTextDanger: {
+    ...Typography.label,
+    fontWeight: "600",
+    color: Colors.accentRed,
   },
 });

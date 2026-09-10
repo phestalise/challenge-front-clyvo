@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 import { styles } from "../../styles/HealthCalendarScreen.styles";
 
@@ -39,30 +39,7 @@ type CalendarEvent = {
 
 type EventState = "done" | "pending" | "overdue";
 
-type ViewMode = "dia" | "mes" | "ano";
-
 const DAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-
-const MONTH_ABBR = [
-  "Jan",
-  "Fev",
-  "Mar",
-  "Abr",
-  "Mai",
-  "Jun",
-  "Jul",
-  "Ago",
-  "Set",
-  "Out",
-  "Nov",
-  "Dez",
-];
-
-const VIEW_MODES: { key: ViewMode; label: string }[] = [
-  { key: "dia", label: "Dia" },
-  { key: "mes", label: "Mês" },
-  { key: "ano", label: "Ano" },
-];
 
 const MAX_DOTS_PER_DAY = 3;
 
@@ -87,11 +64,6 @@ export default function HealthCalendarScreen() {
 
   const { pets, loading, error, reload } = usePets();
   const [refreshing, setRefreshing] = useState(false);
-
-  // Alterna só o destaque visual do cabeçalho (Dia/Mês/Ano), inspirado na
-  // referência de design — a navegação do calendário em si continua sendo
-  // sempre por mês, que é a única visão implementada hoje.
-  const [viewMode, setViewMode] = useState<ViewMode>("mes");
 
   const today = new Date();
 
@@ -213,6 +185,16 @@ export default function HealthCalendarScreen() {
     selectDayForMonth(newMonth, newYear);
   };
 
+  const pad2 = (value: number) => String(value).padStart(2, "0");
+
+  const selectDay = (day: number) => {
+    setSelectedDay(day);
+
+    const date = `${pad2(day)}/${pad2(selectedMonth + 1)}/${selectedYear}`;
+
+    navigation.navigate("AddHealthRecord", { date });
+  };
+
   const goToToday = () => {
     setSelectedMonth(today.getMonth());
     setSelectedYear(today.getFullYear());
@@ -274,152 +256,77 @@ export default function HealthCalendarScreen() {
     calendarDays.push(i);
   }
 
-  const selectedDayEvents = selectedDay
-    ? (eventsByDay.get(selectedDay) ?? [])
-    : [];
+  const todayPendingEvents = useMemo(() => {
+    return events.filter((event) => {
+      if (event.done) return false;
 
-  const monthPendingEvents = useMemo(() => {
-    const pending: CalendarEvent[] = [];
+      const eventDate = parseBrDate(event.date);
 
-    eventsByDay.forEach((dayEvents) => {
-      dayEvents.forEach((event) => {
-        if (!event.done) pending.push(event);
-      });
+      return (
+        eventDate !== null &&
+        eventDate.getDate() === today.getDate() &&
+        eventDate.getMonth() === today.getMonth() &&
+        eventDate.getFullYear() === today.getFullYear()
+      );
     });
+  }, [events]);
 
-    return pending;
-  }, [eventsByDay]);
-
-  const monthOnlyName = new Date(
-    selectedYear,
-    selectedMonth,
-  ).toLocaleDateString("pt-BR", { month: "long" });
-
-  const monthOnlyNameCapitalized =
-    monthOnlyName.charAt(0).toUpperCase() + monthOnlyName.slice(1);
-
-  const selectedDayLabel = selectedDay
-    ? new Date(selectedYear, selectedMonth, selectedDay).toLocaleDateString(
-        "pt-BR",
-        {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-        },
-      )
-    : "";
-
-  // Bloco de data + nome/pet + ícone do tipo, usado tanto na lista do dia
-  // selecionado quanto na lista de pendências do mês — mesma lógica de
-  // estado (getEventState) de antes, só reaproveitada aqui para colorir o
-  // bloco de data (vermelho discreto só quando o evento está atrasado).
-  const renderReminderCard = (event: CalendarEvent) => {
-    const state = getEventState(event);
-    const eventDate = parseBrDate(event.date);
-
-    const blockColor =
-      state === "overdue"
-        ? Colors.accentRed
-        : event.type === "vaccine"
-          ? Colors.accentLight
-          : Colors.primary;
+  const renderTodayPendingItem = (event: CalendarEvent) => {
+    const iconColor =
+      getEventState(event) === "overdue" ? Colors.accentRed : Colors.accent;
 
     return (
       <TouchableOpacity
         key={event.id}
-        style={styles.reminderCard}
+        style={styles.todayItem}
         onPress={() => navigation.navigate("PetDetail", { petId: event.petId })}
       >
         <View
-          style={[styles.reminderDateBlock, { backgroundColor: blockColor }]}
+          style={[
+            styles.todayItemIcon,
+            { backgroundColor: alpha(iconColor, 0.12) },
+          ]}
         >
-          <Text style={styles.reminderDateDay}>
-            {eventDate ? eventDate.getDate() : "-"}
-          </Text>
-
-          <Text style={styles.reminderDateMonth}>
-            {eventDate ? MONTH_ABBR[eventDate.getMonth()] : ""}
-          </Text>
+          <Ionicons name={TYPE_ICONS[event.type]} size={16} color={iconColor} />
         </View>
 
         <View style={styles.flexOne}>
-          <Text style={styles.reminderName}>{event.name}</Text>
+          <Text style={styles.todayItemName}>{event.name}</Text>
 
-          <Text style={styles.reminderSub}>🐾 {event.petName}</Text>
+          <Text style={styles.todayItemPet}>{event.petName}</Text>
         </View>
 
-        <Ionicons
-          name={TYPE_ICONS[event.type]}
-          size={20}
-          color={Colors.accent}
-        />
+        <Ionicons name="chevron-forward" size={16} color={Colors.textLight} />
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <View style={styles.headerSide}>
-          {showBackButton && (
-            <TouchableOpacity
-              style={styles.headerIconBtn}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="chevron-back" size={22} color={Colors.white} />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        <Text style={styles.title}>Calendário</Text>
-
-        <View style={[styles.headerSide, styles.headerSideRight]}>
-          <TouchableOpacity style={styles.headerIconBtn}>
-            <Ionicons
-              name="notifications-outline"
-              size={20}
-              color={Colors.white}
-            />
-
-            {monthPendingEvents.length > 0 && (
-              <View style={styles.headerBadge} />
-            )}
-          </TouchableOpacity>
-
+      {showBackButton && (
+        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <TouchableOpacity
             style={styles.headerIconBtn}
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.goBack()}
           >
-            <Ionicons
-              name="person-circle-outline"
-              size={22}
-              color={Colors.white}
-            />
+            <Ionicons name="chevron-back" size={22} color={Colors.white} />
           </TouchableOpacity>
-        </View>
-      </View>
 
-      <View style={styles.viewTabs}>
-        {VIEW_MODES.map((mode) => (
-          <TouchableOpacity
-            key={mode.key}
-            style={[
-              styles.viewTab,
-              viewMode === mode.key && styles.viewTabActive,
-            ]}
-            onPress={() => setViewMode(mode.key)}
-          >
-            <Text
-              style={[
-                styles.viewTabText,
-                viewMode === mode.key && styles.viewTabTextActive,
-              ]}
-            >
-              {mode.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+          <View style={styles.titleWrap}>
+            <View style={styles.titleBadge}>
+              <Ionicons
+                name="calendar-outline"
+                size={15}
+                color={alpha(Colors.white, 0.85)}
+              />
+
+              <Text style={styles.title}>Calendário</Text>
+            </View>
+          </View>
+
+          <View style={{ width: 36 }} />
+        </View>
+      )}
 
       {loading && pets.length === 0 ? (
         <View
@@ -444,6 +351,30 @@ export default function HealthCalendarScreen() {
           showsVerticalScrollIndicator={false}
         >
           {error && <Text style={styles.emptyText}>{error}</Text>}
+
+          <View style={styles.todayCard}>
+            <View style={styles.todayCardHeader}>
+              <Text style={styles.todayCardTitle}>Pendências de hoje</Text>
+
+              {todayPendingEvents.length > 0 && (
+                <View style={styles.todayCountBadge}>
+                  <Text style={styles.todayCountText}>
+                    {todayPendingEvents.length}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {todayPendingEvents.length === 0 ? (
+              <Text style={styles.todayEmptyText}>
+                Nenhuma pendência para hoje
+              </Text>
+            ) : (
+              <View style={styles.todayList}>
+                {todayPendingEvents.map(renderTodayPendingItem)}
+              </View>
+            )}
+          </View>
 
           <View style={styles.calendarCard}>
             <View style={styles.monthRow}>
@@ -480,6 +411,10 @@ export default function HealthCalendarScreen() {
               </View>
             </View>
 
+            <Text style={styles.tapHint}>
+              Toque em um dia para adicionar um novo registro
+            </Text>
+
             <View style={styles.weekRow}>
               {DAYS.map((day) => (
                 <View key={day} style={styles.weekTextWrapper}>
@@ -506,7 +441,7 @@ export default function HealthCalendarScreen() {
                           isToday && styles.dayCellToday,
                           isSelected && styles.dayCellSelected,
                         ]}
-                        onPress={() => setSelectedDay(isSelected ? null : day)}
+                        onPress={() => selectDay(day)}
                       >
                         <Text
                           style={[
@@ -605,34 +540,6 @@ export default function HealthCalendarScreen() {
                 <Text style={styles.legendText}>Atrasado</Text>
               </View>
             </View>
-          </View>
-
-          <View style={styles.dayDetailCard}>
-            <Text style={styles.dayDetailTitle}>
-              {selectedDay ? selectedDayLabel : "Selecione um dia"}
-            </Text>
-
-            {selectedDayEvents.length === 0 ? (
-              <Text style={styles.emptyTextCard}>
-                {selectedDay
-                  ? "Nenhum compromisso neste dia"
-                  : "Toque em um dia para ver os detalhes"}
-              </Text>
-            ) : (
-              selectedDayEvents.map(renderReminderCard)
-            )}
-          </View>
-
-          <View style={styles.pendingContainer}>
-            <Text style={styles.pendingTitle}>
-              Pendências de {monthOnlyNameCapitalized}
-            </Text>
-
-            {monthPendingEvents.length === 0 ? (
-              <Text style={styles.emptyText}>Nenhuma pendência encontrada</Text>
-            ) : (
-              monthPendingEvents.map(renderReminderCard)
-            )}
           </View>
         </ScrollView>
       )}

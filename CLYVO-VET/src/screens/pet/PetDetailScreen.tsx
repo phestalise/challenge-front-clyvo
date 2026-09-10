@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   View,
@@ -6,13 +6,23 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
+  Modal,
+  Pressable,
+  Dimensions,
 } from "react-native";
+
+import Svg, { Circle } from "react-native-svg";
+
+import * as ImagePicker from "expo-image-picker";
 
 import { showAlert } from "../../utils/showAlert";
 
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -36,16 +46,97 @@ type Route = RouteProp<RootStackParamList, "PetDetail">;
 
 type Tab = "info" | "vacinas" | "medicamentos";
 
+const TABS: { key: Tab; label: string }[] = [
+  { key: "info", label: "Info" },
+  { key: "vacinas", label: "Vacinas" },
+  { key: "medicamentos", label: "Remédios" },
+];
+
+const RING_SIZE = 76;
+const RING_STROKE = 8;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+const getInitial = (name: string) => name.trim().charAt(0).toUpperCase();
+
 export default function PetDetailScreen() {
   const navigation = useNavigation<Nav>();
 
   const route = useRoute<Route>();
 
+  const insets = useSafeAreaInsets();
+
   const petId = route?.params?.petId;
 
   const [tab, setTab] = useState<Tab>("info");
 
-  const { pet, loading, error, remove } = usePet(petId);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const [menuAnchor, setMenuAnchor] = useState<{
+    top: number;
+    right: number;
+  } | null>(null);
+
+  const kebabRef = useRef<React.ElementRef<typeof TouchableOpacity>>(null);
+
+  const openMenu = () => {
+    kebabRef.current?.measureInWindow(
+      (x: number, y: number, width: number, height: number) => {
+        const screenWidth = Dimensions.get("window").width;
+
+        setMenuAnchor({
+          top: y + height + 8,
+          right: screenWidth - (x + width),
+        });
+
+        setMenuOpen(true);
+      },
+    );
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const [photoSaving, setPhotoSaving] = useState(false);
+
+  const { pet, loading, error, remove, save, reload } = usePet(petId);
+
+  const handlePickPhoto = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      showAlert(
+        "Permissão necessária",
+        "Precisamos de acesso às suas fotos para escolher uma imagem do pet.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+    });
+
+    if (result.canceled || !result.assets?.[0]?.uri || !pet) return;
+
+    setPhotoSaving(true);
+
+    const ok = await save({ ...pet, photoUri: result.assets[0].uri });
+
+    if (ok) {
+      await reload();
+    } else {
+      showAlert(
+        "Erro ao salvar",
+        "Não foi possível salvar a foto. Tente novamente.",
+      );
+    }
+
+    setPhotoSaving(false);
+  };
 
   const handleDelete = () => {
     if (!pet || !petId) {
@@ -110,32 +201,59 @@ export default function PetDetailScreen() {
         ? Colors.accentOrange
         : Colors.accentRed;
 
+  const vaccinesDone = pet.vaccines?.filter((v) => v.done).length ?? 0;
+  const vaccinesTotal = pet.vaccines?.length ?? 0;
+  const activeMedications =
+    pet.medications?.filter((m) => m.active).length ?? 0;
+
+  const infoRows: { label: string; value: string }[] = [
+    { label: "Nome", value: pet.name },
+    { label: "Espécie", value: pet.species },
+    { label: "Raça", value: pet.breed },
+    { label: "Idade", value: calcularIdadeTexto(pet.birthDate) },
+    { label: "Peso", value: `${pet.weight} kg` },
+    {
+      label: "Próximo retorno",
+      value: pet.nextCheckup || "Não agendado",
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.back}
-        >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
-        </TouchableOpacity>
-
-        <Text style={styles.headerTitle}>{pet.name}</Text>
-
-        <View style={styles.headerActions}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <View style={styles.headerLeft}>
           <TouchableOpacity
-            style={styles.editBtn}
-            onPress={() => navigation.navigate("AddPet", { petId })}
+            onPress={() => navigation.goBack()}
+            style={styles.headerBtn}
           >
-            <Ionicons
-              name="create-outline"
-              size={19}
-              color={Colors.accentLight}
-            />
+            <Ionicons name="arrow-back" size={20} color={Colors.white} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-            <Ionicons name="trash-outline" size={19} color={Colors.accentRed} />
+          <View style={styles.logoRow}>
+            <Ionicons name="paw" size={16} color={Colors.accentLight} />
+
+            <Text style={styles.logo}>CLYVO</Text>
+          </View>
+        </View>
+
+        <View style={styles.headerActions}>
+          <View style={styles.pageBadge}>
+            <Text style={styles.pageBadgeText}>Detalhes</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.headerBtn}
+            onPress={() => navigation.navigate("AddPet", { petId })}
+          >
+            <Ionicons name="create-outline" size={18} color={Colors.white} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            ref={kebabRef}
+            style={styles.headerBtn}
+            onPress={openMenu}
+          >
+            <Ionicons name="ellipsis-vertical" size={18} color={Colors.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -144,134 +262,125 @@ export default function PetDetailScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.profileCard}>
+        <View style={styles.avatarWrap}>
           <View style={styles.avatar}>
-            <Ionicons
-              name={pet.species === "Gato" ? "happy" : "paw"}
-              size={42}
-              color={Colors.accentLight}
-            />
-          </View>
-
-          <Text style={styles.petName}>{pet.name}</Text>
-
-          <Text style={styles.petMeta}>
-            {pet.species} · {pet.breed}
-          </Text>
-
-          <View
-            style={[
-              styles.ring,
-              {
-                borderColor: scoreColor,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.ringNum,
-                {
-                  color: scoreColor,
-                },
-              ]}
-            >
-              {score}%
-            </Text>
-
-            <Text style={styles.ringLabel}>Saúde</Text>
-          </View>
-
-          <View style={styles.chips}>
-            {[
-              {
-                icon: "calendar-outline",
-                text: calcularIdadeTexto(pet.birthDate),
-              },
-              {
-                icon: "fitness-outline",
-                text: `${pet.weight} kg`,
-              },
-            ].map((c, i) => (
-              <View key={i} style={styles.chip}>
-                <Ionicons
-                  name={c.icon as any}
-                  size={13}
-                  color={Colors.textSecondary}
-                />
-
-                <Text style={styles.chipText}>{c.text}</Text>
-              </View>
-            ))}
+            {photoSaving ? (
+              <ActivityIndicator size="small" color={Colors.accentLight} />
+            ) : pet.photoUri ? (
+              <Image
+                source={{ uri: pet.photoUri }}
+                style={styles.avatarImage}
+              />
+            ) : (
+              <Text style={styles.avatarInitial}>{getInitial(pet.name)}</Text>
+            )}
           </View>
         </View>
 
-        <View style={styles.statsRow}>
-          <View style={styles.stat}>
-            <Text
-              style={[
-                styles.statVal,
-                {
-                  color: Colors.accentGreen,
-                },
-              ]}
-            >
-              {pet.vaccines?.filter((v) => v.done).length ?? 0}/
-              {pet.vaccines?.length ?? 0}
-            </Text>
+        <Text style={styles.petName}>{pet.name}</Text>
 
-            <Text style={styles.statLabel}>Vacinas</Text>
+        <Text style={styles.petMeta}>
+          {pet.species} · {pet.breed}
+        </Text>
+
+        <View style={styles.chips}>
+          <View style={styles.chip}>
+            <Text style={styles.chipText}>
+              {calcularIdadeTexto(pet.birthDate)}
+            </Text>
           </View>
 
-          <View style={styles.statDiv} />
+          <View style={styles.chip}>
+            <Text style={styles.chipText}>{pet.weight} kg</Text>
+          </View>
+        </View>
 
-          <View style={styles.stat}>
-            <Text
-              style={[
-                styles.statVal,
-                {
-                  color: Colors.accentLight,
-                },
-              ]}
-            >
-              {pet.medications?.filter((m) => m.active).length ?? 0}
-            </Text>
+        <Text style={styles.sectionLabel}>Resumo de saúde</Text>
 
-            <Text style={styles.statLabel}>Medicamentos</Text>
+        <View style={styles.summaryCard}>
+          <View style={styles.summaryTop}>
+            <View style={styles.ringWrap}>
+              <Svg width={RING_SIZE} height={RING_SIZE}>
+                <Circle
+                  cx={RING_SIZE / 2}
+                  cy={RING_SIZE / 2}
+                  r={RING_RADIUS}
+                  stroke={Colors.border}
+                  strokeWidth={RING_STROKE}
+                  fill="none"
+                />
+
+                <Circle
+                  cx={RING_SIZE / 2}
+                  cy={RING_SIZE / 2}
+                  r={RING_RADIUS}
+                  stroke={scoreColor}
+                  strokeWidth={RING_STROKE}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray={`${RING_CIRCUMFERENCE}`}
+                  strokeDashoffset={RING_CIRCUMFERENCE * (1 - score / 100)}
+                  rotation={-90}
+                  originX={RING_SIZE / 2}
+                  originY={RING_SIZE / 2}
+                />
+              </Svg>
+
+              <View style={styles.ringCenter}>
+                <Text style={[styles.ringNum, { color: scoreColor }]}>
+                  {score}%
+                </Text>
+
+                <Text style={styles.ringLabel}>Saúde</Text>
+              </View>
+            </View>
+
+            <View style={styles.summaryDivider} />
+
+            <View style={styles.summaryStats}>
+              <View style={styles.summaryStat}>
+                <Text style={styles.summaryValue} numberOfLines={1}>
+                  {vaccinesDone}/{vaccinesTotal}
+                </Text>
+
+                <Text style={styles.summaryLabel}>Vacinas</Text>
+              </View>
+
+              <View style={styles.summaryStatDivider} />
+
+              <View style={styles.summaryStat}>
+                <Text style={styles.summaryValue} numberOfLines={1}>
+                  {activeMedications}
+                </Text>
+
+                <Text style={styles.summaryLabel}>Medicamentos</Text>
+              </View>
+            </View>
           </View>
 
-          <View style={styles.statDiv} />
+          <View style={styles.checkupRow}>
+            <Text style={styles.checkupLabel}>Próximo retorno</Text>
 
-          <View style={styles.stat}>
-            <Text
-              style={[
-                styles.statVal,
-                {
-                  color: Colors.accentOrange,
-                  fontSize: 12,
-                },
-              ]}
-            >
-              {pet.nextCheckup || "—"}
+            <Text style={styles.checkupValue} numberOfLines={1}>
+              {pet.nextCheckup || "Não agendado"}
             </Text>
-
-            <Text style={styles.statLabel}>Retorno</Text>
           </View>
         </View>
 
         <View style={styles.tabsRow}>
-          {(["info", "vacinas", "medicamentos"] as Tab[]).map((t) => (
+          {TABS.map((t) => (
             <TouchableOpacity
-              key={t}
-              style={[styles.tabBtn, tab === t && styles.tabBtnActive]}
-              onPress={() => setTab(t)}
+              key={t.key}
+              style={[styles.tabBtn, tab === t.key && styles.tabBtnActive]}
+              onPress={() => setTab(t.key)}
             >
               <Text
                 style={[
                   styles.tabBtnText,
-                  tab === t && styles.tabBtnTextActive,
+                  tab === t.key && styles.tabBtnTextActive,
                 ]}
               >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+                {t.label}
               </Text>
             </TouchableOpacity>
           ))}
@@ -279,26 +388,17 @@ export default function PetDetailScreen() {
 
         {tab === "info" && (
           <View style={styles.infoBlock}>
-            {[
-              ["Nome", pet.name],
-              ["Espécie", pet.species],
-              ["Raça", pet.breed],
-              ["Idade", calcularIdadeTexto(pet.birthDate)],
-              ["Peso", `${pet.weight} kg`],
-              ["Próximo retorno", pet.nextCheckup || "Não agendado"],
-            ].map(([k, v], i, arr) => (
+            {infoRows.map((row, i) => (
               <View
-                key={i}
+                key={row.label}
                 style={[
                   styles.infoRow,
-                  i === arr.length - 1 && {
-                    borderBottomWidth: 0,
-                  },
+                  i === infoRows.length - 1 && { borderBottomWidth: 0 },
                 ]}
               >
-                <Text style={styles.infoKey}>{k}</Text>
+                <Text style={styles.infoKey}>{row.label}</Text>
 
-                <Text style={styles.infoVal}>{v}</Text>
+                <Text style={styles.infoVal}>{row.value}</Text>
               </View>
             ))}
           </View>
@@ -306,22 +406,90 @@ export default function PetDetailScreen() {
 
         {tab === "vacinas" &&
           ((pet.vaccines ?? []).length === 0 ? (
-            <Text style={styles.noData}>Nenhuma vacina registrada</Text>
+            <View style={styles.tabEmpty}>
+              <Text style={styles.tabEmptyText}>Nenhuma vacina registrada</Text>
+
+              <TouchableOpacity
+                style={styles.secondaryBtn}
+                onPress={() => navigation.navigate("Vaccines")}
+              >
+                <Text style={styles.secondaryBtnText}>Adicionar vacina</Text>
+              </TouchableOpacity>
+            </View>
           ) : (
-            pet.vaccines!.map((v, i) => (
-              <VaccineCard key={i} vaccine={v} petName={pet.name} />
-            ))
+            <View style={styles.tabContent}>
+              {pet.vaccines!.map((v, i) => (
+                <VaccineCard key={i} vaccine={v} petName={pet.name} />
+              ))}
+            </View>
           ))}
 
         {tab === "medicamentos" &&
           ((pet.medications ?? []).length === 0 ? (
-            <Text style={styles.noData}>Nenhum medicamento registrado</Text>
+            <View style={styles.tabEmpty}>
+              <Text style={styles.tabEmptyText}>
+                Nenhum medicamento registrado
+              </Text>
+
+              <TouchableOpacity
+                style={styles.secondaryBtn}
+                onPress={() => navigation.navigate("Medications")}
+              >
+                <Text style={styles.secondaryBtnText}>
+                  Adicionar medicamento
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
-            pet.medications!.map((m, i) => (
-              <MedicationCard key={i} medication={m} petName={pet.name} />
-            ))
+            <View style={styles.tabContent}>
+              {pet.medications!.map((m, i) => (
+                <MedicationCard key={i} medication={m} petName={pet.name} />
+              ))}
+            </View>
           ))}
       </ScrollView>
+
+      <Modal
+        visible={menuOpen && !!menuAnchor}
+        transparent
+        animationType="fade"
+        onRequestClose={closeMenu}
+      >
+        <Pressable style={styles.menuBackdrop} onPress={closeMenu}>
+          {menuAnchor && (
+            <View
+              style={[
+                styles.menuCard,
+                { top: menuAnchor.top, right: menuAnchor.right },
+              ]}
+            >
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  closeMenu();
+                  handlePickPhoto();
+                }}
+              >
+                <Text style={styles.menuItemText}>
+                  {pet.photoUri ? "Alterar foto" : "Adicionar foto"}
+                </Text>
+              </TouchableOpacity>
+
+              <View style={styles.menuItemDivider} />
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  closeMenu();
+                  handleDelete();
+                }}
+              >
+                <Text style={styles.menuItemTextDanger}>Excluir pet</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Pressable>
+      </Modal>
     </View>
   );
 }

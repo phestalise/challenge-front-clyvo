@@ -12,14 +12,14 @@ const {
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.white,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
     marginBottom: Spacing.md,
-    ...Shadows.sm,
+    ...Shadows.card,
   },
 
   info: {
@@ -29,12 +29,13 @@ export const styles = StyleSheet.create({
 
   name: {
     ...Typography.label,
+    fontWeight: "600",
     color: Colors.text,
   },
 
   sub: {
     ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textMuted,
   },
 
   dates: {
@@ -45,7 +46,7 @@ export const styles = StyleSheet.create({
 
   date: {
     ...Typography.caption,
-    color: Colors.textLight,
+    color: Colors.textMuted,
   },
 
   badge: {

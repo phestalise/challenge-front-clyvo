@@ -13,7 +13,16 @@ type Shadow = Pick<
   | "elevation"
 >;
 
-export const Shadows: Record<"sm" | "md" | "lg", Shadow> = {
+export const Shadows: Record<"sm" | "md" | "lg" | "card", Shadow> = {
+  // Sombra bem suave para cards claros (brancos) — 0 2px 8px rgba(0,0,0,0.06).
+  card: {
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+
   sm: {
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },

@@ -7,18 +7,31 @@ const {
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
+  shadows: Shadows,
   alpha,
 } = theme;
 
-// Espaço para o dropdown do menu abrir logo abaixo do header.
-const HEADER_CLEARANCE = 110;
 // Centralização vertical do estado vazio; não é um valor de ritmo de espaçamento.
 const EMPTY_STATE_OFFSET = 90;
+
+// Círculo decorativo de fundo (marca d'água) — fora da escala de radius
+// (raio = metade do tamanho).
+const ORB_SIZE = 260;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+
+  orb: {
+    position: "absolute",
+    top: -110,
+    right: -90,
+    width: ORB_SIZE,
+    height: ORB_SIZE,
+    borderRadius: ORB_SIZE / 2,
+    backgroundColor: alpha(Colors.white, 0.05),
   },
 
   header: {
@@ -27,54 +40,19 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: Spacing.xl,
     paddingBottom: Spacing.xl,
-    backgroundColor: Colors.secondary,
   },
 
-  menuButton: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.lg,
-    backgroundColor: Colors.overlaySoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  centerHeader: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  logoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-
-  logoIcon: {
-    width: 18,
-    height: 18,
-    borderRadius: Radius.pill,
-    backgroundColor: alpha(Colors.white, 0.06),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  logo: {
-    color: Colors.white,
+  headerEyebrow: {
+    color: Colors.textLight,
     ...Typography.caption,
-    letterSpacing: 1.5,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
 
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
+  headerCount: {
     marginTop: Spacing.xs,
-  },
-
-  title: {
     color: Colors.white,
-    ...Typography.body,
+    ...Typography.subtitle,
   },
 
   addBtn: {
@@ -86,40 +64,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  overlay: {
-    flex: 1,
-    backgroundColor: alpha(Colors.black, 0.5),
-  },
-
-  menuContainer: {
-    width: 240,
-    backgroundColor: Colors.secondary,
-    marginTop: HEADER_CLEARANCE,
-    marginLeft: Spacing.xl,
-    borderRadius: Radius.xl,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-  },
-
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.md,
-    paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.md,
-    borderRadius: Radius.md,
-  },
-
-  menuText: {
-    color: Colors.white,
-    ...Typography.label,
-  },
-
   list: {
     padding: Spacing.xl,
     // Clareia a tab bar flutuante (altura 82 + offset 18).
     paddingBottom: Spacing.huge * 3,
-    gap: Spacing.lg,
+    gap: Spacing.md,
   },
 
   empty: {
@@ -163,12 +112,14 @@ export const styles = StyleSheet.create({
     color: Colors.white,
   },
 
+  // Card do pet: fundo branco, borda azul, cantos de 16px, sombra suave.
   card: {
     padding: Spacing.lg,
-    borderRadius: Radius.xxl,
-    backgroundColor: Colors.secondary,
-    borderWidth: 1,
-    borderColor: Colors.overlaySubtle,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: Colors.accentLight,
+    ...Shadows.card,
   },
 
   cardTop: {
@@ -177,89 +128,90 @@ export const styles = StyleSheet.create({
   },
 
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: Radius.xl,
-    backgroundColor: alpha(Colors.accentLight, 0.09),
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: alpha(Colors.accentLight, 0.12),
     alignItems: "center",
     justifyContent: "center",
-    marginRight: Spacing.lg,
+    marginRight: Spacing.md,
+    overflow: "hidden",
+  },
+
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  avatarInitial: {
+    ...Typography.subtitle,
+    fontWeight: "700",
+    color: Colors.accentLight,
+  },
+
+  cardInfo: {
+    flex: 1,
+    marginRight: Spacing.sm,
   },
 
   petName: {
-    ...Typography.subtitle,
-    color: Colors.white,
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
+    color: Colors.text,
   },
 
   petMeta: {
-    marginTop: Spacing.xs,
-    ...Typography.label,
-    color: Colors.textLight,
+    marginTop: 2,
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
 
-  tags: {
+  tagsRow: {
     flexDirection: "row",
-    marginTop: Spacing.md,
     gap: Spacing.sm,
+    marginTop: Spacing.sm,
   },
 
   tag: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    backgroundColor: Colors.overlaySoft,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: Radius.sm,
+    backgroundColor: Colors.background,
   },
 
   tagText: {
     ...Typography.caption,
-    color: Colors.textLight,
+    color: Colors.textMuted,
   },
 
-  healthRow: {
-    flexDirection: "row",
+  ringWrap: {
+    width: 44,
+    height: 44,
     alignItems: "center",
-    marginTop: Spacing.xl,
+    justifyContent: "center",
   },
 
-  healthLabel: {
-    width: 52,
-    ...Typography.caption,
-    color: Colors.textLight,
-  },
-
-  barBg: {
-    flex: 1,
-    height: 7,
-    borderRadius: Radius.pill,
-    overflow: "hidden",
-    backgroundColor: Colors.overlaySoft,
-  },
-
-  barFill: {
-    height: "100%",
-    borderRadius: Radius.pill,
-  },
-
-  healthPct: {
-    width: 45,
-    textAlign: "right",
-    ...Typography.caption,
-  },
-
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: Spacing.xl,
-  },
-
-  stat: {
-    flexDirection: "row",
+  ringCenter: {
+    position: "absolute",
     alignItems: "center",
-    gap: Spacing.sm,
+    justifyContent: "center",
   },
 
-  statText: {
+  ringText: {
     ...Typography.caption,
-    color: Colors.textLight,
+    fontWeight: "700",
+  },
+
+  cardDivider: {
+    height: 1,
+    backgroundColor: Colors.border,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+
+  statsText: {
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
 });

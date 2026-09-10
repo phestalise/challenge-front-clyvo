@@ -14,7 +14,7 @@ const {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.primary,
   },
 
   header: {
@@ -23,17 +23,6 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: Spacing.lg,
     paddingHorizontal: Spacing.xl,
-  },
-
-  headerSide: {
-    width: 84,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-
-  headerSideRight: {
-    justifyContent: "flex-end",
   },
 
   headerIconBtn: {
@@ -45,53 +34,27 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  headerBadge: {
-    position: "absolute",
-    top: 6,
-    right: 6,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.accentRed,
-    borderWidth: 1,
-    borderColor: Colors.accent,
-  },
-
-  title: {
-    flex: 1,
-    textAlign: "center",
-    color: Colors.white,
-    ...Typography.title,
-  },
-
-  viewTabs: {
-    flexDirection: "row",
-    marginHorizontal: Spacing.xl,
-    marginBottom: Spacing.lg,
-    padding: Spacing.xs,
-    borderRadius: Radius.pill,
-    backgroundColor: alpha(Colors.white, 0.15),
-  },
-
-  viewTab: {
+  titleWrap: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: Spacing.sm,
+  },
+
+  titleBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
+    borderWidth: 1,
+    borderColor: alpha(Colors.white, 0.25),
   },
 
-  viewTabActive: {
-    backgroundColor: Colors.white,
-  },
-
-  viewTabText: {
-    ...Typography.label,
-    color: alpha(Colors.white, 0.85),
-  },
-
-  viewTabTextActive: {
-    color: Colors.primary,
+  title: {
+    color: Colors.white,
+    ...Typography.subtitle,
+    letterSpacing: 0.2,
   },
 
   scrollContent: {
@@ -99,6 +62,81 @@ export const styles = StyleSheet.create({
     // Clareia a tab bar flutuante (altura 82 + offset 18).
     paddingBottom: Spacing.huge * 3,
     gap: Spacing.lg,
+  },
+
+  todayCard: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.xl,
+    padding: Spacing.lg,
+    ...Shadows.sm,
+  },
+
+  todayCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  todayCardTitle: {
+    color: Colors.text,
+    ...Typography.label,
+    fontWeight: "700",
+  },
+
+  todayCountBadge: {
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: Colors.accent,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  todayCountText: {
+    color: Colors.white,
+    ...Typography.caption,
+    fontWeight: "700",
+  },
+
+  todayEmptyText: {
+    color: Colors.textLight,
+    ...Typography.caption,
+    marginTop: Spacing.sm,
+  },
+
+  todayList: {
+    marginTop: Spacing.md,
+    gap: Spacing.sm,
+  },
+
+  todayItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+
+  todayItemIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  todayItemName: {
+    color: Colors.text,
+    ...Typography.label,
+  },
+
+  todayItemPet: {
+    color: Colors.textSecondary,
+    ...Typography.caption,
+    marginTop: 1,
+  },
+
+  flexOne: {
+    flex: 1,
   },
 
   calendarCard: {
@@ -149,6 +187,13 @@ export const styles = StyleSheet.create({
     color: Colors.accent,
     ...Typography.caption,
     fontWeight: "700",
+  },
+
+  tapHint: {
+    color: Colors.textLight,
+    ...Typography.caption,
+    textAlign: "center",
+    marginBottom: Spacing.sm,
   },
 
   weekRow: {
@@ -261,82 +306,8 @@ export const styles = StyleSheet.create({
     ...Typography.caption,
   },
 
-  dayDetailCard: {
-    backgroundColor: Colors.white,
-    borderRadius: Radius.xl,
-    padding: Spacing.lg,
-    gap: Spacing.md,
-    ...Shadows.sm,
-  },
-
-  dayDetailTitle: {
-    color: Colors.text,
-    ...Typography.body,
-    fontWeight: "700",
-    textTransform: "capitalize",
-  },
-
-  pendingContainer: {
-    gap: Spacing.md,
-  },
-
-  pendingTitle: {
-    color: Colors.white,
-    ...Typography.subtitle,
-  },
-
-  reminderCard: {
-    backgroundColor: Colors.background,
-    borderRadius: Radius.lg,
-    padding: Spacing.md,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.md,
-  },
-
-  reminderDateBlock: {
-    width: 52,
-    height: 52,
-    borderRadius: Radius.md,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  reminderDateDay: {
-    color: Colors.white,
-    ...Typography.subtitle,
-    fontWeight: "800",
-  },
-
-  reminderDateMonth: {
-    color: alpha(Colors.white, 0.85),
-    ...Typography.caption,
-    textTransform: "uppercase",
-    marginTop: 2,
-  },
-
-  reminderName: {
-    color: Colors.text,
-    ...Typography.label,
-  },
-
-  reminderSub: {
-    color: Colors.textSecondary,
-    ...Typography.caption,
-    marginTop: Spacing.xs,
-  },
-
   emptyText: {
     color: alpha(Colors.white, 0.85),
     textAlign: "center",
-  },
-
-  emptyTextCard: {
-    color: Colors.textSecondary,
-    textAlign: "center",
-  },
-
-  flexOne: {
-    flex: 1,
   },
 });

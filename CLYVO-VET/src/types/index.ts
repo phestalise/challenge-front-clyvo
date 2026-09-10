@@ -36,6 +36,7 @@ export interface Pet {
   vaccines: Vaccine[];
   medications: Medication[];
   nextCheckup: string;
+  photoUri?: string; // Foto local do pet — guardada só no dispositivo (ver PetMetadataStore), não existe no backend.
 }
 
 export type MainTabParamList = {
@@ -58,8 +59,8 @@ export type RootStackParamList = MainTabParamList & {
   PetDetail: { petId: string };
   HealthCalendar: undefined;
   PetChat: undefined;
-  Vaccines: undefined;
-  Medications: undefined;
+  Vaccines: { date?: string } | undefined;
+  Medications: { date?: string } | undefined;
   Pending: undefined;
-  AddHealthRecord: undefined;
+  AddHealthRecord: { date?: string } | undefined;
 };

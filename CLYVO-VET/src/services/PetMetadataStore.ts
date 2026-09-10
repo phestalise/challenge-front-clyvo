@@ -13,6 +13,7 @@ type ItemMeta = {
 
 type PetMeta = {
   nextCheckup?: string;
+  photoUri?: string;
 };
 
 type MetadataShape = {

@@ -25,7 +25,14 @@ export const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+  },
+
+  headerEyebrow: {
+    color: Colors.textLight,
+    ...Typography.caption,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
 
   addButton: {
@@ -86,12 +93,71 @@ export const styles = StyleSheet.create({
     color: Colors.white,
   },
 
+  // Banner de destaque personalizado ("cuidamos do seu pet").
+  careBanner: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    borderLeftWidth: 4,
+    padding: Spacing.lg,
+    ...Shadows.card,
+  },
+
+  careBannerTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+
+  careIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  careTextWrap: {
+    flex: 1,
+  },
+
+  careEyebrow: {
+    ...Typography.caption,
+    fontWeight: "700",
+    color: Colors.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+
+  careMessage: {
+    marginTop: 2,
+    ...Typography.label,
+    fontWeight: "600",
+    color: Colors.text,
+  },
+
+  careCta: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.sm,
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
+  },
+
+  careCtaText: {
+    ...Typography.label,
+    fontWeight: "700",
+    color: Colors.white,
+  },
+
   card: {
     padding: Spacing.lg,
-    borderRadius: Radius.xxl,
-    backgroundColor: Colors.secondary,
-    borderWidth: 1,
-    borderColor: Colors.overlaySubtle,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: Colors.accentLight,
+    ...Shadows.card,
   },
 
   cardHeader: {
@@ -100,13 +166,19 @@ export const styles = StyleSheet.create({
   },
 
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: Radius.xl,
-    backgroundColor: alpha(Colors.accentLight, 0.09),
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: alpha(Colors.accentLight, 0.12),
     alignItems: "center",
     justifyContent: "center",
-    marginRight: Spacing.lg,
+    marginRight: Spacing.md,
+  },
+
+  avatarInitial: {
+    ...Typography.subtitle,
+    fontWeight: "700",
+    color: Colors.accentLight,
   },
 
   cardInfo: {
@@ -114,22 +186,24 @@ export const styles = StyleSheet.create({
   },
 
   petName: {
-    ...Typography.subtitle,
-    color: Colors.white,
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
+    color: Colors.text,
   },
 
   petMeta: {
-    marginTop: Spacing.xs,
-    ...Typography.label,
-    color: Colors.textLight,
+    marginTop: 2,
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
 
   pendingBadge: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
     borderRadius: Radius.pill,
-    marginRight: Spacing.md,
-    backgroundColor: alpha(Colors.accentRed, 0.13),
+    marginRight: Spacing.sm,
+    backgroundColor: alpha(Colors.accentRed, 0.12),
   },
 
   pendingText: {
@@ -137,66 +211,124 @@ export const styles = StyleSheet.create({
     color: Colors.accentRed,
   },
 
-  healthContainer: {
-    flexDirection: "row",
+  ringWrap: {
+    width: 44,
+    height: 44,
     alignItems: "center",
-    marginTop: Spacing.xl,
+    justifyContent: "center",
   },
 
-  healthLabel: {
-    width: 50,
+  ringCenter: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  ringText: {
     ...Typography.caption,
-    color: Colors.textLight,
+    fontWeight: "700",
   },
 
-  progressBackground: {
-    flex: 1,
-    height: 7,
-    borderRadius: Radius.pill,
-    overflow: "hidden",
-    backgroundColor: Colors.overlaySoft,
+  cardDivider: {
+    height: 1,
+    backgroundColor: Colors.border,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
   },
 
-  progressFill: {
-    height: "100%",
-    borderRadius: Radius.pill,
-  },
-
-  healthValue: {
-    width: 45,
+  statsText: {
     ...Typography.caption,
-    textAlign: "right",
+    color: Colors.textMuted,
   },
 
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: Spacing.xl,
-  },
-
-  stat: {
+  checkupRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.sm,
-  },
-
-  statText: {
-    ...Typography.caption,
-    color: Colors.textLight,
-  },
-
-  checkupContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginTop: Spacing.xl,
-    paddingTop: Spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: Colors.overlaySubtle,
+    marginTop: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
   },
 
   checkupText: {
     ...Typography.caption,
+    fontWeight: "600",
+    flex: 1,
+  },
+
+  checkupAction: {
+    ...Typography.caption,
+    fontWeight: "700",
+    color: Colors.accentLight,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: alpha(Colors.black, 0.6),
+    justifyContent: "flex-end",
+  },
+
+  modalBox: {
+    backgroundColor: Colors.secondary,
+    borderTopLeftRadius: Radius.xxl,
+    borderTopRightRadius: Radius.xxl,
+    padding: Spacing.xxl,
+    paddingBottom: Spacing.huge,
+  },
+
+  modalTitle: {
+    ...Typography.subtitle,
+    color: Colors.white,
+    marginBottom: Spacing.lg,
+  },
+
+  inputLabel: {
+    ...Typography.caption,
     color: Colors.textLight,
+    marginBottom: Spacing.sm,
+  },
+
+  input: {
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.md,
+    padding: Spacing.lg,
+    color: Colors.white,
+    ...Typography.body,
+    borderWidth: 1,
+    borderColor: Colors.overlaySoft,
+  },
+
+  modalBtns: {
+    flexDirection: "row",
+    gap: Spacing.md,
+    marginTop: Spacing.xl,
+  },
+
+  cancelBtn: {
+    flex: 1,
+    padding: Spacing.lg,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+  },
+
+  cancelText: {
+    ...Typography.body,
+    color: Colors.textLight,
+  },
+
+  saveBtn: {
+    flex: 1,
+    padding: Spacing.lg,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.accentGreen,
+    alignItems: "center",
+  },
+
+  saveText: {
+    ...Typography.body,
+    color: Colors.white,
+    fontWeight: "700",
   },
 });

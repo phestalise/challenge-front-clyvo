@@ -53,17 +53,27 @@ export default function PendingScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.orb} pointerEvents="none" />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.back}
-        >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
-        </TouchableOpacity>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.headerBtn}
+          >
+            <Ionicons name="arrow-back" size={20} color={Colors.white} />
+          </TouchableOpacity>
 
-        <Text style={styles.title}>Pendências</Text>
+          <View style={styles.logoRow}>
+            <Ionicons name="paw" size={16} color={Colors.accentLight} />
 
-        <View style={styles.headerSpacer} />
+            <Text style={styles.logo}>CLYVO</Text>
+          </View>
+        </View>
+
+        <View style={styles.pageBadge}>
+          <Text style={styles.pageBadgeText}>Pendências</Text>
+        </View>
       </View>
 
       {loading && pets.length === 0 ? (
@@ -90,15 +100,23 @@ export default function PendingScreen() {
         >
           {error && <Text style={styles.emptyText}>{error}</Text>}
 
+          {pending.length > 0 && (
+            <Text style={styles.sectionLabel}>
+              {pending.length} pendente{pending.length > 1 ? "s" : ""}
+            </Text>
+          )}
+
           {pending.length === 0 ? (
             <View style={styles.empty}>
-              <Ionicons
-                name="checkmark-circle"
-                size={56}
-                color={Colors.accentGreen + "60"}
-              />
+              <View style={styles.emptyIcon}>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={44}
+                  color={Colors.accentGreen}
+                />
+              </View>
 
-              <Text style={styles.emptyTitle}>Tudo em dia! 🎉</Text>
+              <Text style={styles.emptyTitle}>Tudo em dia!</Text>
 
               <Text style={styles.emptyText}>Nenhuma vacina pendente</Text>
 
@@ -111,27 +129,20 @@ export default function PendingScreen() {
             </View>
           ) : (
             pending.map((item, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.card,
-                  {
-                    borderLeftWidth: 3,
-                    borderLeftColor: Colors.warningOnDark,
-                  },
-                ]}
-              >
-                <Ionicons
-                  name="time-outline"
-                  size={20}
-                  color={Colors.accentLight}
-                />
+              <View key={i} style={styles.card}>
+                <View style={styles.iconChip}>
+                  <Ionicons
+                    name="time-outline"
+                    size={18}
+                    color={Colors.accentOrange}
+                  />
+                </View>
 
                 <View style={styles.info}>
                   <Text style={styles.itemName}>{item.name}</Text>
 
                   <Text style={styles.itemSub}>
-                    Pet: {item.petName} · {item.type}
+                    {item.petName} · {item.type}
                   </Text>
 
                   {item.endDate ? (

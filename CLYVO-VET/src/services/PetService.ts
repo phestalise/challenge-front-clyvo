@@ -7,7 +7,11 @@ import { brDateToIso, isoDateToBr } from "../utils/dateConversion";
 
 type Item = Vaccine | Medication;
 
-function apiPetToPet(apiPet: ApiPet, nextCheckup: string): Pet {
+function apiPetToPet(
+  apiPet: ApiPet,
+  nextCheckup: string,
+  photoUri?: string,
+): Pet {
   return {
     id: String(apiPet.idPet),
     ownerId: String(apiPet.idTutor),
@@ -19,6 +23,7 @@ function apiPetToPet(apiPet: ApiPet, nextCheckup: string): Pet {
     vaccines: [],
     medications: [],
     nextCheckup,
+    photoUri,
   };
 }
 
@@ -133,7 +138,10 @@ class PetService {
       await apiClient.post("/api/pets", payload);
     }
 
-    await petMetadataStore.setPetMeta(pet.id, { nextCheckup: pet.nextCheckup });
+    await petMetadataStore.setPetMeta(pet.id, {
+      nextCheckup: pet.nextCheckup,
+      photoUri: pet.photoUri,
+    });
     await this.syncItems(idPet, [
       ...(pet.vaccines ?? []),
       ...(pet.medications ?? []),
@@ -173,7 +181,7 @@ class PetService {
       apiClient.get<ApiMedicacao[]>(`/api/medicacoes/pet/${apiPet.idPet}`),
     ]);
 
-    const pet = apiPetToPet(apiPet, meta.nextCheckup ?? "");
+    const pet = apiPetToPet(apiPet, meta.nextCheckup ?? "", meta.photoUri);
 
     const itemMetas = await Promise.all(
       medicacoes.map((m) =>

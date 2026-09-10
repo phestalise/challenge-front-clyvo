@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "../styles/colors";
-import { useAuth } from "../hooks/useAuth";
 import { MainTabParamList } from "../types";
 
 import { styles } from "../styles/MainHeader.styles";
@@ -25,35 +24,18 @@ type Props = {
 
 export default function MainHeader({ route }: Props) {
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
-
-  const firstName = (user?.name || "Usuário").split(" ")[0];
-
-  const currentDate = new Date().toLocaleDateString("pt-BR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-
-  const isDashboard = route.name === "Dashboard";
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-      {isDashboard ? (
-        <View style={styles.centerArea}>
-          <View style={styles.logoRow}>
-            <Ionicons name="paw" size={18} color={Colors.accentLight} />
+      <View style={styles.logoRow}>
+        <Ionicons name="paw" size={18} color={Colors.accentLight} />
 
-            <Text style={styles.logo}>CLYVO</Text>
-          </View>
+        <Text style={styles.logo}>CLYVO</Text>
+      </View>
 
-          <Text style={styles.greeting}>Olá, {firstName} 👋</Text>
-
-          <Text style={styles.date}>{currentDate}</Text>
-        </View>
-      ) : (
-        <Text style={styles.screenTitle}>{TAB_TITLES[route.name]}</Text>
-      )}
+      <View style={styles.pageBadge}>
+        <Text style={styles.pageBadgeText}>{TAB_TITLES[route.name]}</Text>
+      </View>
     </View>
   );
 }

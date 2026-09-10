@@ -13,14 +13,14 @@ import {
 
 import { showAlert } from "../../utils/showAlert";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { Colors, alpha } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
 
 import { useVaccines } from "../../hooks/useVaccines";
@@ -28,9 +28,11 @@ import { useVaccines } from "../../hooks/useVaccines";
 import { styles } from "../../styles/VaccinesScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = RouteProp<RootStackParamList, "Vaccines">;
 
 export default function VaccinesScreen() {
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
 
   const {
@@ -55,6 +57,15 @@ export default function VaccinesScreen() {
   const [vaccineDate, setVaccineDate] = useState("");
 
   const [vaccineNextDue, setVaccineNextDue] = useState("");
+
+  const allVaccines = pets.flatMap((p) => p.vaccines ?? []);
+
+  React.useEffect(() => {
+    if (route.params?.date) {
+      setVaccineDate(route.params.date);
+      setModalVisible(true);
+    }
+  }, [route.params?.date]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -136,22 +147,36 @@ export default function VaccinesScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.orb} pointerEvents="none" />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.back}
-        >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
-        </TouchableOpacity>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.headerBtn}
+          >
+            <Ionicons name="arrow-back" size={20} color={Colors.white} />
+          </TouchableOpacity>
 
-        <Text style={styles.title}>Vacinas</Text>
+          <View style={styles.logoRow}>
+            <Ionicons name="paw" size={16} color={Colors.accentLight} />
 
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => setModalVisible(true)}
-        >
-          <Ionicons name="add" size={22} color={Colors.white} />
-        </TouchableOpacity>
+            <Text style={styles.logo}>CLYVO</Text>
+          </View>
+        </View>
+
+        <View style={styles.headerActions}>
+          <View style={styles.pageBadge}>
+            <Text style={styles.pageBadgeText}>Vacinas</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.addBtn}
+            onPress={() => setModalVisible(true)}
+          >
+            <Ionicons name="add" size={20} color={Colors.white} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {loading && pets.length === 0 ? (
@@ -178,34 +203,37 @@ export default function VaccinesScreen() {
         >
           {error && <Text style={styles.emptyText}>{error}</Text>}
 
+          {allVaccines.length > 0 && (
+            <Text style={styles.sectionLabel}>
+              {allVaccines.length} vacina{allVaccines.length > 1 ? "s" : ""}
+            </Text>
+          )}
+
           {pets.flatMap((pet) =>
             (pet.vaccines ?? []).map((v) => {
-              const stateColor = v.done
-                ? Colors.successOnDark
-                : Colors.warningOnDark;
+              const statusColor = v.done
+                ? Colors.accentGreen
+                : Colors.accentOrange;
 
               return (
-                <View
-                  key={v.id}
-                  style={[
-                    styles.card,
-                    { borderLeftWidth: 3, borderLeftColor: stateColor },
-                  ]}
-                >
-                  <Ionicons
-                    name={v.done ? "checkmark-circle-outline" : "time-outline"}
-                    size={20}
-                    color={Colors.accentLight}
-                  />
-
+                <View key={v.id} style={styles.card}>
                   <View
-                    style={{
-                      flex: 1,
-                    }}
+                    style={[
+                      styles.iconChip,
+                      { backgroundColor: alpha(statusColor, 0.15) },
+                    ]}
                   >
+                    <Ionicons
+                      name={v.done ? "shield-checkmark" : "shield-half-outline"}
+                      size={18}
+                      color={statusColor}
+                    />
+                  </View>
+
+                  <View style={styles.flexOne}>
                     <Text style={styles.vacName}>{v.name}</Text>
 
-                    <Text style={styles.vacSub}>Pet: {pet.name}</Text>
+                    <Text style={styles.vacSub}>{pet.name}</Text>
 
                     {v.startDate ? (
                       <Text style={styles.vacDate}>
@@ -223,11 +251,18 @@ export default function VaccinesScreen() {
                       onPress={() => handleToggleDone(pet.id, v.id)}
                       style={styles.actionBtn}
                     >
-                      <Ionicons
-                        name={v.done ? "close-circle" : "checkmark-circle"}
-                        size={20}
-                        color={v.done ? Colors.textLight : Colors.accentGreen}
-                      />
+                      <View
+                        style={[
+                          styles.badge,
+                          { backgroundColor: alpha(statusColor, 0.15) },
+                        ]}
+                      >
+                        <Text
+                          style={[styles.badgeText, { color: statusColor }]}
+                        >
+                          {v.done ? "Aplicada" : "Pendente"}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -235,7 +270,7 @@ export default function VaccinesScreen() {
                       style={styles.actionBtn}
                     >
                       <Ionicons
-                        name="trash"
+                        name="trash-outline"
                         size={18}
                         color={Colors.accentRed}
                       />
@@ -246,15 +281,21 @@ export default function VaccinesScreen() {
             }),
           )}
 
-          {pets.flatMap((p) => p.vaccines ?? []).length === 0 && (
+          {allVaccines.length === 0 && (
             <View style={styles.empty}>
-              <Ionicons
-                name="shield-checkmark"
-                size={48}
-                color={Colors.accentGreen + "40"}
-              />
+              <View style={styles.emptyIcon}>
+                <Ionicons
+                  name="shield-checkmark"
+                  size={44}
+                  color={Colors.accentGreen}
+                />
+              </View>
 
-              <Text style={styles.emptyText}>Nenhuma vacina cadastrada</Text>
+              <Text style={styles.emptyTitle}>Nenhuma vacina cadastrada</Text>
+
+              <Text style={styles.emptyText}>
+                Registre as vacinas do seu pet aqui
+              </Text>
 
               <TouchableOpacity
                 style={styles.emptyBtn}

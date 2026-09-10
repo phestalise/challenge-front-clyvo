@@ -28,7 +28,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O CLYVO VET usa suas fotos para você escolher uma imagem do seu pet."
+        }
+      ]
     ]
   }
 }

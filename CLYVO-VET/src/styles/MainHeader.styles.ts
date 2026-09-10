@@ -6,53 +6,43 @@ const {
   colors: Colors,
   typography: Typography,
   spacing: Spacing,
+  radius: Radius,
   alpha,
 } = theme;
 
 export const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing.xxl,
+    paddingBottom: Spacing.lg,
     paddingHorizontal: Spacing.xl,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: Colors.primary,
-  },
-
-  centerArea: {
-    flex: 1,
-    alignItems: "center",
   },
 
   logoRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.sm,
-    marginBottom: Spacing.sm,
+    gap: Spacing.xs,
   },
 
   logo: {
-    ...Typography.display,
+    ...Typography.label,
+    fontWeight: "800",
     color: Colors.white,
     letterSpacing: 1,
   },
 
-  greeting: {
-    ...Typography.subtitle,
-    color: Colors.white,
-    marginTop: Spacing.xs,
+  pageBadge: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: alpha(Colors.white, 0.12),
   },
 
-  date: {
-    marginTop: Spacing.sm,
-    ...Typography.label,
-    color: alpha(Colors.white, 0.55),
-    textTransform: "capitalize",
-  },
-
-  screenTitle: {
-    flex: 1,
-    textAlign: "center",
-    ...Typography.title,
-    color: Colors.white,
+  pageBadgeText: {
+    ...Typography.caption,
+    fontWeight: "700",
+    color: Colors.accentLight,
   },
 });

@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: Spacing.xl,
     paddingBottom: Spacing.lg,
-    backgroundColor: Colors.secondary,
   },
 
   back: {
@@ -51,11 +50,38 @@ export const styles = StyleSheet.create({
     gap: Spacing.md,
   },
 
+  avatarWrap: {
+    width: 80,
+    height: 80,
+  },
+
   avatar: {
     width: 80,
     height: 80,
     borderRadius: Radius.xxl,
-    backgroundColor: alpha(Colors.accentLight, 0.13),
+    backgroundColor: Colors.secondary,
+    borderWidth: 1.5,
+    borderColor: Colors.overlaySoft,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  avatarCameraBadge: {
+    position: "absolute",
+    right: -2,
+    bottom: -2,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: Colors.accentLight,
+    borderWidth: 2,
+    borderColor: Colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -63,6 +89,11 @@ export const styles = StyleSheet.create({
   avatarHint: {
     ...Typography.subtitle,
     color: Colors.white,
+  },
+
+  avatarHintSmall: {
+    ...Typography.caption,
+    color: Colors.textLight,
   },
 
   label: {

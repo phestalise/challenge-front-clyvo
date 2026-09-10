@@ -86,10 +86,11 @@ function AppStack() {
           component={HealthTabScreen}
           options={mainHeaderFor("Health")}
         />
-        {/* HealthCalendarScreen desenha seu próprio cabeçalho (fundo azul,
-        ícones de notificação/perfil) tanto aqui quanto na rota
-        "HealthCalendar" abaixo, por isso não usa o MainHeader. */}
-        <Stack.Screen name="Calendar" component={HealthCalendarScreen} />
+        <Stack.Screen
+          name="Calendar"
+          component={HealthCalendarScreen}
+          options={mainHeaderFor("Calendar")}
+        />
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}

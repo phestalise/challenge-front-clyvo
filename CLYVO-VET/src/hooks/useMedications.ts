@@ -10,6 +10,7 @@ type NewMedication = {
   name: string;
   dose: string;
   frequency: string;
+  startDate: string;
   endDate: string;
 };
 
@@ -65,7 +66,7 @@ export function useMedications() {
           name: medication.name,
           dose: medication.dose,
           frequency: medication.frequency,
-          startDate: "",
+          startDate: medication.startDate,
           endDate: medication.endDate,
           active: true,
         });

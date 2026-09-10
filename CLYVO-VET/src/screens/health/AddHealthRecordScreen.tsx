@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,10 +23,13 @@ import { usePets } from "../../hooks/usePets";
 import { styles } from "../../styles/AddHealthRecordScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = RouteProp<RootStackParamList, "AddHealthRecord">;
 
 export default function AddHealthRecordScreen() {
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
+  const date = route.params?.date;
 
   const { pets, loading, error } = usePets();
 
@@ -81,6 +84,10 @@ export default function AddHealthRecordScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        {date && (
+          <Text style={styles.label}>Novo registro para {date}</Text>
+        )}
+
         <Text style={styles.label}>O que deseja registrar?</Text>
 
         <View style={styles.typeRow}>
@@ -99,7 +106,7 @@ export default function AddHealthRecordScreen() {
               onPress={() => {
                 setType(opt.key);
 
-                navigation.navigate(opt.route);
+                navigation.navigate(opt.route, { date });
               }}
               activeOpacity={0.8}
             >

@@ -57,6 +57,9 @@ const neutrals = {
   card: "#FFFFFF",
   text: "#0A1628",
   textSecondary: "#4A5568",
+  // Cinza neutro mais claro que `textSecondary`, para rótulos discretos em
+  // telas de fundo claro (cards brancos sobre `background`).
+  textMuted: "#6B7280",
   textLight: "#A0AEC0",
   border: "#E2E8F0",
 };

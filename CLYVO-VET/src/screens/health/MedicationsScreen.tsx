@@ -15,7 +15,7 @@ import {
 
 import { showAlert } from "../../utils/showAlert";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,9 +30,11 @@ import { styles } from "../../styles/MedicationsScreen.styles";
 import { useMedications } from "../../hooks/useMedications";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = RouteProp<RootStackParamList, "Medications">;
 
 export default function MedicationsScreen() {
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
 
   const {
@@ -58,7 +60,18 @@ export default function MedicationsScreen() {
 
   const [frequency, setFrequency] = useState("");
 
+  const [startDate, setStartDate] = useState("");
+
   const [endDate, setEndDate] = useState("");
+
+  const allMedications = pets.flatMap((p) => p.medications ?? []);
+
+  React.useEffect(() => {
+    if (route.params?.date) {
+      setStartDate(route.params.date);
+      setModalVisible(true);
+    }
+  }, [route.params?.date]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -83,6 +96,7 @@ export default function MedicationsScreen() {
       name: medName.trim(),
       dose: dosage,
       frequency,
+      startDate,
       endDate,
     });
 
@@ -99,6 +113,7 @@ export default function MedicationsScreen() {
     setMedName("");
     setDosage("");
     setFrequency("");
+    setStartDate("");
     setEndDate("");
     setSelectedPetId("");
   };
@@ -140,22 +155,36 @@ export default function MedicationsScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.orb} pointerEvents="none" />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.back}
-        >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
-        </TouchableOpacity>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.headerBtn}
+          >
+            <Ionicons name="arrow-back" size={20} color={Colors.white} />
+          </TouchableOpacity>
 
-        <Text style={styles.title}>Medicamentos</Text>
+          <View style={styles.logoRow}>
+            <Ionicons name="paw" size={16} color={Colors.accentLight} />
 
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => setModalVisible(true)}
-        >
-          <Ionicons name="add" size={22} color={Colors.white} />
-        </TouchableOpacity>
+            <Text style={styles.logo}>CLYVO</Text>
+          </View>
+        </View>
+
+        <View style={styles.headerActions}>
+          <View style={styles.pageBadge}>
+            <Text style={styles.pageBadgeText}>Remédios</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.addBtn}
+            onPress={() => setModalVisible(true)}
+          >
+            <Ionicons name="add" size={20} color={Colors.white} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {loading && pets.length === 0 ? (
@@ -182,23 +211,35 @@ export default function MedicationsScreen() {
         >
           {error && <Text style={styles.emptyText}>{error}</Text>}
 
+          {allMedications.length > 0 && (
+            <Text style={styles.sectionLabel}>
+              {allMedications.length} medicamento
+              {allMedications.length > 1 ? "s" : ""}
+            </Text>
+          )}
+
           {pets.flatMap((pet) =>
             (pet.medications ?? []).map((m) => {
-              const color = m.active ? Colors.successOnDark : Colors.textLight;
+              const statusColor = m.active
+                ? Colors.accentGreen
+                : Colors.textSecondary;
 
               return (
                 <View key={m.id} style={styles.card}>
-                  <Ionicons
-                    name="medical-outline"
-                    size={20}
-                    color={Colors.accentLight}
-                  />
+                  <View
+                    style={[
+                      styles.iconChip,
+                      { backgroundColor: alpha(statusColor, 0.15) },
+                    ]}
+                  >
+                    <Ionicons name="medical" size={18} color={statusColor} />
+                  </View>
 
                   <View style={styles.flexOne}>
                     <Text style={styles.medName}>{m.name}</Text>
 
                     <Text style={styles.medSub}>
-                      Pet: {pet.name} · {m.dose}
+                      {pet.name} · {m.dose}
                     </Text>
 
                     <Text style={styles.medSub}>
@@ -215,12 +256,12 @@ export default function MedicationsScreen() {
                       <View
                         style={[
                           styles.badge,
-                          {
-                            backgroundColor: alpha(color, 0.15),
-                          },
+                          { backgroundColor: alpha(statusColor, 0.15) },
                         ]}
                       >
-                        <Text style={[styles.badgeText, { color }]}>
+                        <Text
+                          style={[styles.badgeText, { color: statusColor }]}
+                        >
                           {m.active ? "Ativo" : "Fim"}
                         </Text>
                       </View>
@@ -231,7 +272,7 @@ export default function MedicationsScreen() {
                       style={styles.actionBtn}
                     >
                       <Ionicons
-                        name="trash"
+                        name="trash-outline"
                         size={18}
                         color={Colors.accentRed}
                       />
@@ -242,16 +283,22 @@ export default function MedicationsScreen() {
             }),
           )}
 
-          {pets.flatMap((p) => p.medications ?? []).length === 0 && (
+          {allMedications.length === 0 && (
             <View style={styles.empty}>
-              <Ionicons
-                name="medical"
-                size={48}
-                color={Colors.accentOrange + "40"}
-              />
+              <View style={styles.emptyIcon}>
+                <Ionicons
+                  name="medical"
+                  size={44}
+                  color={Colors.accentOrange}
+                />
+              </View>
+
+              <Text style={styles.emptyTitle}>
+                Nenhum medicamento cadastrado
+              </Text>
 
               <Text style={styles.emptyText}>
-                Nenhum medicamento cadastrado
+                Registre os remédios em uso do seu pet
               </Text>
 
               <TouchableOpacity
@@ -328,6 +375,16 @@ export default function MedicationsScreen() {
               placeholderTextColor={Colors.textLight}
               value={frequency}
               onChangeText={setFrequency}
+            />
+
+            <Text style={styles.inputLabel}>Data de início</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="DD/MM/AAAA"
+              placeholderTextColor={Colors.textLight}
+              value={startDate}
+              onChangeText={setStartDate}
             />
 
             <Text style={styles.inputLabel}>Data de término</Text>

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  Image,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +16,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
+
+import Svg, { Circle } from "react-native-svg";
 
 import { Colors } from "../../styles/colors";
 import { RootStackParamList } from "../../types";
@@ -25,6 +28,13 @@ import { usePets } from "../../hooks/usePets";
 import { styles } from "../../styles/PetsScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+
+const RING_SIZE = 44;
+const RING_STROKE = 3.5;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+const getInitial = (name: string) => name.trim().charAt(0).toUpperCase();
 
 export default function PetsScreen() {
   const navigation = useNavigation<Nav>();
@@ -42,21 +52,21 @@ export default function PetsScreen() {
     setRefreshing(false);
   };
 
-  const getPetIcon = (species: string) => {
-    if (species === "Gato") {
-      return "logo-octocat";
-    }
-
-    if (species === "Pássaro") {
-      return "leaf";
-    }
-
-    return "paw";
-  };
-
   return (
     <View style={styles.container}>
+      <View style={styles.orb} pointerEvents="none" />
+
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <View>
+          <Text style={styles.headerEyebrow}>Meus pets</Text>
+
+          <Text style={styles.headerCount}>
+            {pets.length > 0
+              ? `${pets.length} pet${pets.length > 1 ? "s" : ""} cadastrado${pets.length > 1 ? "s" : ""}`
+              : "Nenhum pet ainda"}
+          </Text>
+        </View>
+
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.addBtn}
@@ -138,7 +148,7 @@ export default function PetsScreen() {
               return (
                 <TouchableOpacity
                   key={pet.id}
-                  activeOpacity={0.9}
+                  activeOpacity={0.85}
                   style={styles.card}
                   onPress={() =>
                     navigation.navigate("PetDetail", {
@@ -148,25 +158,28 @@ export default function PetsScreen() {
                 >
                   <View style={styles.cardTop}>
                     <View style={styles.avatar}>
-                      <Ionicons
-                        name={getPetIcon(pet.species)}
-                        size={24}
-                        color={Colors.accentLight}
-                      />
+                      {pet.photoUri ? (
+                        <Image
+                          source={{ uri: pet.photoUri }}
+                          style={styles.avatarImage}
+                        />
+                      ) : (
+                        <Text style={styles.avatarInitial}>
+                          {getInitial(pet.name)}
+                        </Text>
+                      )}
                     </View>
 
-                    <View
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      <Text style={styles.petName}>{pet.name}</Text>
-
-                      <Text style={styles.petMeta}>
-                        {pet.species} • {pet.breed}
+                    <View style={styles.cardInfo}>
+                      <Text style={styles.petName} numberOfLines={1}>
+                        {pet.name}
                       </Text>
 
-                      <View style={styles.tags}>
+                      <Text style={styles.petMeta} numberOfLines={1}>
+                        {pet.species} · {pet.breed}
+                      </Text>
+
+                      <View style={styles.tagsRow}>
                         <View style={styles.tag}>
                           <Text style={styles.tagText}>
                             {calcularIdadeTexto(pet.birthDate)}
@@ -179,65 +192,49 @@ export default function PetsScreen() {
                       </View>
                     </View>
 
-                    <Ionicons
-                      name="chevron-forward"
-                      size={18}
-                      color={Colors.textLight}
-                    />
-                  </View>
+                    <View style={styles.ringWrap}>
+                      <Svg width={RING_SIZE} height={RING_SIZE}>
+                        <Circle
+                          cx={RING_SIZE / 2}
+                          cy={RING_SIZE / 2}
+                          r={RING_RADIUS}
+                          stroke={Colors.border}
+                          strokeWidth={RING_STROKE}
+                          fill="none"
+                        />
 
-                  <View style={styles.healthRow}>
-                    <Text style={styles.healthLabel}>Saúde</Text>
+                        <Circle
+                          cx={RING_SIZE / 2}
+                          cy={RING_SIZE / 2}
+                          r={RING_RADIUS}
+                          stroke={scoreColor}
+                          strokeWidth={RING_STROKE}
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeDasharray={`${RING_CIRCUMFERENCE}`}
+                          strokeDashoffset={
+                            RING_CIRCUMFERENCE * (1 - score / 100)
+                          }
+                          rotation={-90}
+                          originX={RING_SIZE / 2}
+                          originY={RING_SIZE / 2}
+                        />
+                      </Svg>
 
-                    <View style={styles.barBg}>
-                      <View
-                        style={[
-                          styles.barFill,
-                          {
-                            width: `${score}%`,
-                            backgroundColor: scoreColor,
-                          },
-                        ]}
-                      />
-                    </View>
-
-                    <Text
-                      style={[
-                        styles.healthPct,
-                        {
-                          color: scoreColor,
-                        },
-                      ]}
-                    >
-                      {score}%
-                    </Text>
-                  </View>
-
-                  <View style={styles.statsRow}>
-                    <View style={styles.stat}>
-                      <Ionicons
-                        name="shield-checkmark"
-                        size={14}
-                        color={Colors.accentGreen}
-                      />
-
-                      <Text style={styles.statText}>
-                        {vaccinesDone}/{vaccinesTotal} vacinas
-                      </Text>
-                    </View>
-
-                    <View style={styles.stat}>
-                      <Ionicons
-                        name="medical"
-                        size={14}
-                        color={Colors.accentOrange}
-                      />
-
-                      <Text style={styles.statText}>
-                        {activeMedications} meds
-                      </Text>
+                      <View style={styles.ringCenter}>
+                        <Text style={[styles.ringText, { color: scoreColor }]}>
+                          {score}
+                        </Text>
+                      </View>
                     </View>
                   </View>
+
+                  <View style={styles.cardDivider} />
+
+                  <Text style={styles.statsText}>
+                    {vaccinesDone}/{vaccinesTotal} vacinas · {activeMedications}{" "}
+                    medicamentos
+                  </Text>
                 </TouchableOpacity>
               );
             })
