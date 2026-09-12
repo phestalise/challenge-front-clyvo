@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../styles/colors";
 import { MainTabParamList } from "../types";
 import { navigationRef } from "../navigation/navigationRef";
+import { blurActiveElement } from "../utils/blurActiveElement";
 
 import { styles } from "../styles/MainTabs.styles";
 
@@ -88,7 +89,10 @@ export default function BottomTabBar() {
           <TouchableOpacity
             key={tab.name}
             style={styles.tabBarItem}
-            onPress={() => navigationRef.navigate(tab.name)}
+            onPress={() => {
+              blurActiveElement();
+              navigationRef.navigate(tab.name);
+            }}
           >
             <View style={[styles.tabIcon, focused && styles.activeTabIcon]}>
               <Ionicons

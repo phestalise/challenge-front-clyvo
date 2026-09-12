@@ -8,6 +8,7 @@ import * as WebBrowser from "expo-web-browser";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { navigationRef } from "./src/navigation/navigationRef";
+import { blurActiveElement } from "./src/utils/blurActiveElement";
 import { Colors } from "./src/styles/colors";
 
 // Necessário para o fluxo de login com Google (expo-auth-session) fechar
@@ -22,7 +23,15 @@ export default function App() {
   const app = (
     <SafeAreaProvider>
       <AuthProvider>
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer
+          ref={navigationRef}
+          // No web, o native-stack marca a tela que sai de foco com
+          // aria-hidden, mas o botão que disparou a navegação continua com
+          // o foco do navegador até esse blur — daí o aviso "Blocked
+          // aria-hidden on an element because its descendant retained
+          // focus" a cada troca de tela.
+          onStateChange={blurActiveElement}
+        >
           <StatusBar style="light" />
           <RootNavigator />
         </NavigationContainer>

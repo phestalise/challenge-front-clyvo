@@ -10,6 +10,7 @@ import { User as FirebaseUser } from "firebase/auth";
 import { authService } from "../services/AuthService";
 import { tutorService } from "../services/TutorService";
 import { storageService } from "../services/StorageService";
+import { ApiError } from "../services/apiClient";
 import { gerarCpfPlaceholder } from "../utils/cpf";
 import { ApiTutor } from "../types/api";
 
@@ -119,9 +120,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const cached = await readSession();
 
       if (cached?.provider === "local") {
-        if (!cancelled) {
-          setUser(cached);
-          setInitializing(false);
+        // O tutor pode ter sumido da API (ex: banco reiniciado) mesmo com a
+        // sessão ainda salva localmente — sem essa checagem o app fica
+        // "logado" com um ownerId que não existe mais e os pets somem sem
+        // nenhum aviso.
+        try {
+          await tutorService.getById(Number(cached.id));
+          if (!cancelled) setUser(cached);
+        } catch (err) {
+          if (err instanceof ApiError && err.status === 404) {
+            if (!cancelled) {
+              setUser(null);
+              await persistSession(null);
+            }
+          } else if (!cancelled) {
+            // Falha de rede/API fora do ar: mantém a sessão local em vez de
+            // deslogar por causa de indisponibilidade temporária.
+            setUser(cached);
+          }
+        } finally {
+          if (!cancelled) setInitializing(false);
         }
         return;
       }

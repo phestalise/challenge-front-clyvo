@@ -24,6 +24,7 @@ import { RootStackParamList } from "../../types";
 import { petService } from "../../services/PetService";
 import { calcularIdadeTexto } from "../../utils/formatters";
 import { usePets } from "../../hooks/usePets";
+import { blurActiveElement } from "../../utils/blurActiveElement";
 
 import { styles } from "../../styles/PetsScreen.styles";
 
@@ -77,7 +78,10 @@ export default function PetsScreen() {
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.addBtn}
-          onPress={() => navigation.navigate("AddPet")}
+          onPress={() => {
+            blurActiveElement();
+            navigation.navigate("AddPet");
+          }}
         >
           <Ionicons name="add" size={24} color={Colors.white} />
         </TouchableOpacity>
@@ -126,7 +130,10 @@ export default function PetsScreen() {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.emptyBtn}
-                onPress={() => navigation.navigate("AddPet")}
+                onPress={() => {
+                  blurActiveElement();
+                  navigation.navigate("AddPet");
+                }}
               >
                 <Text style={styles.emptyBtnText}>Cadastrar Pet</Text>
               </TouchableOpacity>
@@ -157,11 +164,12 @@ export default function PetsScreen() {
                   key={pet.id}
                   activeOpacity={0.85}
                   style={styles.card}
-                  onPress={() =>
+                  onPress={() => {
+                    blurActiveElement();
                     navigation.navigate("PetDetail", {
                       petId: pet.id,
-                    })
-                  }
+                    });
+                  }}
                 >
                   <View style={styles.cardTop}>
                     <View style={styles.avatar}>
@@ -222,9 +230,7 @@ export default function PetsScreen() {
                           strokeDashoffset={
                             RING_CIRCUMFERENCE * (1 - score / 100)
                           }
-                          rotation={-90}
-                          originX={RING_SIZE / 2}
-                          originY={RING_SIZE / 2}
+                          transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
                         />
                       </Svg>
 

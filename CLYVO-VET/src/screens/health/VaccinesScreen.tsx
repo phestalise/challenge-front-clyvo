@@ -58,6 +58,8 @@ export default function VaccinesScreen() {
 
   const [vaccineNextDue, setVaccineNextDue] = useState("");
 
+  const [errors, setErrors] = useState<{ pet?: string; name?: string }>({});
+
   const allVaccines = pets.flatMap((p) => p.vaccines ?? []);
 
   React.useEffect(() => {
@@ -75,14 +77,23 @@ export default function VaccinesScreen() {
     setRefreshing(false);
   };
 
-  const handleAdd = async () => {
-    if (!selectedPetId) {
-      showAlert("Atenção", "Selecione o pet para a vacina.");
-      return;
-    }
+  const closeModal = () => {
+    setModalVisible(false);
+    setErrors({});
+    setVaccineName("");
+    setVaccineDate("");
+    setVaccineNextDue("");
+    setSelectedPetId("");
+  };
 
-    if (!vaccineName.trim()) {
-      showAlert("Atenção", "Informe o nome da vacina.");
+  const handleAdd = async () => {
+    const newErrors: { pet?: string; name?: string } = {};
+
+    if (!selectedPetId) newErrors.pet = "Selecione o pet para a vacina.";
+    if (!vaccineName.trim()) newErrors.name = "Informe o nome da vacina.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -100,12 +111,7 @@ export default function VaccinesScreen() {
       return;
     }
 
-    setModalVisible(false);
-
-    setVaccineName("");
-    setVaccineDate("");
-    setVaccineNextDue("");
-    setSelectedPetId("");
+    closeModal();
   };
 
   const handleToggleDone = async (petId: string, vaccineId: string) => {
@@ -315,18 +321,49 @@ export default function VaccinesScreen() {
         </ScrollView>
       )}
 
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>Nova Vacina</Text>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.container}>
+          <Ionicons
+            name="paw"
+            size={110}
+            color={alpha(Colors.white, 0.05)}
+            style={styles.pawWatermark}
+          />
 
-            <Text style={styles.inputLabel}>Pet</Text>
+          <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={closeModal} style={styles.headerBtn}>
+                <Ionicons name="close" size={20} color={Colors.white} />
+              </TouchableOpacity>
+
+              <View style={styles.logoRow}>
+                <Ionicons name="paw" size={16} color={Colors.accentLight} />
+
+                <Text style={styles.logo}>CLYVO</Text>
+              </View>
+            </View>
+
+            <View style={styles.pageBadge}>
+              <Text style={styles.pageBadgeText}>Nova Vacina</Text>
+            </View>
+          </View>
+
+          <ScrollView
+            contentContainerStyle={styles.formContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.inputLabel}>Pet *</Text>
 
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               style={{
-                marginBottom: 12,
+                marginBottom: 4,
               }}
             >
               <View style={styles.petRow}>
@@ -338,7 +375,10 @@ export default function VaccinesScreen() {
 
                       selectedPetId === p.id && styles.petChipSelected,
                     ]}
-                    onPress={() => setSelectedPetId(p.id)}
+                    onPress={() => {
+                      setSelectedPetId(p.id);
+                      setErrors((prev) => ({ ...prev, pet: undefined }));
+                    }}
                   >
                     <Text
                       style={[
@@ -355,16 +395,25 @@ export default function VaccinesScreen() {
                 ))}
               </View>
             </ScrollView>
+            {errors.pet ? (
+              <Text style={styles.errorText}>{errors.pet}</Text>
+            ) : null}
 
-            <Text style={styles.inputLabel}>Nome da vacina</Text>
+            <Text style={styles.inputLabel}>Nome da vacina *</Text>
 
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.name && styles.inputError]}
               placeholder="Ex: V10, Antirrábica..."
               placeholderTextColor={Colors.textLight}
               value={vaccineName}
-              onChangeText={setVaccineName}
+              onChangeText={(v) => {
+                setVaccineName(v);
+                setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
             />
+            {errors.name ? (
+              <Text style={styles.errorText}>{errors.name}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Data de aplicação</Text>
 
@@ -386,27 +435,27 @@ export default function VaccinesScreen() {
               onChangeText={setVaccineNextDue}
             />
 
-            <View style={styles.modalBtns}>
-              <TouchableOpacity
-                style={styles.cancelBtn}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.cancelText}>Cancelar</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
+              onPress={handleAdd}
+              disabled={saving}
+              activeOpacity={0.85}
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color={Colors.white} />
+              ) : (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={20}
+                  color={Colors.white}
+                />
+              )}
 
-              <TouchableOpacity
-                style={[styles.saveBtn, saving && { opacity: 0.6 }]}
-                onPress={handleAdd}
-                disabled={saving}
-              >
-                {saving ? (
-                  <ActivityIndicator size="small" color={Colors.white} />
-                ) : (
-                  <Text style={styles.saveText}>Salvar</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+              <Text style={styles.saveText}>
+                {saving ? "Salvando..." : "Salvar Vacina"}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
     </View>

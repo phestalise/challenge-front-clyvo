@@ -64,6 +64,8 @@ export default function MedicationsScreen() {
 
   const [endDate, setEndDate] = useState("");
 
+  const [errors, setErrors] = useState<{ pet?: string; name?: string }>({});
+
   const allMedications = pets.flatMap((p) => p.medications ?? []);
 
   React.useEffect(() => {
@@ -81,14 +83,25 @@ export default function MedicationsScreen() {
     setRefreshing(false);
   };
 
-  const handleAdd = async () => {
-    if (!selectedPetId) {
-      showAlert("Atenção", "Selecione o pet do medicamento.");
-      return;
-    }
+  const closeModal = () => {
+    setModalVisible(false);
+    setErrors({});
+    setMedName("");
+    setDosage("");
+    setFrequency("");
+    setStartDate("");
+    setEndDate("");
+    setSelectedPetId("");
+  };
 
-    if (!medName.trim()) {
-      showAlert("Atenção", "Informe o nome do medicamento.");
+  const handleAdd = async () => {
+    const newErrors: { pet?: string; name?: string } = {};
+
+    if (!selectedPetId) newErrors.pet = "Selecione o pet do medicamento.";
+    if (!medName.trim()) newErrors.name = "Informe o nome do medicamento.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -108,14 +121,7 @@ export default function MedicationsScreen() {
       return;
     }
 
-    setModalVisible(false);
-
-    setMedName("");
-    setDosage("");
-    setFrequency("");
-    setStartDate("");
-    setEndDate("");
-    setSelectedPetId("");
+    closeModal();
   };
 
   const handleToggleActive = async (petId: string, medId: string) => {
@@ -319,12 +325,43 @@ export default function MedicationsScreen() {
         </ScrollView>
       )}
 
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>Novo Medicamento</Text>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.container}>
+          <Ionicons
+            name="paw"
+            size={110}
+            color={alpha(Colors.textLight, 0.07)}
+            style={styles.pawWatermark}
+          />
 
-            <Text style={styles.inputLabel}>Pet</Text>
+          <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={closeModal} style={styles.headerBtn}>
+                <Ionicons name="close" size={20} color={Colors.white} />
+              </TouchableOpacity>
+
+              <View style={styles.logoRow}>
+                <Ionicons name="paw" size={16} color={Colors.accentLight} />
+
+                <Text style={styles.logo}>CLYVO</Text>
+              </View>
+            </View>
+
+            <View style={styles.pageBadge}>
+              <Text style={styles.pageBadgeText}>Novo Medicamento</Text>
+            </View>
+          </View>
+
+          <ScrollView
+            contentContainerStyle={styles.formContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.inputLabel}>Pet *</Text>
 
             <ScrollView
               horizontal
@@ -339,7 +376,10 @@ export default function MedicationsScreen() {
                       styles.petChip,
                       selectedPetId === p.id && styles.petChipSelected,
                     ]}
-                    onPress={() => setSelectedPetId(p.id)}
+                    onPress={() => {
+                      setSelectedPetId(p.id);
+                      setErrors((prev) => ({ ...prev, pet: undefined }));
+                    }}
                   >
                     <Text
                       style={[
@@ -353,16 +393,25 @@ export default function MedicationsScreen() {
                 ))}
               </View>
             </ScrollView>
+            {errors.pet ? (
+              <Text style={styles.errorText}>{errors.pet}</Text>
+            ) : null}
 
-            <Text style={styles.inputLabel}>Nome do medicamento</Text>
+            <Text style={styles.inputLabel}>Nome do medicamento *</Text>
 
             <TextInput
-              style={styles.input}
+              style={[styles.input, errors.name && styles.inputError]}
               placeholder="Ex: Simparic, Bravecto..."
               placeholderTextColor={Colors.textLight}
               value={medName}
-              onChangeText={setMedName}
+              onChangeText={(v) => {
+                setMedName(v);
+                setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
             />
+            {errors.name ? (
+              <Text style={styles.errorText}>{errors.name}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Dosagem</Text>
 
@@ -404,27 +453,27 @@ export default function MedicationsScreen() {
               onChangeText={setEndDate}
             />
 
-            <View style={styles.modalBtns}>
-              <TouchableOpacity
-                style={styles.cancelBtn}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.cancelBtnText}>Cancelar</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
+              onPress={handleAdd}
+              disabled={saving}
+              activeOpacity={0.85}
+            >
+              {saving ? (
+                <ActivityIndicator size="small" color={Colors.white} />
+              ) : (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={20}
+                  color={Colors.white}
+                />
+              )}
 
-              <TouchableOpacity
-                style={[styles.saveBtn, saving && { opacity: 0.6 }]}
-                onPress={handleAdd}
-                disabled={saving}
-              >
-                {saving ? (
-                  <ActivityIndicator size="small" color={Colors.white} />
-                ) : (
-                  <Text style={styles.saveBtnText}>Salvar</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+              <Text style={styles.saveBtnText}>
+                {saving ? "Salvando..." : "Salvar Medicamento"}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
     </View>

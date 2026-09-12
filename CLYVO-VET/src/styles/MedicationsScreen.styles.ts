@@ -211,24 +211,19 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: alpha(Colors.black, 0.6),
-    justifyContent: "flex-end",
-  },
-
-  modalBox: {
-    backgroundColor: Colors.secondary,
-    borderTopLeftRadius: Radius.xxl,
-    borderTopRightRadius: Radius.xxl,
-    padding: Spacing.xxl,
+  formContent: {
+    padding: Spacing.xl,
     paddingBottom: Spacing.huge,
   },
 
-  modalTitle: {
-    ...Typography.subtitle,
-    color: Colors.white,
-    marginBottom: Spacing.lg,
+  errorText: {
+    ...Typography.caption,
+    color: Colors.accentRed,
+    marginTop: Spacing.xs,
+  },
+
+  inputError: {
+    borderColor: Colors.accentRed,
   },
 
   inputLabel: {
@@ -239,14 +234,14 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
     borderRadius: Radius.md,
     padding: Spacing.lg,
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.body,
     marginBottom: Spacing.xs,
     borderWidth: 1,
-    borderColor: Colors.overlaySoft,
+    borderColor: Colors.border,
   },
 
   petScroll: {
@@ -262,53 +257,42 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.xl,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
     borderWidth: 1,
-    borderColor: Colors.overlaySoft,
+    borderColor: Colors.border,
   },
 
   petChipSelected: {
-    backgroundColor: Colors.accentOrange,
-    borderColor: Colors.accentOrange,
+    backgroundColor: Colors.accentLight,
+    borderColor: Colors.accentLight,
   },
 
   petChipText: {
     ...Typography.label,
-    color: Colors.textLight,
+    color: Colors.textMuted,
   },
 
   petChipTextSelected: {
     color: Colors.white,
   },
 
-  modalBtns: {
-    flexDirection: "row",
-    gap: Spacing.md,
-    marginTop: Spacing.lg,
-  },
-
-  cancelBtn: {
-    flex: 1,
-    padding: Spacing.lg,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.primary,
-    alignItems: "center",
-  },
-
-  cancelBtnText: {
-    color: Colors.textLight,
-    fontWeight: "600",
-  },
-
   saveBtn: {
-    flex: 1,
-    padding: Spacing.lg,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.accentOrange,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.md,
+    marginTop: Spacing.xl,
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.accentOrange,
+  },
+
+  saveBtnDisabled: {
+    opacity: 0.6,
   },
 
   saveBtnText: {
+    ...Typography.body,
     color: Colors.white,
     fontWeight: "700",
   },

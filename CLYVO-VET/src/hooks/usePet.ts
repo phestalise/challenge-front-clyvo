@@ -41,7 +41,8 @@ export function usePet(petId?: string) {
     try {
       await petService.save(data);
       return true;
-    } catch {
+    } catch (err) {
+      console.error("[usePet] Falha ao salvar pet:", err);
       setError("Não foi possível salvar o pet. Tente novamente.");
       return false;
     }

@@ -474,9 +474,7 @@ export default function HealthTabScreen() {
                             strokeDashoffset={
                               RING_CIRCUMFERENCE * (1 - score / 100)
                             }
-                            rotation={-90}
-                            originX={RING_SIZE / 2}
-                            originY={RING_SIZE / 2}
+                            transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
                           />
                         </Svg>
 

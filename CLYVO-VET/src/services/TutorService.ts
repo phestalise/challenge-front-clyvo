@@ -20,6 +20,9 @@ class TutorService {
     return apiClient.post<ApiTutor>("/api/tutors", {
       idTutor: gerarIdNumerico(),
       ...dados,
+      // O formulário guarda o CPF formatado ("123.456.789-00") pra exibição;
+      // a API espera só os 11 dígitos.
+      cpf: dados.cpf.replace(/\D/g, ""),
     });
   }
 
