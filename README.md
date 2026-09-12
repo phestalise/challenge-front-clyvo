@@ -41,6 +41,7 @@ Credenciais do Firebase e URL da API já estão no código-fonte
 ```bash
 git clone https://github.com/phestalise/challenge-front-clyvo-old.git
 cd challenge-front-clyvo-old
+cd CLYVO-VET
 npm install
 npm start        # expo start
 ```
