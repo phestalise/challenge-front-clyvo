@@ -1,6 +1,11 @@
 import React from "react";
 import { LogBox, Platform, View, StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
@@ -9,33 +14,62 @@ import { AuthProvider } from "./src/contexts/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { navigationRef } from "./src/navigation/navigationRef";
 import { blurActiveElement } from "./src/utils/blurActiveElement";
-import { Colors } from "./src/styles/colors";
+import { queryClient } from "./src/config/queryClient";
+import { notificationService } from "./src/services/NotificationService";
+import { Colors, ThemeProvider, useTheme } from "./src/theme";
 
 // Necessário para o fluxo de login com Google (expo-auth-session) fechar
 // corretamente a aba/janela de autenticação ao redirecionar de volta ao app.
 WebBrowser.maybeCompleteAuthSession();
 
+// Define como as notificações aparecem com o app aberto e cria o canal Android.
+notificationService.setup().catch(() => {});
+
 const isWeb = Platform.OS === "web";
+
+function ThemedNavigation() {
+  const { scheme, colors } = useTheme();
+  const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+
+  return (
+    <NavigationContainer
+      theme={{
+        ...base,
+        colors: {
+          ...base.colors,
+          background: colors.primary,
+          card: colors.primary,
+          text: colors.text,
+          border: colors.border,
+          primary: colors.accentLight,
+        },
+      }}
+      ref={navigationRef}
+      // No web, o native-stack marca a tela que sai de foco com
+      // aria-hidden, mas o botão que disparou a navegação continua com
+      // o foco do navegador até esse blur — daí o aviso "Blocked
+      // aria-hidden on an element because its descendant retained
+      // focus" a cada troca de tela.
+      onStateChange={blurActiveElement}
+    >
+      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
   LogBox.ignoreAllLogs();
 
   const app = (
     <SafeAreaProvider>
-      <AuthProvider>
-        <NavigationContainer
-          ref={navigationRef}
-          // No web, o native-stack marca a tela que sai de foco com
-          // aria-hidden, mas o botão que disparou a navegação continua com
-          // o foco do navegador até esse blur — daí o aviso "Blocked
-          // aria-hidden on an element because its descendant retained
-          // focus" a cada troca de tela.
-          onStateChange={blurActiveElement}
-        >
-          <StatusBar style="light" />
-          <RootNavigator />
-        </NavigationContainer>
-      </AuthProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ThemedNavigation />
+          </AuthProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 

@@ -1,9 +1,6 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -14,7 +11,7 @@ const {
 const ORB_TOP_SIZE = 240;
 const ORB_BOTTOM_SIZE = 220;
 
-export const styles = StyleSheet.create({
+export const useRegisterScreenStyles = makeStyles((Colors) => ({
   flex: {
     flex: 1,
   },
@@ -40,7 +37,7 @@ export const styles = StyleSheet.create({
     width: ORB_TOP_SIZE,
     height: ORB_TOP_SIZE,
     borderRadius: ORB_TOP_SIZE / 2,
-    backgroundColor: alpha(Colors.primary, 0.13),
+    backgroundColor: alpha(Colors.text, 0.13),
   },
 
   orbBottom: {
@@ -50,7 +47,7 @@ export const styles = StyleSheet.create({
     width: ORB_BOTTOM_SIZE,
     height: ORB_BOTTOM_SIZE,
     borderRadius: ORB_BOTTOM_SIZE / 2,
-    backgroundColor: alpha(Colors.primary, 0.07),
+    backgroundColor: alpha(Colors.text, 0.07),
   },
 
   header: {
@@ -222,14 +219,14 @@ export const styles = StyleSheet.create({
   btnPrimary: {
     height: 58,
     borderRadius: Radius.xl,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
 
   btnPrimaryText: {
-    color: Colors.accent,
+    color: Colors.onAccent,
     ...Typography.body,
   },
 
@@ -289,4 +286,4 @@ export const styles = StyleSheet.create({
     color: Colors.textSecondary,
     ...Typography.caption,
   },
-});
+}));

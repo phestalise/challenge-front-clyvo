@@ -1,25 +1,23 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   shadows: Shadows,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useVaccineCardStyles = makeStyles((Colors) => ({
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
     marginBottom: Spacing.md,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   info: {
@@ -57,6 +55,6 @@ export const styles = StyleSheet.create({
 
   badgeText: {
     ...Typography.caption,
-    color: Colors.white,
+    color: Colors.onAccent,
   },
-});
+}));

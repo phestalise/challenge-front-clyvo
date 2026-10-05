@@ -22,13 +22,15 @@ import Svg, { Circle } from "react-native-svg";
 
 import { showAlert } from "../../utils/showAlert";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList, Pet } from "../../types";
 
-import { styles } from "../../styles/HealthTabScreen.styles";
+import { useHealthTabScreenStyles } from "../../styles/HealthTabScreen.styles";
 
-import { petService } from "../../services/PetService";
 import { usePets } from "../../hooks/usePets";
+import { getHealthScore } from "../../utils/petHealth";
+import { useUpdatePetSchedule } from "../../hooks/useUpdatePetSchedule";
 
 import { calcularIdadeTexto } from "../../utils/formatters";
 import { parseBrDate } from "../../utils/dateConversion";
@@ -95,6 +97,8 @@ function getCheckupInfo(pet: Pet, today: Date): CheckupInfo {
 }
 
 export default function HealthTabScreen() {
+  const styles = useHealthTabScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
 
   const { pets, loading, error, reload } = usePets();
@@ -103,7 +107,7 @@ export default function HealthTabScreen() {
 
   const [scheduleTarget, setScheduleTarget] = useState<Pet | null>(null);
   const [scheduleDate, setScheduleDate] = useState("");
-  const [saving, setSaving] = useState(false);
+  const { saveSchedule, saving } = useUpdatePetSchedule();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -131,23 +135,18 @@ export default function HealthTabScreen() {
       return;
     }
 
-    setSaving(true);
-
     try {
-      await petService.save({
-        ...scheduleTarget,
+      await saveSchedule({
+        pet: scheduleTarget,
         nextCheckup: scheduleDate.trim(),
       });
 
-      await reload();
       closeScheduleModal();
     } catch {
       showAlert(
         "Erro ao salvar",
         "Não foi possível salvar o retorno. Tente novamente.",
       );
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -253,13 +252,6 @@ export default function HealthTabScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name="paw"
-        size={70}
-        color={Colors.white}
-        style={styles.pawWatermark}
-      />
-
       <View style={styles.header}>
         <View>
           <Text style={styles.headerEyebrow}>Central de cuidados</Text>
@@ -270,7 +262,7 @@ export default function HealthTabScreen() {
           style={styles.addButton}
           onPress={() => navigation.navigate("AddHealthRecord")}
         >
-          <Ionicons name="add" size={24} color={Colors.white} />
+          <Ionicons name="add" size={24} color={Colors.onAccent} />
         </TouchableOpacity>
       </View>
 
@@ -374,7 +366,7 @@ export default function HealthTabScreen() {
                       <Ionicons
                         name="arrow-forward"
                         size={14}
-                        color={Colors.white}
+                        color={Colors.onAccent}
                       />
                     </TouchableOpacity>
                   )}
@@ -382,7 +374,7 @@ export default function HealthTabScreen() {
               )}
 
               {pets.map((pet) => {
-                const score = petService.getHealthScore(pet);
+                const score = getHealthScore(pet);
 
                 const scoreColor =
                   score >= 70
@@ -572,7 +564,7 @@ export default function HealthTabScreen() {
                 disabled={saving}
               >
                 {saving ? (
-                  <ActivityIndicator size="small" color={Colors.white} />
+                  <ActivityIndicator size="small" color={Colors.onAccent} />
                 ) : (
                   <Text style={styles.saveText}>Salvar</Text>
                 )}

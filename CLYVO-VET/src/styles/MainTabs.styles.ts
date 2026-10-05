@@ -1,19 +1,17 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
+  shadows: Shadows,
 } = theme;
 
 // Altura da barra flutuante (82) + distância até a borda da tela (Spacing.xl)
 // + folga extra para o conteúdo não colar nela.
 export const TAB_BAR_CLEARANCE = Spacing.huge * 3;
 
-export const styles = StyleSheet.create({
+export const useMainTabsStyles = makeStyles((Colors) => ({
   tabBarStyle: {
     position: "absolute",
     left: Spacing.xl,
@@ -22,14 +20,15 @@ export const styles = StyleSheet.create({
     height: 82,
     borderRadius: Radius.xxl,
     backgroundColor: Colors.surface,
-    borderTopWidth: 0,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Shadows.md,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.sm,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    elevation: 0,
   },
 
   tabBarItem: {
@@ -55,4 +54,4 @@ export const styles = StyleSheet.create({
   activeTabIcon: {
     backgroundColor: Colors.overlaySoft,
   },
-});
+}));

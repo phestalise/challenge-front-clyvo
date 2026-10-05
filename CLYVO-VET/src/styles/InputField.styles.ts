@@ -1,16 +1,13 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useInputFieldStyles = makeStyles((Colors) => ({
   wrapper: {
     gap: Spacing.sm,
     marginBottom: Spacing.xs,
@@ -26,7 +23,7 @@ export const styles = StyleSheet.create({
   },
 
   labelDark: {
-    color: alpha(Colors.white, 0.8),
+    color: alpha(Colors.text, 0.8),
   },
 
   inputBox: {
@@ -63,7 +60,7 @@ export const styles = StyleSheet.create({
   },
 
   inputTextDark: {
-    color: Colors.white,
+    color: Colors.text,
   },
 
   iconLeft: {
@@ -82,4 +79,4 @@ export const styles = StyleSheet.create({
     color: Colors.accentRed,
     marginTop: Spacing.xs,
   },
-});
+}));

@@ -22,10 +22,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList } from "../../types";
 
-import { styles } from "../../styles/MedicationsScreen.styles";
+import { useMedicationsScreenStyles } from "../../styles/MedicationsScreen.styles";
 
 import { useMedications } from "../../hooks/useMedications";
 
@@ -33,6 +34,8 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "Medications">;
 
 export default function MedicationsScreen() {
+  const styles = useMedicationsScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
@@ -161,22 +164,13 @@ export default function MedicationsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.orb} pointerEvents="none" />
-
-      <Ionicons
-        name="paw"
-        size={110}
-        color={alpha(Colors.textLight, 0.07)}
-        style={styles.pawWatermark}
-      />
-
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.headerBtn}
           >
-            <Ionicons name="arrow-back" size={20} color={Colors.white} />
+            <Ionicons name="arrow-back" size={20} color={Colors.text} />
           </TouchableOpacity>
 
           <View style={styles.logoRow}>
@@ -195,7 +189,7 @@ export default function MedicationsScreen() {
             style={styles.addBtn}
             onPress={() => setModalVisible(true)}
           >
-            <Ionicons name="add" size={20} color={Colors.white} />
+            <Ionicons name="add" size={20} color={Colors.onAccent} />
           </TouchableOpacity>
         </View>
       </View>
@@ -331,17 +325,10 @@ export default function MedicationsScreen() {
         onRequestClose={closeModal}
       >
         <View style={styles.container}>
-          <Ionicons
-            name="paw"
-            size={110}
-            color={alpha(Colors.textLight, 0.07)}
-            style={styles.pawWatermark}
-          />
-
           <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
             <View style={styles.headerLeft}>
               <TouchableOpacity onPress={closeModal} style={styles.headerBtn}>
-                <Ionicons name="close" size={20} color={Colors.white} />
+                <Ionicons name="close" size={20} color={Colors.text} />
               </TouchableOpacity>
 
               <View style={styles.logoRow}>
@@ -460,12 +447,12 @@ export default function MedicationsScreen() {
               activeOpacity={0.85}
             >
               {saving ? (
-                <ActivityIndicator size="small" color={Colors.white} />
+                <ActivityIndicator size="small" color={Colors.onAccent} />
               ) : (
                 <Ionicons
                   name="checkmark-circle"
                   size={20}
-                  color={Colors.white}
+                  color={Colors.onAccent}
                 />
               )}
 

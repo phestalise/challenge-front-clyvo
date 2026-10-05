@@ -1,10 +1,7 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -18,17 +15,10 @@ const AVATAR_SIZE = 88;
 // nada ficar escondido atrás dela (ver TAB_BAR_CLEARANCE) + respiro extra.
 const CONTENT_BOTTOM_PADDING = TAB_BAR_CLEARANCE + Spacing.xxl;
 
-export const styles = StyleSheet.create({
+export const usePetDetailScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 60,
-    right: -25,
-    transform: [{ rotate: "20deg" }],
   },
 
   center: {
@@ -75,7 +65,7 @@ export const styles = StyleSheet.create({
   logo: {
     ...Typography.label,
     fontWeight: "800",
-    color: Colors.white,
+    color: Colors.text,
     letterSpacing: 1,
   },
 
@@ -90,7 +80,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: alpha(Colors.white, 0.12),
+    backgroundColor: alpha(Colors.text, 0.12),
   },
 
   pageBadgeText: {
@@ -134,7 +124,7 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     lineHeight: 28,
     fontWeight: "700",
-    color: Colors.white,
+    color: Colors.text,
     textAlign: "center",
     marginTop: Spacing.md,
   },
@@ -176,10 +166,9 @@ export const styles = StyleSheet.create({
   },
 
   summaryCard: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-    ...Shadows.card,
   },
 
   summaryTop: {
@@ -290,7 +279,7 @@ export const styles = StyleSheet.create({
   },
 
   tabBtnActive: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.surfaceRaised,
     ...Shadows.card,
   },
 
@@ -305,7 +294,7 @@ export const styles = StyleSheet.create({
   },
 
   infoBlock: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     overflow: "hidden",
     marginTop: Spacing.lg,
@@ -352,9 +341,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     paddingVertical: Spacing.md,
     borderRadius: Radius.lg,
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   secondaryBtnText: {
@@ -371,10 +360,9 @@ export const styles = StyleSheet.create({
   menuCard: {
     position: "absolute",
     minWidth: 132,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.md,
     paddingVertical: Spacing.xs,
-    ...Shadows.card,
   },
 
   menuItem: {
@@ -398,4 +386,4 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.accentRed,
   },
-});
+}));

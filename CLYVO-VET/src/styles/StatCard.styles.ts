@@ -1,16 +1,13 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   shadows: Shadows,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useStatCardStyles = makeStyles((Colors) => ({
   card: {
     flex: 1,
     minWidth: "42%",
@@ -33,4 +30,4 @@ export const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
-});
+}));

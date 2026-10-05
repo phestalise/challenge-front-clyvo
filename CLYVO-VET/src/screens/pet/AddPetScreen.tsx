@@ -21,14 +21,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList } from "../../types";
 import { usePet } from "../../hooks/usePet";
 import { useAuth } from "../../hooks/useAuth";
 import { validarFormularioPet } from "../../utils/validators";
 import { gerarIdNumerico } from "../../utils/id";
 
-import { styles } from "../../styles/AddPetScreen.styles";
+import { useAddPetScreenStyles } from "../../styles/AddPetScreen.styles";
 
 const SPECIES = ["Cachorro", "Gato", "Pássaro", "Coelho", "Outro"];
 
@@ -36,6 +37,8 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AddPet">;
 
 export default function AddPetScreen() {
+  const styles = useAddPetScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
@@ -150,7 +153,7 @@ export default function AddPetScreen() {
             onPress={() => navigation.goBack()}
             style={styles.back}
           >
-            <Ionicons name="arrow-back" size={22} color={Colors.white} />
+            <Ionicons name="arrow-back" size={22} color={Colors.text} />
           </TouchableOpacity>
 
           <Text style={styles.title}>Editar Pet</Text>
@@ -174,7 +177,7 @@ export default function AddPetScreen() {
             onPress={() => navigation.goBack()}
             style={styles.back}
           >
-            <Ionicons name="arrow-back" size={22} color={Colors.white} />
+            <Ionicons name="arrow-back" size={22} color={Colors.text} />
           </TouchableOpacity>
 
           <Text style={styles.title}>Editar Pet</Text>
@@ -193,19 +196,12 @@ export default function AddPetScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name="paw"
-        size={110}
-        color={alpha(Colors.textLight, 0.06)}
-        style={styles.pawWatermark}
-      />
-
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
+          <Ionicons name="arrow-back" size={22} color={Colors.text} />
         </TouchableOpacity>
 
         <Text style={styles.title}>
@@ -245,7 +241,7 @@ export default function AddPetScreen() {
             </View>
 
             <View style={styles.avatarCameraBadge}>
-              <Ionicons name="camera" size={14} color={Colors.white} />
+              <Ionicons name="camera" size={14} color={Colors.onAccent} />
             </View>
           </TouchableOpacity>
 
@@ -361,9 +357,13 @@ export default function AddPetScreen() {
           activeOpacity={0.85}
         >
           {saving ? (
-            <ActivityIndicator size="small" color={Colors.white} />
+            <ActivityIndicator size="small" color={Colors.onAccent} />
           ) : (
-            <Ionicons name="checkmark-circle" size={22} color={Colors.white} />
+            <Ionicons
+              name="checkmark-circle"
+              size={22}
+              color={Colors.onAccent}
+            />
           )}
 
           <Text style={styles.saveBtnText}>

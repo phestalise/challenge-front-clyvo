@@ -1,9 +1,6 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -14,17 +11,10 @@ const {
 // Centralização vertical do estado vazio; não é um valor de ritmo de espaçamento.
 const EMPTY_STATE_OFFSET = 90;
 
-export const styles = StyleSheet.create({
+export const useHealthTabScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 120,
-    left: 16,
-    transform: [{ rotate: "-15deg" }],
   },
 
   header: {
@@ -77,7 +67,7 @@ export const styles = StyleSheet.create({
 
   emptyTitle: {
     ...Typography.title,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   emptyText: {
@@ -97,16 +87,15 @@ export const styles = StyleSheet.create({
 
   emptyButtonText: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.onAccent,
   },
 
   // Banner de destaque personalizado ("cuidamos do seu pet").
   careBanner: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     borderLeftWidth: 4,
     padding: Spacing.lg,
-    ...Shadows.card,
   },
 
   careBannerTop: {
@@ -155,16 +144,15 @@ export const styles = StyleSheet.create({
   careCtaText: {
     ...Typography.label,
     fontWeight: "700",
-    color: Colors.white,
+    color: Colors.onAccent,
   },
 
   card: {
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
-    ...Shadows.card,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   cardHeader: {
@@ -286,7 +274,7 @@ export const styles = StyleSheet.create({
 
   modalTitle: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
     marginBottom: Spacing.lg,
   },
 
@@ -300,7 +288,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: Radius.md,
     padding: Spacing.lg,
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.body,
     borderWidth: 1,
     borderColor: Colors.overlaySoft,
@@ -335,7 +323,7 @@ export const styles = StyleSheet.create({
 
   saveText: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.onAccent,
     fontWeight: "700",
   },
-});
+}));

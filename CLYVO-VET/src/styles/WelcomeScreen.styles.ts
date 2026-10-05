@@ -1,9 +1,8 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions } from "react-native";
 
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -13,7 +12,7 @@ const {
 
 const { width, height } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+export const useWelcomeScreenStyles = makeStyles((Colors) => ({
   safe: {
     flex: 1,
     backgroundColor: Colors.primary,
@@ -100,7 +99,7 @@ export const styles = StyleSheet.create({
 
   brand: {
     ...Typography.display,
-    color: Colors.white,
+    color: Colors.text,
     letterSpacing: 4,
     textAlign: "center",
     marginBottom: Spacing.sm,
@@ -113,12 +112,12 @@ export const styles = StyleSheet.create({
 
   tagline: {
     ...Typography.title,
-    color: alpha(Colors.white, 0.75),
+    color: alpha(Colors.text, 0.75),
     textAlign: "center",
   },
 
   taglineHL: {
-    color: Colors.white,
+    color: Colors.text,
     fontWeight: "800",
   },
 
@@ -141,7 +140,7 @@ export const styles = StyleSheet.create({
   },
 
   pillText: {
-    color: alpha(Colors.white, 0.7),
+    color: alpha(Colors.text, 0.7),
     ...Typography.caption,
     letterSpacing: 0.3,
   },
@@ -188,14 +187,14 @@ export const styles = StyleSheet.create({
   },
 
   btnSecondaryText: {
-    color: alpha(Colors.white, 0.75),
+    color: alpha(Colors.text, 0.75),
     ...Typography.body,
   },
 
   legal: {
     textAlign: "center",
     ...Typography.caption,
-    color: alpha(Colors.white, 0.3),
+    color: alpha(Colors.text, 0.3),
     marginTop: Spacing.xs,
   },
-});
+}));

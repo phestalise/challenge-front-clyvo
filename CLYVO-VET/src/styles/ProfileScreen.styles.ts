@@ -1,26 +1,16 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useProfileScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 120,
-    left: 16,
-    transform: [{ rotate: "-15deg" }],
   },
 
   content: {
@@ -30,18 +20,20 @@ export const styles = StyleSheet.create({
   },
 
   profileCard: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.card,
     borderRadius: Radius.xl,
-    padding: Spacing.xxl,
+    padding: Spacing.xl,
     alignItems: "center",
-    marginBottom: Spacing.xl,
+    marginBottom: Spacing.xxl,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: alpha(Colors.accentLight, 0.15),
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: Colors.accent,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: Spacing.lg,
@@ -49,18 +41,18 @@ export const styles = StyleSheet.create({
 
   avatarText: {
     ...Typography.display,
-    color: Colors.accentLight,
+    color: Colors.onAccent,
   },
 
   name: {
     ...Typography.title,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   email: {
     ...Typography.label,
     marginTop: Spacing.xs,
-    color: Colors.textLight,
+    color: Colors.textMuted,
   },
 
   editBtn: {
@@ -69,13 +61,15 @@ export const styles = StyleSheet.create({
     gap: Spacing.sm,
     marginTop: Spacing.xl,
     paddingHorizontal: Spacing.xl,
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.lg,
-    backgroundColor: Colors.accentLight,
+    height: 44,
+    borderRadius: Radius.pill,
+    borderWidth: 1.5,
+    borderColor: Colors.accent,
   },
 
   editBtnText: {
-    color: Colors.white,
+    ...Typography.label,
+    color: Colors.accent,
     fontWeight: "700",
   },
 
@@ -84,17 +78,67 @@ export const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    ...Typography.label,
-    color: alpha(Colors.white, 0.45),
+    ...Typography.caption,
+    color: Colors.textMuted,
     marginBottom: Spacing.md,
+    letterSpacing: 1,
     textTransform: "uppercase",
   },
 
-  faqItem: {
-    backgroundColor: Colors.secondary,
+  themeRow: {
+    flexDirection: "row",
+    gap: Spacing.sm,
+  },
+
+  themeOption: {
+    flex: 1,
+    alignItems: "center",
+    gap: Spacing.xs,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.card,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+  },
+
+  themeOptionActive: {
+    borderColor: Colors.accent,
+    backgroundColor: alpha(Colors.accent, 0.08),
+  },
+
+  themeOptionText: {
+    ...Typography.caption,
+    color: Colors.textLight,
+  },
+
+  themeOptionTextActive: {
+    color: Colors.accentOnDark,
+  },
+
+  aboutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-    marginBottom: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+
+  aboutText: {
+    flex: 1,
+    ...Typography.label,
+    color: Colors.text,
+  },
+
+  faqItem: {
+    backgroundColor: Colors.card,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   faqRow: {
@@ -106,7 +150,7 @@ export const styles = StyleSheet.create({
   faqQ: {
     flex: 1,
     ...Typography.label,
-    color: Colors.white,
+    color: Colors.text,
     marginRight: Spacing.md,
   },
 
@@ -148,7 +192,7 @@ export const styles = StyleSheet.create({
 
   modalTitle: {
     ...Typography.title,
-    color: Colors.white,
+    color: Colors.text,
     marginBottom: Spacing.xl,
   },
 
@@ -157,7 +201,7 @@ export const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     paddingHorizontal: Spacing.lg,
     marginBottom: Spacing.lg,
-    color: Colors.white,
+    color: Colors.text,
     backgroundColor: Colors.primary,
   },
 
@@ -191,7 +235,7 @@ export const styles = StyleSheet.create({
   },
 
   saveText: {
-    color: Colors.white,
+    color: Colors.onAccent,
     fontWeight: "700",
   },
-});
+}));

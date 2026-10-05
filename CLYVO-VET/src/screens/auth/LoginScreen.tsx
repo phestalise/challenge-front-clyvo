@@ -20,7 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
 
-import { Colors } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 
 import { useAuth } from "../../hooks/useAuth";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
@@ -30,13 +31,15 @@ import { validarCampoObrigatorio, validarEmail } from "../../utils/validators";
 
 import InputField from "../../components/InputField";
 
-import { styles } from "../../styles/LoginScreen.styles";
+import { useLoginScreenStyles } from "../../styles/LoginScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Login">;
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  const styles = useLoginScreenStyles();
+  const { colors: Colors, scheme } = useTheme();
   const { login, resetPassword } = useAuth();
 
   const {
@@ -154,7 +157,10 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <StatusBar
+        barStyle={scheme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={Colors.primary}
+      />
 
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
@@ -176,7 +182,7 @@ export default function LoginScreen({ navigation }: Props) {
               style={styles.back}
               activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={20} color={Colors.white} />
+              <Ionicons name="arrow-back" size={20} color={Colors.text} />
             </TouchableOpacity>
 
             <View style={styles.logoRow}>
@@ -333,7 +339,7 @@ export default function LoginScreen({ navigation }: Props) {
               disabled={googleLoading || !googleReady}
               activeOpacity={0.7}
             >
-              <Ionicons name="logo-google" size={16} color={Colors.white} />
+              <Ionicons name="logo-google" size={16} color={Colors.text} />
 
               <Text style={styles.btnSecondaryText}>
                 {googleLoading ? "Conectando..." : "Entrar com Google"}
@@ -353,7 +359,7 @@ export default function LoginScreen({ navigation }: Props) {
                 <Ionicons
                   name="shield-checkmark-outline"
                   size={12}
-                  color="rgba(255,255,255,0.3)"
+                  color={alpha(Colors.text, 0.3)}
                 />
 
                 <Text style={styles.trustText}>Seguro</Text>
@@ -363,7 +369,7 @@ export default function LoginScreen({ navigation }: Props) {
                 <Ionicons
                   name="lock-closed-outline"
                   size={12}
-                  color="rgba(255,255,255,0.3)"
+                  color={alpha(Colors.text, 0.3)}
                 />
 
                 <Text style={styles.trustText}>Criptografado</Text>
@@ -373,7 +379,7 @@ export default function LoginScreen({ navigation }: Props) {
                 <Ionicons
                   name="heart-outline"
                   size={12}
-                  color="rgba(255,255,255,0.3)"
+                  color={alpha(Colors.text, 0.3)}
                 />
 
                 <Text style={styles.trustText}>Privado</Text>

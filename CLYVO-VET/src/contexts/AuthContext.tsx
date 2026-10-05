@@ -11,6 +11,8 @@ import { authService } from "../services/AuthService";
 import { tutorService } from "../services/TutorService";
 import { storageService } from "../services/StorageService";
 import { ApiError } from "../services/apiClient";
+import { notificationService } from "../services/NotificationService";
+import { queryClient } from "../config/queryClient";
 import { gerarCpfPlaceholder } from "../utils/cpf";
 import { ApiTutor } from "../types/api";
 
@@ -215,6 +217,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setUser(null);
     await persistSession(null);
+
+    // Dados em cache e lembretes agendados pertencem à conta que saiu.
+    queryClient.clear();
+    await notificationService.cancelAll().catch(() => {});
   };
 
   const updateName = async (name: string) => {

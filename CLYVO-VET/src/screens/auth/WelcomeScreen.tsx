@@ -15,15 +15,17 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
 
-import { Colors } from "../../styles/colors";
+import { useTheme } from "../../theme";
 
-import { styles } from "../../styles/WelcomeScreen.styles";
+import { useWelcomeScreenStyles } from "../../styles/WelcomeScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Welcome">;
 };
 
 export default function WelcomeScreen({ navigation }: Props) {
+  const styles = useWelcomeScreenStyles();
+  const { colors: Colors, scheme } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(40)).current;
@@ -66,7 +68,10 @@ export default function WelcomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <StatusBar
+        barStyle={scheme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={Colors.primary}
+      />
 
       <View style={styles.container}>
         <View style={styles.orb1} />

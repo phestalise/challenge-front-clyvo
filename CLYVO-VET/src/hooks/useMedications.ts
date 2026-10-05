@@ -1,10 +1,9 @@
-import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
-import { Pet } from "../types";
-import { petService } from "../services/PetService";
 import { gerarIdNumerico } from "../utils/id";
-import { useAuth } from "./useAuth";
+import { usePetCache } from "./petCache";
+import { usePets } from "./usePets";
+import { useHealthItemMutations } from "./useHealthItemMutations";
 
 type NewMedication = {
   name: string;
@@ -15,130 +14,88 @@ type NewMedication = {
 };
 
 export function useMedications() {
-  const { user } = useAuth();
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!user) {
-      setPets([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await petService.getAll(user.id);
-      setPets(data);
-    } catch {
-      setError("Não foi possível carregar os medicamentos.");
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
+  const { pets, loading, error: loadError, reload } = usePets();
+  const { findPet } = usePetCache();
+  const {
+    createItem,
+    updateItem,
+    deleteItem,
+    saving,
+    createFailed,
+    updateFailed,
+    deleteFailed,
+  } = useHealthItemMutations();
 
   const addMedication = useCallback(
     async (petId: string, medication: NewMedication) => {
-      if (!user) return false;
-
-      setSaving(true);
-      setError(null);
-
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const medications = pet.medications ?? [];
-
-        medications.push({
-          id: gerarIdNumerico().toString(),
-          type: "medication",
-          name: medication.name,
-          dose: medication.dose,
-          frequency: medication.frequency,
-          startDate: medication.startDate,
-          endDate: medication.endDate,
-          active: true,
+        await createItem({
+          petId,
+          item: {
+            id: gerarIdNumerico().toString(),
+            type: "medication",
+            name: medication.name,
+            dose: medication.dose,
+            frequency: medication.frequency,
+            startDate: medication.startDate,
+            endDate: medication.endDate,
+            active: true,
+          },
         });
-
-        await petService.save({ ...pet, medications });
-        await load();
-
         return true;
       } catch {
-        setError("Não foi possível salvar o medicamento. Tente novamente.");
         return false;
-      } finally {
-        setSaving(false);
       }
     },
-    [user, load],
+    [createItem],
   );
 
   const toggleActive = useCallback(
     async (petId: string, medicationId: string) => {
-      if (!user) return false;
+      const medication = findPet(petId)?.medications.find(
+        (m) => m.id === medicationId,
+      );
+      if (!medication) return false;
 
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const medications = (pet.medications ?? []).map((m) =>
-          m.id === medicationId ? { ...m, active: !m.active } : m,
-        );
-
-        await petService.save({ ...pet, medications });
-        await load();
-
+        await updateItem({
+          petId,
+          item: { ...medication, active: !medication.active },
+        });
         return true;
       } catch {
-        setError("Não foi possível atualizar o medicamento. Tente novamente.");
         return false;
       }
     },
-    [user, load],
+    [findPet, updateItem],
   );
 
   const removeMedication = useCallback(
     async (petId: string, medicationId: string) => {
-      if (!user) return false;
-
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const medications = (pet.medications ?? []).filter(
-          (m) => m.id !== medicationId,
-        );
-
-        await petService.save({ ...pet, medications });
-        await load();
-
+        await deleteItem({ petId, itemId: medicationId });
         return true;
       } catch {
-        setError("Não foi possível remover o medicamento. Tente novamente.");
         return false;
       }
     },
-    [user, load],
+    [deleteItem],
   );
+
+  let error = loadError ? "Não foi possível carregar os medicamentos." : null;
+  if (createFailed)
+    error = "Não foi possível salvar o medicamento. Tente novamente.";
+  else if (updateFailed)
+    error = "Não foi possível atualizar o medicamento. Tente novamente.";
+  else if (deleteFailed)
+    error = "Não foi possível remover o medicamento. Tente novamente.";
 
   return {
     pets,
     loading,
     error,
     saving,
-    reload: load,
+    reload,
     addMedication,
     toggleActive,
     removeMedication,

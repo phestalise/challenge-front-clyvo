@@ -1,41 +1,28 @@
-import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { Pet } from "../types";
 import { petService } from "../services/PetService";
 import { useAuth } from "./useAuth";
+import { petKeys } from "./petCache";
 
 export function usePets() {
   const { user } = useAuth();
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    if (!user) {
-      setPets([]);
-      setLoading(false);
-      return;
-    }
+  const query = useQuery({
+    queryKey: petKeys.list(user?.id),
+    queryFn: () => petService.getAll(user!.id),
+    enabled: !!user,
+  });
 
-    setLoading(true);
-    setError(null);
+  const { refetch } = query;
+  const reload = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
-    try {
-      const data = await petService.getAll(user.id);
-      setPets(data);
-    } catch {
-      setError("Não foi possível carregar os pets.");
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
-
-  return { pets, loading, error, reload: load };
+  return {
+    pets: query.data ?? [],
+    loading: query.isLoading,
+    error: query.isError ? "Não foi possível carregar os pets." : null,
+    reload,
+  };
 }

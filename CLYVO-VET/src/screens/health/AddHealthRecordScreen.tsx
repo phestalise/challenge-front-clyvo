@@ -15,17 +15,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList } from "../../types";
 
 import { usePets } from "../../hooks/usePets";
 
-import { styles } from "../../styles/AddHealthRecordScreen.styles";
+import { useAddHealthRecordScreenStyles } from "../../styles/AddHealthRecordScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AddHealthRecord">;
 
 export default function AddHealthRecordScreen() {
+  const styles = useAddHealthRecordScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const insets = useSafeAreaInsets();
@@ -67,19 +70,12 @@ export default function AddHealthRecordScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name="paw"
-        size={110}
-        color={alpha(Colors.textLight, 0.06)}
-        style={styles.pawWatermark}
-      />
-
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Ionicons name="arrow-back" size={22} color={Colors.white} />
+          <Ionicons name="arrow-back" size={22} color={Colors.text} />
         </TouchableOpacity>
 
         <Text style={styles.title}>Saúde</Text>

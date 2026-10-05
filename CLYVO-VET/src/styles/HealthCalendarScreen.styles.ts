@@ -1,178 +1,72 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
-  shadows: Shadows,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+// Tela minimalista: fundo limpo, grade sem cartão e agenda do dia em lista.
+export const useHealthCalendarScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 120,
-    left: 16,
-    transform: [{ rotate: "-15deg" }],
+    backgroundColor: Colors.canvas,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing.sm,
     paddingHorizontal: Spacing.xl,
   },
 
   headerIconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: alpha(Colors.white, 0.15),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  titleWrap: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  titleBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
+    width: 40,
+    height: 40,
     borderRadius: Radius.pill,
-    borderWidth: 1,
-    borderColor: alpha(Colors.white, 0.25),
+    backgroundColor: Colors.overlaySoft,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  title: {
-    color: Colors.white,
+  headerTitle: {
+    color: Colors.text,
     ...Typography.subtitle,
-    letterSpacing: 0.2,
   },
 
   scrollContent: {
-    padding: Spacing.lg,
-    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.sm,
+    // Clareia a tab bar flutuante (altura 82 + offset 20).
     paddingBottom: Spacing.huge * 3,
-    gap: Spacing.lg,
   },
 
-  todayCard: {
-    backgroundColor: Colors.white,
-    borderRadius: Radius.xl,
-    padding: Spacing.lg,
-    ...Shadows.sm,
-  },
-
-  todayCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  todayCardTitle: {
-    color: Colors.text,
-    ...Typography.label,
-    fontWeight: "700",
-  },
-
-  todayCountBadge: {
-    minWidth: 20,
-    height: 20,
-    paddingHorizontal: 6,
-    borderRadius: 10,
-    backgroundColor: Colors.accent,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  todayCountText: {
-    color: Colors.white,
-    ...Typography.caption,
-    fontWeight: "700",
-  },
-
-  todayEmptyText: {
-    color: Colors.textLight,
-    ...Typography.caption,
-    marginTop: Spacing.sm,
-  },
-
-  todayList: {
-    marginTop: Spacing.md,
-    gap: Spacing.sm,
-  },
-
-  todayItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-
-  todayItemIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  todayItemName: {
-    color: Colors.text,
-    ...Typography.label,
-  },
-
-  todayItemPet: {
-    color: Colors.textSecondary,
-    ...Typography.caption,
-    marginTop: 1,
-  },
-
-  flexOne: {
-    flex: 1,
-  },
-
-  calendarCard: {
-    backgroundColor: Colors.white,
-    borderRadius: Radius.xxl,
-    padding: Spacing.lg,
-    ...Shadows.md,
-  },
-
+  // ── Mês ────────────────────────────────────────────────────────────────
   monthRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: Spacing.lg,
+    marginBottom: Spacing.xl,
   },
 
-  monthNavBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.background,
+  monthTitleWrap: {
+    flex: 1,
   },
 
   monthText: {
-    color: Colors.primary,
-    ...Typography.subtitle,
+    color: Colors.text,
+    ...Typography.display,
+    fontSize: 26,
+    lineHeight: 32,
     textTransform: "capitalize",
+  },
+
+  monthSub: {
+    color: Colors.textMuted,
+    ...Typography.caption,
+    marginTop: 2,
   },
 
   monthNavRight: {
@@ -181,31 +75,34 @@ export const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
 
-  todayBtn: {
-    paddingHorizontal: Spacing.sm,
-    height: 36,
-    borderRadius: 18,
+  monthNavBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.pill,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: alpha(Colors.accentLight, 0.15),
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+
+  todayBtn: {
+    paddingHorizontal: Spacing.md,
+    height: 40,
+    borderRadius: Radius.pill,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: alpha(Colors.accent, 0.1),
   },
 
   todayBtnText: {
     color: Colors.accent,
-    ...Typography.caption,
-    fontWeight: "700",
+    ...Typography.label,
   },
 
-  tapHint: {
-    color: Colors.textLight,
-    ...Typography.caption,
-    textAlign: "center",
-    marginBottom: Spacing.sm,
-  },
-
+  // ── Grade ──────────────────────────────────────────────────────────────
   weekRow: {
     flexDirection: "row",
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
 
   weekTextWrapper: {
@@ -214,11 +111,10 @@ export const styles = StyleSheet.create({
   },
 
   weekText: {
-    textAlign: "center",
-    color: Colors.textSecondary,
+    color: Colors.textMuted,
     ...Typography.caption,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   },
 
   calendarGrid: {
@@ -228,41 +124,46 @@ export const styles = StyleSheet.create({
 
   dayCellWrapper: {
     width: "14.2857%",
-    aspectRatio: 1,
-    padding: Spacing.xs,
+    height: 54,
+    padding: 2,
   },
 
   dayCell: {
     flex: 1,
-    borderRadius: Radius.pill,
+    borderRadius: Radius.lg,
     alignItems: "center",
     justifyContent: "center",
-    gap: Spacing.xs,
+    gap: 3,
   },
 
   dayCellToday: {
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
+    backgroundColor: alpha(Colors.accent, 0.1),
   },
 
   dayCellSelected: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
   },
 
   dayNumber: {
     color: Colors.text,
-    ...Typography.label,
+    ...Typography.body,
+    fontWeight: "500",
+  },
+
+  dayNumberToday: {
+    color: Colors.accent,
+    fontWeight: "700",
   },
 
   dayNumberSelected: {
-    color: Colors.white,
-    fontWeight: "800",
+    color: Colors.onAccent,
+    fontWeight: "700",
   },
 
   dotsRow: {
     flexDirection: "row",
-    gap: Spacing.xs,
-    minHeight: 6,
+    gap: 3,
+    height: 6,
     alignItems: "center",
   },
 
@@ -274,47 +175,145 @@ export const styles = StyleSheet.create({
 
   dotOverflowText: {
     ...Typography.caption,
+    fontSize: 9,
+    lineHeight: 10,
     fontWeight: "700",
   },
 
   legend: {
     flexDirection: "row",
     justifyContent: "center",
-    flexWrap: "wrap",
     gap: Spacing.xl,
-    marginTop: Spacing.lg,
-    paddingTop: Spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: Colors.background,
+    marginTop: Spacing.md,
   },
 
   legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.sm,
+    gap: Spacing.xs,
   },
 
   legendDot: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-  },
-
-  legendRing: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
 
   legendText: {
-    color: Colors.textSecondary,
+    color: Colors.textMuted,
     ...Typography.caption,
   },
 
-  emptyText: {
-    color: alpha(Colors.white, 0.85),
+  // ── Agenda do dia ──────────────────────────────────────────────────────
+  agenda: {
+    marginTop: Spacing.xxl,
+    paddingTop: Spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+
+  agendaHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: Spacing.lg,
+  },
+
+  agendaTitle: {
+    color: Colors.text,
+    ...Typography.subtitle,
+    textTransform: "capitalize",
+  },
+
+  agendaCount: {
+    color: Colors.textMuted,
+    ...Typography.caption,
+    marginTop: 2,
+  },
+
+  addBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    height: 38,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.accent,
+  },
+
+  addBtnText: {
+    color: Colors.onAccent,
+    ...Typography.label,
+  },
+
+  eventList: {
+    gap: Spacing.sm,
+  },
+
+  eventRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.background,
+  },
+
+  eventIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  eventInfo: {
+    flex: 1,
+  },
+
+  eventName: {
+    color: Colors.text,
+    ...Typography.label,
+  },
+
+  eventPet: {
+    color: Colors.textMuted,
+    ...Typography.caption,
+    marginTop: 2,
+  },
+
+  eventChip: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: Radius.pill,
+  },
+
+  eventChipText: {
+    ...Typography.caption,
+    fontWeight: "700",
+  },
+
+  emptyAgenda: {
+    alignItems: "center",
+    gap: Spacing.sm,
+    paddingVertical: Spacing.xxl,
+  },
+
+  emptyAgendaText: {
+    color: Colors.textMuted,
+    ...Typography.label,
     textAlign: "center",
   },
-});
+
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  emptyText: {
+    color: Colors.accentRed,
+    textAlign: "center",
+    marginBottom: Spacing.md,
+  },
+}));

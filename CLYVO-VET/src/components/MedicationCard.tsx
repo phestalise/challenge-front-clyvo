@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { Medication } from "../types";
-import { Colors } from "../styles/colors";
-import { styles } from "../styles/MedicationCard.styles";
+import { useTheme } from "../theme";
+import { useMedicationCardStyles } from "../styles/MedicationCard.styles";
 
 type Props = {
   medication: Medication;
@@ -10,6 +10,8 @@ type Props = {
 };
 
 export default function MedicationCard({ medication, petName }: Props) {
+  const styles = useMedicationCardStyles();
+  const { colors: Colors } = useTheme();
   const color = medication.active ? Colors.accentGreen : Colors.textSecondary;
 
   return (

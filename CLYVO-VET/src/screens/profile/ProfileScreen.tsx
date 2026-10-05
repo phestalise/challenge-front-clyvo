@@ -9,15 +9,17 @@ import {
   Modal,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
+
 import { showAlert } from "../../utils/showAlert";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { ThemeMode, useTheme } from "../../theme";
 import { useAuth } from "../../hooks/useAuth";
 import { getErrorMessage } from "../../utils/errorMessage";
 
-import { styles } from "../../styles/ProfileScreen.styles";
+import { useProfileScreenStyles } from "../../styles/ProfileScreen.styles";
 
 const FAQ_DATA = [
   {
@@ -32,9 +34,25 @@ const FAQ_DATA = [
     q: "O histórico do chat salva?",
     a: "Sim, automaticamente.",
   },
+  {
+    q: "Como funcionam os lembretes?",
+    a: "Ao cadastrar uma vacina, um medicamento ou um retorno, o app avisa você um dia antes e no dia do vencimento. Toque na notificação para abrir a tela correspondente.",
+  },
+];
+
+const THEME_OPTIONS: {
+  mode: ThemeMode;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}[] = [
+  { mode: "light", label: "Claro", icon: "sunny-outline" },
+  { mode: "dark", label: "Escuro", icon: "moon-outline" },
 ];
 
 export default function ProfileScreen() {
+  const styles = useProfileScreenStyles();
+  const { colors: Colors, mode, setMode } = useTheme();
+  const navigation = useNavigation<any>();
   const { user, logout, updateName, updateEmailAddress } = useAuth();
 
   const [editModal, setEditModal] = useState(false);
@@ -98,13 +116,6 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name="paw"
-        size={70}
-        color={Colors.white}
-        style={styles.pawWatermark}
-      />
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
@@ -123,10 +134,47 @@ export default function ProfileScreen() {
             onPress={openEdit}
             activeOpacity={0.8}
           >
-            <Ionicons name="create-outline" size={18} color={Colors.white} />
+            <Ionicons name="create-outline" size={18} color={Colors.accent} />
 
             <Text style={styles.editBtnText}>Editar perfil</Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Aparência</Text>
+
+          <View style={styles.themeRow}>
+            {THEME_OPTIONS.map((option) => {
+              const active = mode === option.mode;
+
+              return (
+                <TouchableOpacity
+                  key={option.mode}
+                  style={[
+                    styles.themeOption,
+                    active && styles.themeOptionActive,
+                  ]}
+                  activeOpacity={0.8}
+                  onPress={() => setMode(option.mode)}
+                >
+                  <Ionicons
+                    name={option.icon}
+                    size={20}
+                    color={active ? Colors.accentOnDark : Colors.textLight}
+                  />
+
+                  <Text
+                    style={[
+                      styles.themeOptionText,
+                      active && styles.themeOptionTextActive,
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -155,11 +203,31 @@ export default function ProfileScreen() {
         </View>
 
         <TouchableOpacity
+          style={[styles.aboutRow, styles.section]}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate("About")}
+        >
+          <Ionicons
+            name="information-circle-outline"
+            size={22}
+            color={Colors.accentOnDark}
+          />
+
+          <Text style={styles.aboutText}>Sobre o app</Text>
+
+          <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={styles.logoutBtn}
           activeOpacity={0.8}
           onPress={handleLogout}
         >
-          <Ionicons name="log-out-outline" size={20} color="#FF6B6B" />
+          <Ionicons
+            name="log-out-outline"
+            size={20}
+            color={Colors.dangerOnDark}
+          />
 
           <Text style={styles.logoutText}>Sair da conta</Text>
         </TouchableOpacity>

@@ -78,6 +78,18 @@ function itemToMedicacaoPayload(item: Item, idPet: number) {
   };
 }
 
+function petToPayload(pet: Pet) {
+  return {
+    idPet: Number(pet.id),
+    idTutor: Number(pet.ownerId),
+    nome: pet.name,
+    especie: pet.species,
+    raca: pet.breed || null,
+    dataNascimento: brDateToIso(pet.birthDate),
+    pesoKg: pet.weight,
+  };
+}
+
 function itemMetaOf(item: Item) {
   return item.type === "vaccine"
     ? { type: "vaccine" as const, done: item.done }
@@ -114,38 +126,45 @@ class PetService {
     return this.hydrate(apiPet);
   }
 
-  async save(pet: Pet): Promise<void> {
-    const idPet = Number(pet.id);
-    const idTutor = Number(pet.ownerId);
+  async create(pet: Pet): Promise<void> {
+    await apiClient.post("/api/pets", petToPayload(pet));
+    await this.saveLocalMeta(pet);
+  }
 
-    const payload = {
-      idPet,
-      idTutor,
-      nome: pet.name,
-      especie: pet.species,
-      raca: pet.breed || null,
-      dataNascimento: brDateToIso(pet.birthDate),
-      pesoKg: pet.weight,
-    };
+  async update(pet: Pet): Promise<void> {
+    await apiClient.put(`/api/pets/${Number(pet.id)}`, petToPayload(pet));
+    await this.saveLocalMeta(pet);
+  }
 
-    const existing = await notFoundToNull(
-      apiClient.get<ApiPet>(`/api/pets/${idPet}`),
-    );
-
-    if (existing) {
-      await apiClient.put(`/api/pets/${idPet}`, payload);
-    } else {
-      await apiClient.post("/api/pets", payload);
-    }
-
+  // Foto e data do próximo retorno não existem na API: ficam só no aparelho.
+  async saveLocalMeta(pet: Pet): Promise<void> {
     await petMetadataStore.setPetMeta(pet.id, {
       nextCheckup: pet.nextCheckup,
       photoUri: pet.photoUri,
     });
-    await this.syncItems(idPet, [
-      ...(pet.vaccines ?? []),
-      ...(pet.medications ?? []),
-    ]);
+  }
+
+  // Vacinas e medicamentos são registros da tabela MEDICACAO: cada operação
+  // vira uma única chamada à API, sem precisar regravar o pet inteiro.
+  async createItem(petId: string, item: Item): Promise<void> {
+    await apiClient.post(
+      "/api/medicacoes",
+      itemToMedicacaoPayload(item, Number(petId)),
+    );
+    await petMetadataStore.setItemMeta(item.id, itemMetaOf(item));
+  }
+
+  async updateItem(petId: string, item: Item): Promise<void> {
+    await apiClient.put(
+      `/api/medicacoes/${item.id}`,
+      itemToMedicacaoPayload(item, Number(petId)),
+    );
+    await petMetadataStore.setItemMeta(item.id, itemMetaOf(item));
+  }
+
+  async deleteItem(itemId: string): Promise<void> {
+    await apiClient.delete(`/api/medicacoes/${itemId}`);
+    await petMetadataStore.deleteItemMeta(itemId);
   }
 
   async remove(id: string, ownerId: string): Promise<void> {
@@ -169,12 +188,6 @@ class PetService {
     await petMetadataStore.deletePetMeta(id);
   }
 
-  getHealthScore(pet: Pet): number {
-    if (!pet.vaccines || pet.vaccines.length === 0) return 100;
-    const done = pet.vaccines.filter((v) => v.done).length;
-    return Math.round((done / pet.vaccines.length) * 100);
-  }
-
   private async hydrate(apiPet: ApiPet): Promise<Pet> {
     const [meta, medicacoes] = await Promise.all([
       petMetadataStore.getPetMeta(String(apiPet.idPet)),
@@ -196,36 +209,6 @@ class PetService {
     });
 
     return pet;
-  }
-
-  // Reconcilia a lista final de vacinas/medicamentos do pet com o que já
-  // existe na API: cria o que é novo, atualiza o que mudou e remove o que
-  // não está mais na lista (ex: removeVaccine/removeMedication).
-  private async syncItems(idPet: number, items: Item[]): Promise<void> {
-    const current = await apiClient.get<ApiMedicacao[]>(
-      `/api/medicacoes/pet/${idPet}`,
-    );
-    const currentIds = new Set(current.map((m) => String(m.idMedicacao)));
-    const incomingIds = new Set(items.map((i) => i.id));
-
-    for (const item of items) {
-      const payload = itemToMedicacaoPayload(item, idPet);
-
-      if (currentIds.has(item.id)) {
-        await apiClient.put(`/api/medicacoes/${item.id}`, payload);
-      } else {
-        await apiClient.post("/api/medicacoes", payload);
-      }
-
-      await petMetadataStore.setItemMeta(item.id, itemMetaOf(item));
-    }
-
-    for (const idStr of currentIds) {
-      if (!incomingIds.has(idStr)) {
-        await apiClient.delete(`/api/medicacoes/${idStr}`);
-        await petMetadataStore.deleteItemMeta(idStr);
-      }
-    }
   }
 }
 

@@ -1,10 +1,9 @@
-import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
-import { Pet } from "../types";
-import { petService } from "../services/PetService";
 import { gerarIdNumerico } from "../utils/id";
-import { useAuth } from "./useAuth";
+import { usePetCache } from "./petCache";
+import { usePets } from "./usePets";
+import { useHealthItemMutations } from "./useHealthItemMutations";
 
 type NewVaccine = {
   name: string;
@@ -13,126 +12,84 @@ type NewVaccine = {
 };
 
 export function useVaccines() {
-  const { user } = useAuth();
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!user) {
-      setPets([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await petService.getAll(user.id);
-      setPets(data);
-    } catch {
-      setError("Não foi possível carregar as vacinas.");
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
+  const { pets, loading, error: loadError, reload } = usePets();
+  const { findPet } = usePetCache();
+  const {
+    createItem,
+    updateItem,
+    deleteItem,
+    saving,
+    createFailed,
+    updateFailed,
+    deleteFailed,
+  } = useHealthItemMutations();
 
   const addVaccine = useCallback(
     async (petId: string, vaccine: NewVaccine) => {
-      if (!user) return false;
-
-      setSaving(true);
-      setError(null);
-
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const vaccines = pet.vaccines ?? [];
-
-        vaccines.push({
-          id: gerarIdNumerico().toString(),
-          type: "vaccine",
-          name: vaccine.name,
-          startDate: vaccine.startDate,
-          endDate: vaccine.endDate,
-          done: !!vaccine.startDate,
+        await createItem({
+          petId,
+          item: {
+            id: gerarIdNumerico().toString(),
+            type: "vaccine",
+            name: vaccine.name,
+            startDate: vaccine.startDate,
+            endDate: vaccine.endDate,
+            done: !!vaccine.startDate,
+          },
         });
-
-        await petService.save({ ...pet, vaccines });
-        await load();
-
         return true;
       } catch {
-        setError("Não foi possível salvar a vacina. Tente novamente.");
         return false;
-      } finally {
-        setSaving(false);
       }
     },
-    [user, load],
+    [createItem],
   );
 
   const toggleDone = useCallback(
     async (petId: string, vaccineId: string) => {
-      if (!user) return false;
+      const vaccine = findPet(petId)?.vaccines.find((v) => v.id === vaccineId);
+      if (!vaccine) return false;
 
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const vaccines = (pet.vaccines ?? []).map((v) =>
-          v.id === vaccineId ? { ...v, done: !v.done } : v,
-        );
-
-        await petService.save({ ...pet, vaccines });
-        await load();
-
+        await updateItem({
+          petId,
+          item: { ...vaccine, done: !vaccine.done },
+        });
         return true;
       } catch {
-        setError("Não foi possível atualizar a vacina. Tente novamente.");
         return false;
       }
     },
-    [user, load],
+    [findPet, updateItem],
   );
 
   const removeVaccine = useCallback(
     async (petId: string, vaccineId: string) => {
-      if (!user) return false;
-
       try {
-        const pet = await petService.getById(petId, user.id);
-        if (!pet) return false;
-
-        const vaccines = (pet.vaccines ?? []).filter((v) => v.id !== vaccineId);
-
-        await petService.save({ ...pet, vaccines });
-        await load();
-
+        await deleteItem({ petId, itemId: vaccineId });
         return true;
       } catch {
-        setError("Não foi possível remover a vacina. Tente novamente.");
         return false;
       }
     },
-    [user, load],
+    [deleteItem],
   );
+
+  let error = loadError ? "Não foi possível carregar as vacinas." : null;
+  if (createFailed)
+    error = "Não foi possível salvar a vacina. Tente novamente.";
+  else if (updateFailed)
+    error = "Não foi possível atualizar a vacina. Tente novamente.";
+  else if (deleteFailed)
+    error = "Não foi possível remover a vacina. Tente novamente.";
 
   return {
     pets,
     loading,
     error,
     saving,
-    reload: load,
+    reload,
     addVaccine,
     toggleDone,
     removeVaccine,

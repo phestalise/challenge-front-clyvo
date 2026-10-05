@@ -15,13 +15,15 @@ import { showAlert } from "../../utils/showAlert";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { useAuth } from "../../hooks/useAuth";
 import { mapFirebaseAuthError } from "../../utils/authErrors";
 
-import { styles } from "../../styles/LoginScreen.styles";
+import { useLoginScreenStyles } from "../../styles/LoginScreen.styles";
 
 export default function VerifyEmailScreen() {
+  const styles = useLoginScreenStyles();
+  const { colors: Colors, scheme } = useTheme();
   const { user, logout, sendVerificationEmail, refreshEmailVerified } =
     useAuth();
 
@@ -66,7 +68,10 @@ export default function VerifyEmailScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <StatusBar
+        barStyle={scheme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={Colors.primary}
+      />
 
       <KeyboardAvoidingView
         style={styles.keyboardContainer}

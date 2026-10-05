@@ -6,8 +6,9 @@ import {
   TextInputProps,
   TouchableOpacity,
 } from "react-native";
-import { Colors } from "../styles/colors";
-import { styles } from "../styles/InputField.styles";
+import { alpha } from "../styles/colors";
+import { useTheme } from "../theme";
+import { useInputFieldStyles } from "../styles/InputField.styles";
 
 type Props = TextInputProps & {
   label: string;
@@ -27,6 +28,8 @@ export default function InputField({
   dark = false,
   ...props
 }: Props) {
+  const styles = useInputFieldStyles();
+  const { colors: Colors } = useTheme();
   return (
     <View style={styles.wrapper}>
       <Text style={[styles.label, dark ? styles.labelDark : styles.labelLight]}>
@@ -48,7 +51,7 @@ export default function InputField({
             dark ? styles.inputTextDark : styles.inputTextLight,
           ]}
           placeholderTextColor={
-            dark ? "rgba(255,255,255,0.35)" : Colors.textLight
+            dark ? alpha(Colors.text, 0.35) : Colors.textLight
           }
           {...props}
         />

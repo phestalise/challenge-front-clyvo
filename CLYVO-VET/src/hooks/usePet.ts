@@ -1,64 +1,108 @@
-import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Pet } from "../types";
 import { petService } from "../services/PetService";
 import { useAuth } from "./useAuth";
+import { petKeys, usePetCache } from "./petCache";
 
 export function usePet(petId?: string) {
   const { user } = useAuth();
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { applyPet, removePet } = usePetCache();
 
-  const load = useCallback(async () => {
-    if (!petId || !user) {
-      setPet(null);
-      setLoading(false);
-      return;
-    }
+  const query = useQuery({
+    queryKey: petKeys.detail(user?.id, petId),
+    queryFn: () => petService.getById(petId!, user!.id),
+    enabled: !!user && !!petId,
+    // Reaproveita o pet já carregado na lista, evitando uma nova ida à API.
+    initialData: () =>
+      queryClient
+        .getQueryData<Pet[]>(petKeys.list(user?.id))
+        ?.find((p) => p.id === petId),
+    initialDataUpdatedAt: () =>
+      queryClient.getQueryState(petKeys.list(user?.id))?.dataUpdatedAt,
+  });
 
-    setLoading(true);
-    setError(null);
+  const saveMutation = useMutation({
+    mutationFn: async (data: Pet) => {
+      if (petId) await petService.update(data);
+      else await petService.create(data);
+      return data;
+    },
+    onSuccess: applyPet,
+  });
 
-    try {
-      const data = await petService.getById(petId, user.id);
-      setPet(data);
-    } catch {
-      setError("Não foi possível carregar os dados do pet.");
-    } finally {
-      setLoading(false);
-    }
-  }, [petId, user]);
+  const metaMutation = useMutation({
+    mutationFn: async (data: Pet) => {
+      await petService.saveLocalMeta(data);
+      return data;
+    },
+    onSuccess: applyPet,
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
+  const removeMutation = useMutation({
+    mutationFn: () => petService.remove(petId!, user!.id),
+    onSuccess: () => petId && removePet(petId),
+  });
+
+  const { refetch } = query;
+  const reload = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
+  const save = useCallback(
+    async (data: Pet) => {
+      try {
+        await saveMutation.mutateAsync(data);
+        return true;
+      } catch (err) {
+        console.error("[usePet] Falha ao salvar pet:", err);
+        return false;
+      }
+    },
+    [saveMutation],
   );
 
-  const save = useCallback(async (data: Pet) => {
-    try {
-      await petService.save(data);
-      return true;
-    } catch (err) {
-      console.error("[usePet] Falha ao salvar pet:", err);
-      setError("Não foi possível salvar o pet. Tente novamente.");
-      return false;
-    }
-  }, []);
+  // Foto e retorno agendado só existem no aparelho — não passam pela API.
+  const saveLocalData = useCallback(
+    async (data: Pet) => {
+      try {
+        await metaMutation.mutateAsync(data);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [metaMutation],
+  );
 
   const remove = useCallback(async () => {
     if (!petId || !user) return false;
 
     try {
-      await petService.remove(petId, user.id);
+      await removeMutation.mutateAsync();
       return true;
     } catch {
-      setError("Não foi possível remover o pet. Tente novamente.");
       return false;
     }
-  }, [petId, user]);
+  }, [petId, user, removeMutation]);
 
-  return { pet, loading, error, reload: load, save, remove };
+  let error: string | null = null;
+  if (query.isError) error = "Não foi possível carregar os dados do pet.";
+  else if (saveMutation.isError)
+    error = "Não foi possível salvar o pet. Tente novamente.";
+  else if (removeMutation.isError)
+    error = "Não foi possível remover o pet. Tente novamente.";
+
+  return {
+    pet: query.data ?? null,
+    loading: query.isLoading,
+    saving: saveMutation.isPending,
+    error,
+    reload,
+    save,
+    saveLocalData,
+    remove,
+  };
 }

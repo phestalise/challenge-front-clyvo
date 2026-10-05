@@ -1,9 +1,8 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions } from "react-native";
 
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -13,7 +12,7 @@ const {
 
 const { width } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+export const useLoginScreenStyles = makeStyles((Colors) => ({
   safe: {
     flex: 1,
     backgroundColor: Colors.primary,
@@ -83,7 +82,7 @@ export const styles = StyleSheet.create({
   },
 
   logo: {
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.label,
     letterSpacing: 2,
   },
@@ -124,14 +123,14 @@ export const styles = StyleSheet.create({
 
   title: {
     ...Typography.display,
-    color: Colors.white,
+    color: Colors.text,
     marginBottom: Spacing.md,
     letterSpacing: -0.5,
   },
 
   sub: {
     ...Typography.body,
-    color: alpha(Colors.white, 0.45),
+    color: alpha(Colors.text, 0.45),
     marginBottom: Spacing.xxxl,
   },
 
@@ -212,7 +211,7 @@ export const styles = StyleSheet.create({
   },
 
   dividerText: {
-    color: alpha(Colors.white, 0.25),
+    color: alpha(Colors.text, 0.25),
     ...Typography.label,
   },
 
@@ -226,7 +225,7 @@ export const styles = StyleSheet.create({
   },
 
   btnSecondaryText: {
-    color: alpha(Colors.white, 0.7),
+    color: alpha(Colors.text, 0.7),
     ...Typography.body,
   },
 
@@ -245,7 +244,7 @@ export const styles = StyleSheet.create({
   },
 
   trustText: {
-    color: alpha(Colors.white, 0.3),
+    color: alpha(Colors.text, 0.3),
     ...Typography.caption,
   },
-});
+}));

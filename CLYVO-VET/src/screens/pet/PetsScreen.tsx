@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import {
+  TextInput,
   View,
   Text,
   ScrollView,
@@ -19,14 +20,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 import Svg, { Circle } from "react-native-svg";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList } from "../../types";
-import { petService } from "../../services/PetService";
+import { getHealthScore } from "../../utils/petHealth";
 import { calcularIdadeTexto } from "../../utils/formatters";
 import { usePets } from "../../hooks/usePets";
 import { blurActiveElement } from "../../utils/blurActiveElement";
 
-import { styles } from "../../styles/PetsScreen.styles";
+import { usePetsScreenStyles } from "../../styles/PetsScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -38,12 +40,25 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const getInitial = (name: string) => name.trim().charAt(0).toUpperCase();
 
 export default function PetsScreen() {
+  const styles = usePetsScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
 
   const { pets, loading, error, reload } = usePets();
 
   const [refreshing, setRefreshing] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const visiblePets = normalizedQuery
+    ? pets.filter((pet) =>
+        [pet.name, pet.species, pet.breed].some((field) =>
+          field?.toLowerCase().includes(normalizedQuery),
+        ),
+      )
+    : pets;
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -55,15 +70,6 @@ export default function PetsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.orb} pointerEvents="none" />
-
-      <Ionicons
-        name="paw"
-        size={110}
-        color={alpha(Colors.white, 0.05)}
-        style={styles.pawWatermark}
-      />
-
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View>
           <Text style={styles.headerEyebrow}>Meus pets</Text>
@@ -83,9 +89,34 @@ export default function PetsScreen() {
             navigation.navigate("AddPet");
           }}
         >
-          <Ionicons name="add" size={24} color={Colors.white} />
+          <Ionicons name="add" size={24} color={Colors.onAccent} />
         </TouchableOpacity>
       </View>
+
+      {pets.length > 1 && (
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color={Colors.textMuted} />
+
+          <TextInput
+            style={styles.searchInput}
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Buscar por nome, espécie ou raça"
+            placeholderTextColor={Colors.textLight}
+            autoCorrect={false}
+          />
+
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery("")}>
+              <Ionicons
+                name="close-circle"
+                size={18}
+                color={Colors.textMuted}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
 
       {loading && pets.length === 0 ? (
         <View
@@ -138,9 +169,13 @@ export default function PetsScreen() {
                 <Text style={styles.emptyBtnText}>Cadastrar Pet</Text>
               </TouchableOpacity>
             </View>
+          ) : visiblePets.length === 0 ? (
+            <Text style={styles.emptyText}>
+              Nenhum pet encontrado para “{query.trim()}”.
+            </Text>
           ) : (
-            pets.map((pet) => {
-              const score = petService.getHealthScore(pet);
+            visiblePets.map((pet) => {
+              const score = getHealthScore(pet);
 
               const scoreColor =
                 score >= 70

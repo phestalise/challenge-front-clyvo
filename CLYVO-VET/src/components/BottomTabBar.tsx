@@ -3,12 +3,13 @@ import { View, Text, TouchableOpacity, Keyboard } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../styles/colors";
+import { alpha } from "../styles/colors";
+import { useTheme } from "../theme";
 import { MainTabParamList } from "../types";
 import { navigationRef } from "../navigation/navigationRef";
 import { blurActiveElement } from "../utils/blurActiveElement";
 
-import { styles } from "../styles/MainTabs.styles";
+import { useMainTabsStyles } from "../styles/MainTabs.styles";
 
 type TabDef = {
   name: keyof MainTabParamList;
@@ -49,6 +50,8 @@ const TABS: TabDef[] = [
 // por isso navega via navigationRef em vez de useNavigation/useRoute —
 // este componente não é filho do Stack.Navigator.
 export default function BottomTabBar() {
+  const styles = useMainTabsStyles();
+  const { colors: Colors } = useTheme();
   const [activeRoute, setActiveRoute] = useState(
     navigationRef.getCurrentRoute()?.name,
   );
@@ -98,14 +101,14 @@ export default function BottomTabBar() {
               <Ionicons
                 name={focused ? tab.active : tab.inactive}
                 size={24}
-                color={Colors.white}
+                color={Colors.text}
               />
             </View>
 
             <Text
               style={[
                 styles.tabBarLabelStyle,
-                { color: focused ? Colors.white : "rgba(255,255,255,0.65)" },
+                { color: focused ? Colors.text : alpha(Colors.text, 0.65) },
               ]}
             >
               {tab.label}

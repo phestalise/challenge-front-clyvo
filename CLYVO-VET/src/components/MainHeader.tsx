@@ -5,10 +5,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors } from "../styles/colors";
+import { useTheme } from "../theme";
 import { MainTabParamList } from "../types";
 
-import { styles } from "../styles/MainHeader.styles";
+import { useMainHeaderStyles } from "../styles/MainHeader.styles";
 
 const TAB_TITLES: Record<keyof MainTabParamList, string> = {
   Dashboard: "Início",
@@ -23,6 +23,8 @@ type Props = {
 };
 
 export default function MainHeader({ route }: Props) {
+  const styles = useMainHeaderStyles();
+  const { colors: Colors } = useTheme();
   const insets = useSafeAreaInsets();
 
   return (

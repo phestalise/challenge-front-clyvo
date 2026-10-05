@@ -63,4 +63,5 @@ export type RootStackParamList = MainTabParamList & {
   Medications: { date?: string } | undefined;
   Pending: undefined;
   AddHealthRecord: { date?: string } | undefined;
+  About: undefined;
 };

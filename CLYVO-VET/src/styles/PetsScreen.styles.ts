@@ -1,9 +1,6 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -14,31 +11,10 @@ const {
 // Centralização vertical do estado vazio; não é um valor de ritmo de espaçamento.
 const EMPTY_STATE_OFFSET = 90;
 
-// Círculo decorativo de fundo (marca d'água) — fora da escala de radius
-// (raio = metade do tamanho).
-const ORB_SIZE = 260;
-
-export const styles = StyleSheet.create({
+export const usePetsScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  orb: {
-    position: "absolute",
-    top: -110,
-    right: -90,
-    width: ORB_SIZE,
-    height: ORB_SIZE,
-    borderRadius: ORB_SIZE / 2,
-    backgroundColor: alpha(Colors.white, 0.05),
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 90,
-    left: -20,
-    transform: [{ rotate: "-18deg" }],
   },
 
   header: {
@@ -46,29 +22,51 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
 
   headerEyebrow: {
-    color: Colors.textLight,
-    ...Typography.caption,
-    letterSpacing: 1,
-    textTransform: "uppercase",
+    color: Colors.text,
+    ...Typography.display,
+    fontSize: 26,
+    lineHeight: 32,
   },
 
   headerCount: {
-    marginTop: Spacing.xs,
-    color: Colors.white,
-    ...Typography.subtitle,
+    marginTop: 2,
+    color: Colors.textMuted,
+    ...Typography.label,
   },
 
   addBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.lg,
-    backgroundColor: Colors.accentLight,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: Colors.accent,
     alignItems: "center",
     justifyContent: "center",
+    ...Shadows.sm,
+  },
+
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    marginHorizontal: Spacing.xl,
+    marginBottom: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    height: 44,
+    borderRadius: Radius.lg,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+
+  searchInput: {
+    flex: 1,
+    ...Typography.body,
+    color: Colors.text,
+    paddingVertical: 0,
   },
 
   list: {
@@ -96,7 +94,7 @@ export const styles = StyleSheet.create({
 
   emptyTitle: {
     ...Typography.title,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   emptyText: {
@@ -116,17 +114,16 @@ export const styles = StyleSheet.create({
 
   emptyBtnText: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.onAccent,
   },
 
-  // Card do pet: fundo branco, borda azul, cantos de 16px, sombra suave.
+  // Card do pet: superfície do tema, borda fina e cantos de 16px.
   card: {
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
-    ...Shadows.card,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   cardTop: {
@@ -221,4 +218,4 @@ export const styles = StyleSheet.create({
     ...Typography.caption,
     color: Colors.textMuted,
   },
-});
+}));

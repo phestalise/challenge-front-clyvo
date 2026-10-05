@@ -1,9 +1,6 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -11,7 +8,7 @@ const {
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const usePetCardStyles = makeStyles((Colors) => ({
   card: {
     backgroundColor: Colors.card,
     borderRadius: Radius.lg,
@@ -116,4 +113,4 @@ export const styles = StyleSheet.create({
     ...Typography.caption,
     color: Colors.textSecondary,
   },
-});
+}));

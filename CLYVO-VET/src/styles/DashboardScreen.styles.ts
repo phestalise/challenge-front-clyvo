@@ -1,9 +1,6 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -11,54 +8,18 @@ const {
   alpha,
 } = theme;
 
-// Círculos decorativos de fundo do estado vazio — fora da escala de radius
-// (raio = metade do tamanho), mesmo espírito dos orbs do RegisterScreen.
-const ORB_TOP_SIZE = 240;
-const ORB_BOTTOM_SIZE = 220;
-
-export const styles = StyleSheet.create({
+export const useDashboardScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
   },
 
-  orbTop: {
-    position: "absolute",
-    top: -100,
-    right: -80,
-    width: ORB_TOP_SIZE,
-    height: ORB_TOP_SIZE,
-    borderRadius: ORB_TOP_SIZE / 2,
-    backgroundColor: alpha(Colors.accentLight, 0.1),
-  },
-
-  orbBottom: {
-    position: "absolute",
-    bottom: 60,
-    left: -90,
-    width: ORB_BOTTOM_SIZE,
-    height: ORB_BOTTOM_SIZE,
-    borderRadius: ORB_BOTTOM_SIZE / 2,
-    backgroundColor: alpha(Colors.accent, 0.12),
-  },
-
-  pawWatermarkTop: {
-    position: "absolute",
-    top: 30,
-    left: -25,
-    transform: [{ rotate: "-20deg" }],
-  },
-
-  pawWatermarkBottom: {
-    position: "absolute",
-    bottom: 200,
-    right: -10,
-    transform: [{ rotate: "18deg" }],
-  },
-
   content: {
-    // Clareia a tab bar flutuante (altura 82 + offset 18).
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.sm,
+    // Clareia a tab bar flutuante (altura 82 + offset 20).
     paddingBottom: Spacing.huge * 3,
+    gap: Spacing.xxl,
   },
 
   contentCentered: {
@@ -66,163 +27,319 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  topHeader: {
-    height: Spacing.md,
-  },
-
-  chatFab: {
-    position: "absolute",
-    right: Spacing.lg,
-    bottom: 120,
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: Colors.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Shadows.md,
-  },
-
-  emptyState: {
-    alignItems: "center",
-    paddingHorizontal: Spacing.xxl,
-  },
-
-  emptyBadge: {
+  // ── Saudação ───────────────────────────────────────────────────────────
+  greetingRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.pill,
-    backgroundColor: Colors.secondary,
-    marginBottom: Spacing.xl,
-  },
-
-  emptyBadgeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.accentOnDark,
-  },
-
-  emptyBadgeText: {
-    color: Colors.textLight,
-    ...Typography.caption,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
-
-  emptyLogo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: alpha(Colors.accent, 0.18),
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: Spacing.lg,
-    borderWidth: 1.5,
-    borderColor: alpha(Colors.accentOnDark, 0.35),
-  },
-
-  emptyTitle: {
-    ...Typography.display,
-    color: Colors.accentOnDark,
-    textAlign: "center",
-    marginBottom: Spacing.sm,
-  },
-
-  emptySubtitle: {
-    ...Typography.body,
-    color: Colors.textLight,
-    textAlign: "center",
-    marginBottom: Spacing.xxl,
-  },
-
-  emptyCta: {
-    height: 56,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: Radius.xl,
-    paddingHorizontal: Spacing.xxl,
-    backgroundColor: Colors.accent,
-    ...Shadows.md,
-  },
-
-  emptyCtaText: {
-    ...Typography.body,
-    color: Colors.white,
-    fontWeight: "700",
-  },
-
-  emptyCtaArrow: {
-    position: "absolute",
-    right: Spacing.md,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: alpha(Colors.white, 0.2),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  sectionTitle: {
-    ...Typography.subtitle,
-    color: Colors.white,
-    paddingHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
-  },
-
-  statsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "space-between",
-    paddingHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
-    gap: Spacing.md,
   },
 
-  card: {
-    width: "48%",
-    minHeight: 108,
-    backgroundColor: Colors.white,
-    borderRadius: Radius.xl,
-    padding: Spacing.lg,
+  greetingText: {
+    flex: 1,
+  },
+
+  greeting: {
+    ...Typography.display,
+    fontSize: 26,
+    lineHeight: 32,
+    color: Colors.text,
+  },
+
+  date: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    marginTop: 2,
+    textTransform: "capitalize",
+  },
+
+  avatarBtn: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: Colors.accent,
+    alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: Colors.accentLight,
-    ...Shadows.sm,
   },
 
-  cardTop: {
+  avatarBtnText: {
+    ...Typography.subtitle,
+    color: Colors.onAccent,
+  },
+
+  // ── Seções ─────────────────────────────────────────────────────────────
+  sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: Spacing.md,
   },
 
-  cardIconChip: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  sectionTitle: {
+    ...Typography.subtitle,
+    color: Colors.text,
+  },
+
+  sectionLink: {
+    ...Typography.label,
+    color: Colors.accent,
+  },
+
+  // ── Atenção ────────────────────────────────────────────────────────────
+  attentionCard: {
+    backgroundColor: Colors.card,
+    borderRadius: Radius.xl,
+    padding: Spacing.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Shadows.card,
+  },
+
+  attentionOk: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    backgroundColor: alpha(Colors.accentGreen, 0.1),
+    borderRadius: Radius.xl,
+    padding: Spacing.lg,
+  },
+
+  attentionOkTitle: {
+    ...Typography.label,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+
+  attentionOkText: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+    marginTop: 2,
+  },
+
+  attentionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+
+  attentionRowDivider: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+
+  attentionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  cardEmpty: {
+  attentionInfo: {
+    flex: 1,
+  },
+
+  attentionName: {
+    ...Typography.label,
+    color: Colors.text,
+  },
+
+  attentionPet: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+    marginTop: 2,
+  },
+
+  attentionChip: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: Radius.pill,
+  },
+
+  attentionChipText: {
+    ...Typography.caption,
+    fontWeight: "700",
+  },
+
+  attentionMore: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+    textAlign: "center",
+    marginTop: Spacing.sm,
+  },
+
+  // ── Ações rápidas ──────────────────────────────────────────────────────
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  action: {
+    flex: 1,
     alignItems: "center",
     gap: Spacing.sm,
   },
 
-  cardValue: {
-    ...Typography.display,
+  actionIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: Radius.xl,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  actionLabel: {
+    ...Typography.caption,
+    color: Colors.textSecondary,
+    textAlign: "center",
+  },
+
+  // ── Pets ───────────────────────────────────────────────────────────────
+  petsRow: {
+    gap: Spacing.md,
+    paddingRight: Spacing.xl,
+  },
+
+  petCard: {
+    width: 124,
+    alignItems: "center",
+    gap: Spacing.xs,
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: Colors.card,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+
+  petAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: alpha(Colors.accent, 0.12),
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginBottom: Spacing.xs,
+  },
+
+  petAvatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  petAvatarInitial: {
+    ...Typography.title,
+    color: Colors.accent,
+  },
+
+  petName: {
+    ...Typography.label,
     color: Colors.text,
   },
 
-  cardLabel: {
-    ...Typography.label,
-    color: Colors.textSecondary,
+  petStatus: {
+    ...Typography.caption,
   },
-});
+
+  petAddCard: {
+    width: 124,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.sm,
+    borderRadius: Radius.xl,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: Colors.border,
+  },
+
+  petAddText: {
+    ...Typography.label,
+    color: Colors.textMuted,
+  },
+
+  // ── Resumo ─────────────────────────────────────────────────────────────
+  statsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.md,
+  },
+
+  statCard: {
+    width: "48%",
+    flexGrow: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    padding: Spacing.md,
+    backgroundColor: Colors.card,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+
+  statIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: Radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  statValue: {
+    ...Typography.title,
+    color: Colors.text,
+  },
+
+  statLabel: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+  },
+
+  // ── Estado vazio ───────────────────────────────────────────────────────
+  emptyState: {
+    alignItems: "center",
+    paddingHorizontal: Spacing.xl,
+    gap: Spacing.md,
+  },
+
+  emptyLogo: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: alpha(Colors.accent, 0.12),
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: Spacing.sm,
+  },
+
+  emptyTitle: {
+    ...Typography.title,
+    color: Colors.text,
+    textAlign: "center",
+  },
+
+  emptySubtitle: {
+    ...Typography.body,
+    color: Colors.textMuted,
+    textAlign: "center",
+    marginBottom: Spacing.md,
+  },
+
+  emptyCta: {
+    height: 54,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.sm,
+    borderRadius: Radius.xl,
+    backgroundColor: Colors.accent,
+  },
+
+  emptyCtaText: {
+    ...Typography.body,
+    color: Colors.onAccent,
+    fontWeight: "700",
+  },
+}));

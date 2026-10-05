@@ -6,6 +6,7 @@ import DashboardScreen from "../screens/dashboard/DashboardScreen";
 import PetsScreen from "../screens/pet/PetsScreen";
 import HealthTabScreen from "../screens/health/HealthTabScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
+import AboutScreen from "../screens/profile/AboutScreen";
 
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
@@ -26,7 +27,9 @@ import MainHeader from "../components/MainHeader";
 import BottomTabBar from "../components/BottomTabBar";
 
 import { useAuth } from "../hooks/useAuth";
-import { Colors } from "../styles/colors";
+import { useTheme } from "../theme";
+import { useHealthReminders } from "../hooks/useHealthReminders";
+import { useNotificationNavigation } from "../hooks/useNotificationNavigation";
 import { RootStackParamList, MainTabParamList } from "../types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,6 +68,9 @@ const mainHeaderFor = (routeName: keyof MainTabParamList) => ({
 // de existir só dentro de um Tab.Navigator, por isso é um irmão do
 // Stack.Navigator, não algo dentro dele.
 function AppStack() {
+  useHealthReminders();
+  useNotificationNavigation();
+
   return (
     <View style={{ flex: 1 }}>
       <Stack.Navigator
@@ -108,6 +114,7 @@ function AppStack() {
           name="AddHealthRecord"
           component={AddHealthRecordScreen}
         />
+        <Stack.Screen name="About" component={AboutScreen} />
       </Stack.Navigator>
 
       <BottomTabBar />
@@ -117,6 +124,7 @@ function AppStack() {
 
 export default function RootNavigator() {
   const { user, initializing } = useAuth();
+  const { colors: Colors } = useTheme();
 
   if (initializing) {
     return (

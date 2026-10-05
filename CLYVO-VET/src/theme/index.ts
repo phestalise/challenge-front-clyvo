@@ -25,3 +25,7 @@ export { Radius } from "./radius";
 export type { RadiusToken } from "./radius";
 export { Shadows } from "./shadows";
 export type { ShadowToken } from "./shadows";
+
+export { ThemeProvider, useTheme, makeStyles } from "./ThemeContext";
+export type { ThemeMode } from "./ThemeContext";
+export type { ColorScheme, ThemeColors } from "./colors";

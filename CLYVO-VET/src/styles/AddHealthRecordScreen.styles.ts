@@ -1,27 +1,17 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useAddHealthRecordScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 60,
-    right: -25,
-    transform: [{ rotate: "20deg" }],
   },
 
   header: {
@@ -44,7 +34,7 @@ export const styles = StyleSheet.create({
 
   title: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   headerSpacer: {
@@ -92,7 +82,7 @@ export const styles = StyleSheet.create({
 
   typeLabel: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   typeDesc: {
@@ -130,7 +120,7 @@ export const styles = StyleSheet.create({
 
   petName: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   petMeta: {
@@ -154,4 +144,4 @@ export const styles = StyleSheet.create({
     ...Typography.label,
     color: Colors.accentOnDark,
   },
-});
+}));

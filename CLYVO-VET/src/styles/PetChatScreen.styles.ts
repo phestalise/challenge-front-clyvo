@@ -1,10 +1,9 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions } from "react-native";
 
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -17,17 +16,10 @@ const { width } = Dimensions.get("window");
 // Compensa a ausência de SafeAreaView neste header (substitui o inset da status bar).
 const STATUS_BAR_OFFSET = 56;
 
-export const styles = StyleSheet.create({
+export const usePetChatScreenStyles = makeStyles((Colors) => ({
   safe: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 140,
-    right: -25,
-    transform: [{ rotate: "18deg" }],
   },
 
   header: {
@@ -55,12 +47,12 @@ export const styles = StyleSheet.create({
 
   headerTitle: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   headerSub: {
     ...Typography.caption,
-    color: alpha(Colors.white, 0.5),
+    color: alpha(Colors.text, 0.5),
     marginTop: Spacing.xs,
   },
 
@@ -86,7 +78,7 @@ export const styles = StyleSheet.create({
   },
 
   welcomeTitle: {
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.title,
   },
 
@@ -109,7 +101,7 @@ export const styles = StyleSheet.create({
   },
 
   msgBubbleUser: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
     borderRadius: Radius.xl,
     borderBottomRightRadius: Radius.sm,
     paddingHorizontal: Spacing.lg,
@@ -128,7 +120,7 @@ export const styles = StyleSheet.create({
   },
 
   msgTextUser: {
-    color: Colors.white,
+    color: Colors.onAccent,
     ...Typography.label,
   },
 
@@ -179,11 +171,11 @@ export const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
     justifyContent: "center",
     alignItems: "center",
     ...Shadows.md,
-    shadowColor: Colors.primary,
+    shadowColor: Colors.accent,
   },
 
   sendBtnDisabled: {
@@ -191,4 +183,4 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
-});
+}));

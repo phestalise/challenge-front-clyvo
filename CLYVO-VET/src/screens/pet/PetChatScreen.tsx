@@ -18,16 +18,20 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 import { RootStackParamList } from "../../types";
 import { usePets } from "../../hooks/usePets";
 import { useChatHistory } from "../../hooks/useChatHistory";
+import { buildAssistantReply } from "../../utils/assistant";
 
-import { styles } from "../../styles/PetChatScreen.styles";
+import { usePetChatScreenStyles } from "../../styles/PetChatScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export default function PetChatScreen() {
+  const styles = usePetChatScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
 
   const { pets } = usePets();
@@ -42,9 +46,11 @@ export default function PetChatScreen() {
   const sendMessage = async () => {
     if (!input.trim() || sending) return;
 
+    const question = input.trim();
+
     await addMessage({
       role: "user",
-      content: input.trim(),
+      content: question,
     });
 
     setInput("");
@@ -58,14 +64,9 @@ export default function PetChatScreen() {
     }, 100);
 
     try {
-      const petsInfo =
-        pets.length > 0
-          ? pets.map((p) => `${p.name} (${p.species})`).join(", ")
-          : "Nenhum pet cadastrado";
-
       await addMessage({
         role: "assistant",
-        content: `🐾 Pets: ${petsInfo}`,
+        content: buildAssistantReply(question, pets),
       });
     } catch (error) {
       console.log(error);
@@ -90,19 +91,12 @@ export default function PetChatScreen() {
       style={styles.safe}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Ionicons
-        name="paw"
-        size={120}
-        color={alpha(Colors.primary, 0.05)}
-        style={styles.pawWatermark}
-      />
-
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={20} color={Colors.white} />
+          <Ionicons name="arrow-back" size={20} color={Colors.text} />
         </TouchableOpacity>
 
         <View style={styles.headerInfo}>
@@ -112,7 +106,7 @@ export default function PetChatScreen() {
         </View>
 
         <TouchableOpacity style={styles.avatar} onPress={clearHistory}>
-          <Ionicons name="trash-outline" size={18} color={Colors.white} />
+          <Ionicons name="trash-outline" size={18} color={Colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -128,7 +122,8 @@ export default function PetChatScreen() {
             <Text style={styles.welcomeTitle}>Assistente Clyvo</Text>
 
             <Text style={styles.welcomeText}>
-              Converse com o assistente do app.
+              Pergunte sobre vacinas, medicamentos, retornos e pendências dos
+              seus pets.
             </Text>
           </View>
         )}
@@ -177,7 +172,7 @@ export default function PetChatScreen() {
           onPress={sendMessage}
           disabled={!input.trim()}
         >
-          <Ionicons name="send" size={18} color={Colors.white} />
+          <Ionicons name="send" size={18} color={Colors.onAccent} />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

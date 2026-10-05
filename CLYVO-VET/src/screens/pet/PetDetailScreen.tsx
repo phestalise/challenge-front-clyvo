@@ -28,9 +28,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
 
-import { Colors, alpha } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 
-import { petService } from "../../services/PetService";
+import { getHealthScore } from "../../utils/petHealth";
 import { usePet } from "../../hooks/usePet";
 
 import VaccineCard from "../../components/VaccineCard";
@@ -38,7 +39,7 @@ import MedicationCard from "../../components/MedicationCard";
 
 import { calcularIdadeTexto } from "../../utils/formatters";
 
-import { styles } from "../../styles/PetDetailScreen.styles";
+import { usePetDetailScreenStyles } from "../../styles/PetDetailScreen.styles";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -60,6 +61,8 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const getInitial = (name: string) => name.trim().charAt(0).toUpperCase();
 
 export default function PetDetailScreen() {
+  const styles = usePetDetailScreenStyles();
+  const { colors: Colors } = useTheme();
   const navigation = useNavigation<Nav>();
 
   const route = useRoute<Route>();
@@ -100,7 +103,7 @@ export default function PetDetailScreen() {
 
   const [photoSaving, setPhotoSaving] = useState(false);
 
-  const { pet, loading, error, remove, save, reload } = usePet(petId);
+  const { pet, loading, error, remove, saveLocalData, reload } = usePet(petId);
 
   const handlePickPhoto = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -124,11 +127,12 @@ export default function PetDetailScreen() {
 
     setPhotoSaving(true);
 
-    const ok = await save({ ...pet, photoUri: result.assets[0].uri });
+    const ok = await saveLocalData({
+      ...pet,
+      photoUri: result.assets[0].uri,
+    });
 
-    if (ok) {
-      await reload();
-    } else {
+    if (!ok) {
       showAlert(
         "Erro ao salvar",
         "Não foi possível salvar a foto. Tente novamente.",
@@ -192,7 +196,7 @@ export default function PetDetailScreen() {
     );
   }
 
-  const score = petService.getHealthScore(pet);
+  const score = getHealthScore(pet);
 
   const scoreColor =
     score > 70
@@ -220,20 +224,13 @@ export default function PetDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name="paw"
-        size={120}
-        color={alpha(Colors.white, 0.05)}
-        style={styles.pawWatermark}
-      />
-
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.headerBtn}
           >
-            <Ionicons name="arrow-back" size={20} color={Colors.white} />
+            <Ionicons name="arrow-back" size={20} color={Colors.text} />
           </TouchableOpacity>
 
           <View style={styles.logoRow}>
@@ -252,7 +249,7 @@ export default function PetDetailScreen() {
             style={styles.headerBtn}
             onPress={() => navigation.navigate("AddPet", { petId })}
           >
-            <Ionicons name="create-outline" size={18} color={Colors.white} />
+            <Ionicons name="create-outline" size={18} color={Colors.text} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -260,7 +257,7 @@ export default function PetDetailScreen() {
             style={styles.headerBtn}
             onPress={openMenu}
           >
-            <Ionicons name="ellipsis-vertical" size={18} color={Colors.white} />
+            <Ionicons name="ellipsis-vertical" size={18} color={Colors.text} />
           </TouchableOpacity>
         </View>
       </View>

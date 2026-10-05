@@ -1,27 +1,17 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useAddPetScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    top: 40,
-    left: -20,
-    transform: [{ rotate: "-15deg" }],
   },
 
   header: {
@@ -43,7 +33,7 @@ export const styles = StyleSheet.create({
 
   title: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   content: {
@@ -95,7 +85,7 @@ export const styles = StyleSheet.create({
 
   avatarHint: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   avatarHintSmall: {
@@ -132,7 +122,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
     borderRadius: Radius.md,
     padding: Spacing.lg,
-    color: Colors.white,
+    color: Colors.text,
     ...Typography.body,
     borderWidth: 1,
     borderColor: Colors.overlaySoft,
@@ -172,7 +162,7 @@ export const styles = StyleSheet.create({
   },
 
   chipTextSelected: {
-    color: Colors.white,
+    color: Colors.onAccent,
   },
 
   saveBtn: {
@@ -192,6 +182,6 @@ export const styles = StyleSheet.create({
 
   saveBtnText: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.onAccent,
   },
-});
+}));

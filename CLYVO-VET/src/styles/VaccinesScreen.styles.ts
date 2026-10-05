@@ -1,10 +1,7 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 import { TAB_BAR_CLEARANCE } from "./MainTabs.styles";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
@@ -12,31 +9,10 @@ const {
   alpha,
 } = theme;
 
-// Círculo decorativo de fundo (marca d'água) — fora da escala de radius
-// (raio = metade do tamanho).
-const ORB_SIZE = 240;
-
-export const styles = StyleSheet.create({
+export const useVaccinesScreenStyles = makeStyles((Colors) => ({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
-  },
-
-  orb: {
-    position: "absolute",
-    top: -100,
-    right: -80,
-    width: ORB_SIZE,
-    height: ORB_SIZE,
-    borderRadius: ORB_SIZE / 2,
-    backgroundColor: alpha(Colors.white, 0.05),
-  },
-
-  pawWatermark: {
-    position: "absolute",
-    bottom: 100,
-    left: -20,
-    transform: [{ rotate: "-15deg" }],
   },
 
   header: {
@@ -71,7 +47,7 @@ export const styles = StyleSheet.create({
   logo: {
     ...Typography.label,
     fontWeight: "800",
-    color: Colors.white,
+    color: Colors.text,
     letterSpacing: 1,
   },
 
@@ -85,7 +61,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: alpha(Colors.white, 0.12),
+    backgroundColor: alpha(Colors.text, 0.12),
   },
 
   pageBadgeText: {
@@ -121,10 +97,11 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.card,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 
   iconChip: {
@@ -195,7 +172,7 @@ export const styles = StyleSheet.create({
 
   emptyTitle: {
     ...Typography.subtitle,
-    color: Colors.white,
+    color: Colors.text,
   },
 
   emptyText: {
@@ -213,7 +190,7 @@ export const styles = StyleSheet.create({
   },
 
   emptyBtnText: {
-    color: Colors.white,
+    color: Colors.onAccent,
     fontWeight: "700",
   },
 
@@ -240,7 +217,7 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.background,
     borderRadius: Radius.md,
     padding: Spacing.lg,
     color: Colors.text,
@@ -259,7 +236,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.xl,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.background,
     borderWidth: 1,
     borderColor: Colors.border,
   },
@@ -291,7 +268,7 @@ export const styles = StyleSheet.create({
 
   saveText: {
     ...Typography.body,
-    color: Colors.white,
+    color: Colors.onAccent,
     fontWeight: "700",
   },
-});
+}));

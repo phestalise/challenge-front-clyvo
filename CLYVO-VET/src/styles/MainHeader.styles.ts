@@ -1,16 +1,13 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "../theme";
+import { theme, makeStyles } from "../theme";
 
 const {
-  colors: Colors,
   typography: Typography,
   spacing: Spacing,
   radius: Radius,
   alpha,
 } = theme;
 
-export const styles = StyleSheet.create({
+export const useMainHeaderStyles = makeStyles((Colors) => ({
   header: {
     paddingBottom: Spacing.lg,
     paddingHorizontal: Spacing.xl,
@@ -29,7 +26,7 @@ export const styles = StyleSheet.create({
   logo: {
     ...Typography.label,
     fontWeight: "800",
-    color: Colors.white,
+    color: Colors.text,
     letterSpacing: 1,
   },
 
@@ -37,7 +34,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: alpha(Colors.white, 0.12),
+    backgroundColor: alpha(Colors.text, 0.12),
   },
 
   pageBadgeText: {
@@ -45,4 +42,4 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.accentLight,
   },
-});
+}));

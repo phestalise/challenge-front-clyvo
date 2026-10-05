@@ -1,9 +1,15 @@
-import { Pet } from "../types";
+import { Pet, Vaccine, Medication } from "../types";
+
+export type HealthItem = Vaccine | Medication;
 
 export interface IPetService {
   getAll(ownerId: string): Promise<Pet[]>;
   getById(id: string, ownerId: string): Promise<Pet | null>;
-  save(pet: Pet): Promise<void>;
+  create(pet: Pet): Promise<void>;
+  update(pet: Pet): Promise<void>;
+  saveLocalMeta(pet: Pet): Promise<void>;
   remove(id: string, ownerId: string): Promise<void>;
-  getHealthScore(pet: Pet): number;
+  createItem(petId: string, item: HealthItem): Promise<void>;
+  updateItem(petId: string, item: HealthItem): Promise<void>;
+  deleteItem(itemId: string): Promise<void>;
 }

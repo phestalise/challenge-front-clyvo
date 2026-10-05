@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Pet } from "../types";
-import { Colors } from "../styles/colors";
+import { useTheme } from "../theme";
 import { calcularIdadeTexto } from "../utils/formatters";
-import { petService } from "../services/PetService";
-import { styles } from "../styles/PetCard.styles";
+import { getHealthScore } from "../utils/petHealth";
+import { usePetCardStyles } from "../styles/PetCard.styles";
 
 type Props = {
   pet: Pet;
@@ -14,7 +14,9 @@ type Props = {
 };
 
 export default function PetCard({ pet, onPress }: Props) {
-  const score = petService.getHealthScore(pet);
+  const styles = usePetCardStyles();
+  const { colors: Colors } = useTheme();
+  const score = getHealthScore(pet);
 
   const scoreColor =
     score > 70

@@ -4,7 +4,7 @@ import { View, Text } from "react-native";
 import { Vaccine } from "../types";
 import { obterCorStatus, obterTextoStatus } from "../utils/formatters";
 
-import { styles } from "../styles/VaccineCard.styles";
+import { useVaccineCardStyles } from "../styles/VaccineCard.styles";
 
 type Props = {
   vaccine: Vaccine;
@@ -12,6 +12,7 @@ type Props = {
 };
 
 export default function VaccineCard({ vaccine, petName }: Props) {
+  const styles = useVaccineCardStyles();
   const cor = obterCorStatus(vaccine.done ? "done" : "pendente");
 
   return (

@@ -20,7 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../../types";
 
-import { Colors } from "../../styles/colors";
+import { alpha } from "../../styles/colors";
+import { useTheme } from "../../theme";
 
 import { useAuth } from "../../hooks/useAuth";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
@@ -38,7 +39,7 @@ import { formatarCPF } from "../../utils/cpf";
 
 import InputField from "../../components/InputField";
 
-import { styles } from "../../styles/RegisterScreen.styles";
+import { useRegisterScreenStyles } from "../../styles/RegisterScreen.styles";
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Register">;
@@ -59,6 +60,8 @@ const STEPS = [
 ];
 
 export default function RegisterScreen({ navigation }: Props) {
+  const styles = useRegisterScreenStyles();
+  const { colors: Colors, scheme } = useTheme();
   const { register } = useAuth();
 
   const {
@@ -203,7 +206,10 @@ export default function RegisterScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <StatusBar
+        barStyle={scheme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={Colors.primary}
+      />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -295,7 +301,7 @@ export default function RegisterScreen({ navigation }: Props) {
                     <Ionicons
                       name="checkmark"
                       size={14}
-                      color={Colors.primary}
+                      color={Colors.onAccent}
                     />
                   ) : (
                     <Ionicons
@@ -303,10 +309,10 @@ export default function RegisterScreen({ navigation }: Props) {
                       size={14}
                       color={
                         item.key === "security"
-                          ? Colors.black
+                          ? Colors.onAccent
                           : index <= step
-                            ? Colors.primary
-                            : "rgba(255,255,255,0.35)"
+                            ? Colors.onAccent
+                            : alpha(Colors.text, 0.35)
                       }
                     />
                   )}
@@ -483,7 +489,7 @@ export default function RegisterScreen({ navigation }: Props) {
                   <Ionicons
                     name="shield-checkmark-outline"
                     size={14}
-                    color="rgba(255,255,255,0.35)"
+                    color={alpha(Colors.text, 0.35)}
                   />
 
                   <Text style={styles.passwordHintText}>
@@ -564,7 +570,7 @@ export default function RegisterScreen({ navigation }: Props) {
               onPress={handleGoogleRegister}
               disabled={googleLoading || !googleReady}
             >
-              <Ionicons name="logo-google" size={16} color={Colors.white} />
+              <Ionicons name="logo-google" size={16} color={Colors.text} />
 
               <Text style={styles.btnSecondaryText}>
                 {googleLoading ? "Conectando..." : "Cadastrar com Google"}
@@ -585,7 +591,7 @@ export default function RegisterScreen({ navigation }: Props) {
               <Ionicons
                 name="shield-outline"
                 size={11}
-                color="rgba(255,255,255,0.25)"
+                color={alpha(Colors.text, 0.25)}
               />
 
               <Text style={styles.legalText}>
