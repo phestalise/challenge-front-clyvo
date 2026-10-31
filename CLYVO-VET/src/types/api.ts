@@ -37,3 +37,9 @@ export interface ApiMedicacao {
   dataInicio: string | null;
   dataFim: string | null;
 }
+
+export interface LoginResponse {
+  jwt: string;
+  email: string | null;
+  expiresAtUtc: string;
+}

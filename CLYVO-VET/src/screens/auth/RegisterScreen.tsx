@@ -97,13 +97,13 @@ export default function RegisterScreen({ navigation }: Props) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
 
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
     ]).start();
   }, [fadeAnim, slideAnim]);
@@ -114,7 +114,7 @@ export default function RegisterScreen({ navigation }: Props) {
     Animated.timing(stepAnim, {
       toValue: 0,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web",
     }).start();
   };
 

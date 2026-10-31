@@ -24,10 +24,16 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.clyvo.vet"
+      "package": "com.clyvo.vet",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a77e78a3-1d20-483c-b6c5-b70e777c43d3"
+      }
     },
     "plugins": [
       "expo-web-browser",

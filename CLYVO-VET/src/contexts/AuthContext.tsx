@@ -5,11 +5,13 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Alert } from "react-native";
 import { User as FirebaseUser } from "firebase/auth";
 
 import { authService } from "../services/AuthService";
 import { tutorService } from "../services/TutorService";
 import { storageService } from "../services/StorageService";
+import { tokenStore } from "../services/tokenStore";
 import { ApiError } from "../services/apiClient";
 import { notificationService } from "../services/NotificationService";
 import { queryClient } from "../config/queryClient";
@@ -50,6 +52,7 @@ type AuthContextValue = {
 };
 
 const SESSION_KEY = "@clyvo:session";
+const TOKEN_KEY = "@clyvo:token";
 
 function mapTutorToUser(
   tutor: ApiTutor,
@@ -75,34 +78,86 @@ async function readSession(): Promise<AuthUser | null> {
   return raw ? JSON.parse(raw) : null;
 }
 
-// Resolve o Tutor correspondente a uma conta Google: usa o cache local se
-// já existir, senão procura por e-mail na API e, se ainda não existir,
-// cria um Tutor novo com CPF/senha sintéticos (o Google não coleta isso).
+// Resolve o Tutor correspondente a uma conta Google e obtém um JWT da API.
+// Usa credenciais sintéticas (geradas a partir do uid do Firebase) para o
+// fluxo de login/cadastro na API Oracle, já que o Google não fornece CPF/senha.
 async function resolveGoogleTutor(
   firebaseUser: FirebaseUser,
-): Promise<AuthUser> {
-  const cachedId = await tutorService.getCachedGoogleTutorId(firebaseUser.uid);
-  if (cachedId) {
-    const tutor = await tutorService.getById(cachedId);
-    return mapTutorToUser(tutor, "google");
-  }
-
+): Promise<{ user: AuthUser; token: string }> {
   const email = firebaseUser.email ?? `${firebaseUser.uid}@google.local`;
-  let tutor = await tutorService.findByEmail(email);
+  const senha = gerarCpfPlaceholder(`senha:${firebaseUser.uid}`);
 
-  if (!tutor) {
-    tutor = await tutorService.register({
-      nome: firebaseUser.displayName ?? "Usuário Google",
-      email,
-      telefone: firebaseUser.phoneNumber ?? null,
-      cpf: gerarCpfPlaceholder(firebaseUser.uid),
-      senha: gerarCpfPlaceholder(`senha:${firebaseUser.uid}`),
-    });
+  let tutor: ApiTutor;
+  let token: string;
+
+  try {
+    // Tenta logar com as credenciais sintéticas (conta já existe)
+    const loginData = await tutorService.login(email, senha, true);
+    token = loginData.jwt;
+    tokenStore.set(token);
+
+    const cachedId = await tutorService.getCachedGoogleTutorId(firebaseUser.uid);
+    if (cachedId) {
+      tutor = await tutorService.getById(cachedId);
+    } else {
+      const found = await tutorService.findByEmail(email);
+      if (!found) throw new ApiError("Tutor não encontrado", 404);
+      tutor = found;
+      await tutorService.cacheGoogleTutorId(firebaseUser.uid, tutor.idTutor);
+    }
+  } catch (err) {
+    // Conta ainda não existe na API: cria o tutor (endpoint público) e faz login
+    if (err instanceof ApiError && (err.status === 401 || err.status === 400 || err.status === 404 || err.status === 409)) {
+      // 409 na tentativa de login (senha sintética errada) também cai aqui;
+      // tentamos registrar — se o e-mail já existe com outra senha a API
+      // retorna 409 e sinalizamos ao chamador com status 409 limpo.
+      try {
+        tutor = await tutorService.register({
+          nome: firebaseUser.displayName ?? "Usuário Google",
+          email,
+          telefone: firebaseUser.phoneNumber ?? null,
+          cpf: gerarCpfPlaceholder(firebaseUser.uid),
+          senha,
+        }, true);
+      } catch (registerErr) {
+        if (registerErr instanceof ApiError && registerErr.status === 409) {
+          // E-mail já existe na API com senha diferente da sintética — o usuário
+          // criou a conta manualmente antes de usar o Google. Não temos como
+          // obter o token sem a senha original; sinalizamos com 409 para que o
+          // chamador mostre a mensagem correta.
+          throw new ApiError(
+            "Este e-mail já está cadastrado com senha. Use e-mail e senha para entrar.",
+            409,
+          );
+        }
+        throw registerErr;
+      }
+      await tutorService.cacheGoogleTutorId(firebaseUser.uid, tutor.idTutor);
+
+      const loginData = await tutorService.login(email, senha, true);
+      token = loginData.jwt;
+      tokenStore.set(token);
+    } else {
+      throw err;
+    }
   }
 
-  await tutorService.cacheGoogleTutorId(firebaseUser.uid, tutor.idTutor);
+  return { user: mapTutorToUser(tutor, "google"), token };
+}
 
-  return mapTutorToUser(tutor, "google");
+// Decodifica o payload do JWT (só base64 — sem verificar assinatura).
+// Tenta extrair o idTutor de claims comuns usados em APIs Spring Boot.
+function extractTutorIdFromJwt(token: string): number | null {
+  try {
+    const raw = token.startsWith("Bearer ") ? token.slice(7) : token;
+    const payload = raw.split(".")[1];
+    const decoded = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    const id = decoded.idTutor ?? decoded.id ?? decoded.sub;
+    const num = Number(id);
+    return Number.isFinite(num) && num > 0 ? num : null;
+  } catch {
+    return null;
+  }
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
@@ -119,6 +174,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     (async () => {
+      // Restaura o JWT antes de qualquer chamada a endpoint protegido
+      const savedToken = await storageService.getData(TOKEN_KEY);
+      if (savedToken) tokenStore.set(savedToken);
+
       const cached = await readSession();
 
       if (cached?.provider === "local") {
@@ -130,10 +189,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await tutorService.getById(Number(cached.id));
           if (!cancelled) setUser(cached);
         } catch (err) {
-          if (err instanceof ApiError && err.status === 404) {
+          if (err instanceof ApiError && err.status === 401) {
+            // Token expirado: descarta a sessão e pede novo login
             if (!cancelled) {
+              tokenStore.set(null);
               setUser(null);
               await persistSession(null);
+              await storageService.saveData(TOKEN_KEY, "");
+            }
+          } else if (err instanceof ApiError && err.status === 404) {
+            if (!cancelled) {
+              tokenStore.set(null);
+              setUser(null);
+              await persistSession(null);
+              await storageService.saveData(TOKEN_KEY, "");
             }
           } else if (!cancelled) {
             // Falha de rede/API fora do ar: mantém a sessão local em vez de
@@ -150,6 +219,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authService.onAuthStateChanged(async (firebaseUser) => {
         if (cancelled) return;
 
+        // Se o usuário já entrou via e-mail/senha nesta sessão, o callback do
+        // Firebase não deve sobrescrever nem limpar a sessão local — os dois
+        // fluxos são independentes.
+        if (userRef.current?.provider === "local") {
+          setInitializing(false);
+          return;
+        }
+
         if (!firebaseUser) {
           setUser(null);
           await persistSession(null);
@@ -158,16 +235,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-          const resolved = await resolveGoogleTutor(firebaseUser);
-          setUser(resolved);
-          await persistSession(resolved);
+          const { user: resolved, token } = await resolveGoogleTutor(firebaseUser);
+          if (!cancelled) {
+            tokenStore.set(token);
+            await storageService.saveData(TOKEN_KEY, token);
+            setUser(resolved);
+            await persistSession(resolved);
+          }
         } catch (err) {
-          // Sem API (CORS, rede etc.) não dá pra resolver o tutor do Google —
-          // cai pro fluxo de login em vez de deixar a promise sem tratamento.
-          console.warn("Não foi possível sincronizar o tutor do Google:", err);
-          setUser(null);
+          if (!(err instanceof ApiError && err.status === 409)) {
+            console.warn("Não foi possível sincronizar o tutor do Google:", err);
+          }
+          if (!cancelled) {
+            if (userRef.current?.provider !== "local") {
+              setUser(null);
+            }
+            if (err instanceof ApiError && err.status === 409) {
+              // Desconecta o Firebase para não repetir o ciclo 401→409 na
+              // próxima abertura do app.
+              try { await authService.logout(); } catch {}
+              Alert.alert(
+                "E-mail já cadastrado",
+                "Este e-mail já está registrado com e-mail e senha. Por favor, entre usando e-mail e senha na tela de login.",
+              );
+            }
+          }
         } finally {
-          setInitializing(false);
+          if (!cancelled) setInitializing(false);
         }
       });
     })();
@@ -178,7 +272,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const tutor = await tutorService.login(email, password);
+    // 1. Faz login na API e recebe o JWT
+    const loginData = await tutorService.login(email, password);
+    const token = loginData.jwt;
+    tokenStore.set(token);
+    await storageService.saveData(TOKEN_KEY, token);
+
+    // 2. Tenta obter o idTutor em ordem crescente de custo:
+    //    a) claims do JWT
+    //    b) cache local (populado no register/login anteriores)
+    const tutorId =
+      extractTutorIdFromJwt(token) ??
+      (await tutorService.getCachedEmailTutorId(email));
+
+    let tutor: ApiTutor;
+    if (tutorId) {
+      tutor = await tutorService.getById(tutorId);
+    } else {
+      const found = await tutorService.findByEmail(email);
+      if (!found) throw new ApiError("Tutor não encontrado após login.", 404);
+      tutor = found;
+    }
+    await tutorService.cacheEmailTutorId(email, tutor.idTutor);
+
     const authUser = mapTutorToUser(tutor, "local");
     setUser(authUser);
     await persistSession(authUser);
@@ -195,15 +311,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     cpf: string,
     password: string,
   ) => {
+    // Cadastra o tutor (endpoint público, sem JWT) — já retorna o objeto completo
     const tutor = await tutorService.register({
       nome: name.trim(),
       email: email.trim().toLowerCase(),
       telefone: phone.trim() || null,
       cpf,
       senha: password,
-    });
+    }, true);
+    // Persiste o mapeamento email→idTutor para que o login subsequente não
+    // precise chamar GET /api/tutors (endpoint de admin → 401 para usuário comum).
+    await tutorService.cacheEmailTutorId(email.trim().toLowerCase(), tutor.idTutor);
 
-    const authUser = mapTutorToUser(tutor, "local");
+    // Faz login para obter o JWT
+    const loginData = await tutorService.login(
+      email.trim().toLowerCase(),
+      password,
+    );
+    const token = loginData.jwt;
+    if (!token) throw new ApiError("Login após cadastro não retornou token. Tente fazer login manualmente.", 401);
+    tokenStore.set(token);
+    await storageService.saveData(TOKEN_KEY, token);
+
+    const tutorId = extractTutorIdFromJwt(token);
+    const validatedTutor = tutorId
+      ? await tutorService.getById(tutorId)
+      : tutor;
+
+    const authUser = mapTutorToUser(validatedTutor, "local");
     setUser(authUser);
     await persistSession(authUser);
   };
@@ -215,6 +350,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // sessão local não usa Firebase — nada para encerrar lá
     }
 
+    tokenStore.set(null);
+    await storageService.saveData(TOKEN_KEY, "");
     setUser(null);
     await persistSession(null);
 

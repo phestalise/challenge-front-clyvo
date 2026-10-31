@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "366192133380",
+    "project_id": "clyvo-vet-a0a28",
+    "storage_bucket": "clyvo-vet-a0a28.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366192133380:android:0184ab1a72e440b9a6fc51",
+        "android_client_info": {
+          "package_name": "com.clyvo.vet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366192133380-c740fa5347mj032np6um0he3v8i8jnti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCKpgagi_QRnSK-9qb5eqLNUhaUFPcFAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366192133380-c740fa5347mj032np6um0he3v8i8jnti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

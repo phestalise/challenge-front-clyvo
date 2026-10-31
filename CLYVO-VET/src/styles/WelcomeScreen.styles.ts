@@ -1,4 +1,4 @@
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 
 import { theme, makeStyles } from "../theme";
 
@@ -94,7 +94,7 @@ export const useWelcomeScreenStyles = makeStyles((Colors) => ({
     justifyContent: "center",
     alignItems: "center",
     ...Shadows.lg,
-    shadowColor: Colors.accentLight,
+    ...(Platform.OS !== "web" && { shadowColor: Colors.accentLight }),
   },
 
   brand: {
@@ -159,7 +159,7 @@ export const useWelcomeScreenStyles = makeStyles((Colors) => ({
     justifyContent: "center",
     gap: Spacing.md,
     ...Shadows.lg,
-    shadowColor: Colors.accentLight,
+    ...(Platform.OS !== "web" && { shadowColor: Colors.accentLight }),
   },
 
   btnPrimaryText: {

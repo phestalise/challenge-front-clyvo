@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../config/api";
+import { tokenStore } from "./tokenStore";
 
 export class ApiError extends Error {
   status: number;
@@ -22,14 +23,25 @@ function extractErrorMessage(data: any, fallback: string): string {
   return data.title ?? data.message ?? fallback;
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+interface RequestConfig {
+  silent?: boolean;
+}
+
+async function request<T>(path: string, options: RequestInit = {}, config: RequestConfig = {}): Promise<T> {
   let response: Response;
+
+  const token = tokenStore.get();
+  // Normaliza: algumas APIs retornam o token já com "Bearer " no prefixo
+  const authHeader = token
+    ? { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` }
+    : {};
 
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        ...authHeader,
         ...options.headers,
       },
     });
@@ -68,13 +80,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       text || `Erro ${response.status} ao acessar a API.`,
     );
 
-    // Loga o corpo real da resposta de erro — o stack trace que o
-    // navegador imprime sozinho pra todo fetch com status de erro não
-    // mostra isso, só o método/URL/status.
-    console.error(
-      `[apiClient] ${options.method ?? "GET"} ${path} -> ${response.status}:`,
-      message,
-    );
+    if (!config.silent) {
+      console.error(
+        `[apiClient] ${options.method ?? "GET"} ${path} -> ${response.status}:`,
+        message,
+      );
+    }
 
     throw new ApiError(message, response.status);
   }
@@ -85,8 +96,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const apiClient = {
   get: <T>(path: string) => request<T>(path),
 
-  post: <T>(path: string, body: unknown) =>
-    request<T>(path, { method: "POST", body: JSON.stringify(body) }),
+  post: <T>(path: string, body: unknown, config?: RequestConfig) =>
+    request<T>(path, { method: "POST", body: JSON.stringify(body) }, config),
 
   put: <T>(path: string, body: unknown) =>
     request<T>(path, { method: "PUT", body: JSON.stringify(body) }),

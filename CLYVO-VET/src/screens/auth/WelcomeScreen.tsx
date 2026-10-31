@@ -7,6 +7,7 @@ import {
   Animated,
   StatusBar,
   SafeAreaView,
+  Platform,
 } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -40,13 +41,13 @@ export default function WelcomeScreen({ navigation }: Props) {
         Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
 
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
       ]),
 
@@ -54,13 +55,13 @@ export default function WelcomeScreen({ navigation }: Props) {
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
 
         Animated.timing(actionsAnim, {
           toValue: 1,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
       ]),
     ]).start();
