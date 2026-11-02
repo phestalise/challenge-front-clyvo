@@ -69,7 +69,7 @@ export default function PetChatScreen() {
         content: buildAssistantReply(question, pets),
       });
     } catch (error) {
-      console.log(error);
+      console.warn(error);
 
       await addMessage({
         role: "assistant",

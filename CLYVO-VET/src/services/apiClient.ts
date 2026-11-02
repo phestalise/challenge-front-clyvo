@@ -32,18 +32,20 @@ async function request<T>(path: string, options: RequestInit = {}, config: Reque
 
   const token = tokenStore.get();
   // Normaliza: algumas APIs retornam o token já com "Bearer " no prefixo
-  const authHeader = token
+  const authHeader: Record<string, string> = token
     ? { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` }
     : {};
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...authHeader,
+    ...(options.headers as Record<string, string> | undefined),
+  };
 
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeader,
-        ...options.headers,
-      },
+      headers,
     });
   } catch (err) {
     // Falha de rede (timeout, CORS, proxy fora do ar) não gera resposta

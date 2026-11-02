@@ -99,7 +99,7 @@ export default function ProfileScreen() {
     try {
       await logout();
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   };
 

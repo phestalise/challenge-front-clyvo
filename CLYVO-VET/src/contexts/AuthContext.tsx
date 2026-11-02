@@ -247,7 +247,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.warn("Não foi possível sincronizar o tutor do Google:", err);
           }
           if (!cancelled) {
-            if (userRef.current?.provider !== "local") {
+            // userRef pode ter mudado durante o await (login por e-mail
+            // concluído no meio da sincronização), por isso lê de novo.
+            const providerAgora: AuthUser["provider"] | undefined =
+              (userRef.current as AuthUser | null)?.provider;
+            if (providerAgora !== "local") {
               setUser(null);
             }
             if (err instanceof ApiError && err.status === 409) {
