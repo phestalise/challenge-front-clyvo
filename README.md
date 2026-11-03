@@ -6,7 +6,7 @@ saúde e um assistente de chat.
 
 ## Vídeo
 
-https://youtu.be/wLfy-WGBx6s
+https://youtu.be/eVSa0aQCwww
 
 ## Integrantes
 
@@ -42,8 +42,8 @@ Credenciais do Firebase e URL da API já estão no código-fonte
 (`src/services/firebase.ts` e `src/config/api.ts`) — não precisa de `.env`.
 
 ```bash
-git clone https://github.com/phestalise/challenge-front-clyvo-old.git
-cd challenge-front-clyvo-old
+git clone https://github.com/phestalise/challenge-front-clyvo.git
+cd challenge-front-clyvo
 cd CLYVO-VET
 npm install
 npm start        # expo start
@@ -118,11 +118,19 @@ firebase appdistribution:distribute ./clyvo-vet.apk \
   --testers "email.do.professor@fiap.com.br"
 ```
 
-Pacote Android: `com.clyvo.vet` (deve ser o mesmo cadastrado no app Android do
-projeto Firebase). Link de distribuição / convite do tester: preencher abaixo.
+### Versão publicada
 
-- Link do app no Firebase App Distribution: _(preencher)_
-- Commit da versão publicada: _(preencher com o hash exibido em "Sobre o app")_
+| Item | Valor |
+|---|---|
+| Plataforma | Android (APK) |
+| Pacote | `com.clyvo.vet` |
+| Versão | 1.0.0 (1) |
+| Commit da versão publicada | `ada83eb60d38997ca4c4b9189566c6fd915b6041` (`ada83eb`) |
+| Distribuição | Firebase App Distribution (convite enviado por e-mail aos testers, incluindo o professor) |
+| Link para testers | https://appdistribution.firebase.google.com/testerapps/1:366192133380:android:0184ab1a72e440b9a6fc51/releases/5papre8nagldg |
+
+O hash acima é o mesmo exibido em Perfil > **Sobre o app** no APK publicado.
+Commits posteriores a ele alteram apenas documentação (README).
 
 ## Observações sobre a integração com a API
 
