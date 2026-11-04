@@ -6,7 +6,7 @@ saúde e um assistente de chat.
 
 ## Vídeo
 
-https://youtu.be/eVSa0aQCwww
+https://youtu.be/zlTvp8h0onc
 
 ## Integrantes
 
